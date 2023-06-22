@@ -52,14 +52,15 @@ class UserController extends Controller
            
                 $nonstaffs = User::select('users.id', 'users.full_name', 'users.email',
                               'users.phone_number', 'users.username','users.address',
-                               'ru.role_id')
+                               'ru.role_id','ac.action_user_type_id')
                               ->join('role_users as ru', 'ru.user_id', '=', 'users.id')
                               ->join('action_user_type_users as ac', 'ac.user_id', '=', 'users.id')
-                              ->paginate(300);
-
+                            ->orderBy('id', 'desc')
+                              ->paginate(100);
+                // dd($nonstaffs);
                 $cle = User::select('users.id', 'users.full_name', 'users.email',
                               'users.phone_number', 'users.username','users.address',
-                               'ru.role_id')
+                               'ru.role_id','ac.action_user_type_id')
                               ->join('role_users as ru', 'ru.user_id', '=', 'users.id')
                               ->join('action_user_type_users as ac', 'ac.user_id', '=', 'users.id')
                               ->paginate(100);

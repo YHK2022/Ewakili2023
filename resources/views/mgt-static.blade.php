@@ -33,7 +33,7 @@
     <link href="{{ asset('app-css-js/plugins/bootstrap/dist/js/bootstrap-select.min.js') }}" rel="stylesheet">
 
     <link href="{{ asset('app-css-js/dist/css/custom.css') }}" rel="stylesheet">
-
+    <link  rel="stylesheet" href="{{ asset('app-css-js/pluginss/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}" >
 
 
     <!-- Datatable Dependency start -->
@@ -424,8 +424,11 @@
        <script src="{{asset('app-css-js/js/datagrid/datatables/datatables.bundle.js')}}"></script>
        <script src="{{asset('app-css-js/js/datagrid/datatables/datatables.export.js')}}"></script>
 
-
-
+        <script src="{{asset('app-css-js/jss/jquery.min.js')}}"></script>
+       <script src="{{asset('app-css-js/jss/popper.js')}}"></script>
+       <script src="{{asset('app-css-js/jss/bootstrap.min.js')}}"></script>
+       <script src="{{asset('app-css-js/jss/datagrid/datatables/datatables.export.js')}}"></script>
+       <script src="{{asset('app-css-js/jss/main.js')}}"></script>
 
     <script>
 
@@ -1179,6 +1182,8 @@
     }
   });
 }
+
+
 
        
     </script>

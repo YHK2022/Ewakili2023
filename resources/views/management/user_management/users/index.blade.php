@@ -123,13 +123,15 @@
                                                 </label>
                                                 <select class="form-control selectpicker" name="role_id" required
                                                     data-live-search="true" data-live-search-style="begins"
-                                                    title="Select Role...">
+                                                    title="Select Role..." >
                                                     @foreach ($roles as $role)
                                                         <option value="{{ $role->id }}">{{ $role->name }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
                                         </div>
+                                           
+                         
                                         <div class="col-sm-6">
                                             <div class="form-group">
                                                 <label for="exampleInputPassword1">Password
@@ -141,7 +143,7 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-sm-6">
-                                            <div class="form-group">
+                                            {{-- <div class="form-group">
                                                 <label for="exampleInputPassword1">Action User Type
                                                 </label>
                                                 <select class="form-control selectpicker" name="action_user_type_id"
@@ -152,7 +154,36 @@
                                                         </option>
                                                     @endforeach
                                                 </select>
-                                            </div>
+                                            </div> --}}
+
+                                                <div class="form-group">
+                                                    <section class="ftco-section">
+		<div class="container">
+			<div class="row justify-content-center">
+				<div class="col-md-6 text-center mb-5">
+					<h2 class="heading-section">Multiselect #01</h2>
+				</div>
+			</div>
+			<div class="row justify-content-center">
+				<div class="col-md-8 col-lg-5 d-flex justify-content-center align-items-center">
+					<div class="d-flex text-left align-items-center w-100">
+						<strong class="sl">Select Language:</strong>
+				    <select id="multiple-checkboxes" multiple="multiple">
+			        <option value="php">PHP</option>
+			        <option value="javascript">JavaScript</option>
+			        <option value="java">Java</option>
+			        <option value="sql">SQL</option>
+			        <option value="jquery">Jquery</option>
+			        <option value=".net">.Net</option>
+				    </select>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+                                                 </div>
+
+                                            
                                         </div>
                                     </div>
 
@@ -199,7 +230,7 @@
                                          {{-- <th id="table_id" data-priority="1">#</th> --}}
                                         <th id="table_id">Full Name</th>
                                         <th id="table_id">Email</th>
-                                        <th id="table_id">Address</th>
+                                        {{-- <th id="table_id">Address</th> --}}
                                         <th id="table_id">Phone Number</th>
                                         <th id="table_id">Role</th>
                                         <th id="table_id" data-priority="2">Action</th>
@@ -211,7 +242,7 @@
                                             {{-- <td id="table_id">{{ ++$key }}</td> --}}
                                             <td id="table_id">{{ $row->full_name }}</td>
                                             <td id="table_id">{{ $row->email }}</td>
-                                            <td id="table_id">{{ $row->address }}</td>
+                                            {{-- <td id="table_id">{{ $row->address }}</td> --}}
                                             <td id="table_id">{{ $row->phone_number }}</td>
 
                                             <td id="table_id">
@@ -296,8 +327,7 @@
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <div class="row">
-
+                                                            {{-- <div class="row">
                                                                 <div class="col-sm-6">
                                                                     <div class="form-group">
                                                                         <label for="exampleInputPassword1">Password
@@ -305,9 +335,38 @@
                                                                         <input type="password" name="password"
                                                                             class="form-control">
                                                                     </div>
-                                                                </div>
-                                                            </div>
+                                                                 </div>
+                                                            </div> --}}
+                                                            <div class="row">
+                                                              <div class="col-sm-6">
+                                                                 <div class="form-group">
+                                                                      <label for="exampleInputPassword1">Roles</label>
+                                                                        <select class="form-control selectpicker" name="role_id" required
+                                                                          data-live-search="true" data-live-search-style="begins"
+                                                                                   title="Select Role..." value="{{ $row->role_id }}">
+                                                                              @foreach ($roles as $role)
+                                                                             <option value="{{ $role->id }}">{{ $role->name }}</option>
+                                                                             @endforeach
+                                                                         </select>
+                                                                    </div>
+                                                              </div>
+                                                              <div class="col-sm-6">
+                                                              <div class="form-group">
+                                                <label for="exampleInputPassword1">Action User Type
+                                                </label>
+                                                <select class="form-control selectpicker" name="action_user_type_id"
+                                                    required data-live-search="true" data-live-search-style="begins"
+                                                    title="Select Action Type..." value="{{ $row->role_id }}">
+                                                    @foreach ($usertypes as $usertype)
+                                                        <option value="{{ $usertype->id }}">{{ $usertype->display_name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
                                                         </div>
+                                             
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn btn-secondary"
                                                                 data-dismiss="modal">Close</button>
@@ -368,7 +427,7 @@
                                          <th id="table_id" data-priority="1">#</th>
                                         <th id="table_id">Full Name</th>
                                         <th id="table_id">Email</th>
-                                        <th id="table_id">Address</th>
+                                        {{-- <th id="table_id">Address</th> --}}
                                         <th id="table_id">Phone Number</th>
                                         <th id="table_id">Role</th>
                                         <th id="table_id" data-priority="2">Action</th>
@@ -383,34 +442,41 @@
                                             <td id="table_id">{{ ++$key }}</td>
                                             <td id="table_id">{{ $row->full_name }}</td>
                                             <td id="table_id">{{ $row->email }}</td>
-                                            <td id="table_id">{{ $row->address }}</td>
+                                            {{-- <td id="table_id">{{ $row->address }}</td> --}}
                                             <td id="table_id">{{ $row->phone_number }}</td>
 
                                               <td id="table_id">
-    <ul style="list-style: none; padding: 0; margin: 0;">
-        @foreach ($row->roles as $role)
-            <span class="badge bg-primary" style="background-color: blue; color: white;  margin-bottom: 5px;">
-                {{ $role->display_name }}
-            </span>
-        @endforeach
-    </ul>
-</td>
+                                    <ul style="list-style: none; padding: 0; margin: 0;">
+                                        @foreach ($row->roles as $role)
+                                          <span class="badge bg-primary" style="background-color: blue; color: white;  margin-bottom: 5px;">
+                                           {{ $role->display_name }}
+                                          </span>
+                                        @endforeach
+                                          </ul>
+
+                                           @foreach ($row->actionUser as $role)
+                                          <span class="badge bg-danger" style="background-color: blue; color: white;  margin-bottom: 5px;">
+                                           {{ $role->display_name }}
+                                          </span>
+                                        @endforeach
+                                          </ul>
+                                    </td>
 
                                             <td id="table_id">
 
-                                                <a href="#edit{{ $row->id }}" title="Edit" data-toggle="modal"
+                                                <a href="#edits{{ $row->id }}" title="Edits" data-toggle="modal"
                                                     data-id="{{ $row->id }}"
-                                                    data-target="#edit{{ $row->id }}"><i
+                                                    data-target="#edits{{ $row->id }}"><i
                                                         class="ik ik-edit-2"></i></a>
-                                                <a href="#delete{{ $row->id }}" title="Delete" data-toggle="modal"
+                                                <a href="#deletes{{ $row->id }}" title="Deletes" data-toggle="modal"
                                                     data-id="{{ $row->id }}"
-                                                    data-target="#delete{{ $row->id }}"><i
+                                                    data-target="#deletes{{ $row->id }}"><i
                                                         class="ik ik-trash-2"></i></a>
                                             </td>
                                         </tr>
 
                                         <!-- Edit Session Model-->
-                                        <div class="modal fade" id="edit{{ $row->id }}" tabindex="-1"
+                                        <div class="modal fade" id="edits{{ $row->id }}" tabindex="-1"
                                             role="dialog" aria-labelledby="demoModalLabel" aria-hidden="true">
                                             <div class="modal-dialog modal-lg" role="document">
                                                 <div class="modal-content">
@@ -468,8 +534,7 @@
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <div class="row">
-
+                                                            {{-- <div class="row">
                                                                 <div class="col-sm-6">
                                                                     <div class="form-group">
                                                                         <label for="exampleInputPassword1">Password
@@ -478,8 +543,37 @@
                                                                             class="form-control">
                                                                     </div>
                                                                 </div>
-                                                            </div>
+                                                            </div> --}}
+
+                                                             <div class="row">
+                                                                <div class="col-sm-6">
+                                                                  <div class="form-group">
+                                                                     <label for="exampleInputPassword1">Roles</label>
+                                                                      <select class="form-control selectpicker" name="role_id" required
+                                                                        data-live-search="true" data-live-search-style="begins" title="Select Role...">
+                                                                          @foreach ($roles as $role)
+                                                                           <option value="{{ $role->id }}">{{ $role->name }}</option>
+                                                                           @endforeach
+                                                                       </select>
+                                                                    </div>
+                                                                </div>
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label for="exampleInputPassword1">Action User Type
+                                                </label>
+                                                <select class="form-control selectpicker" name="action_user_type_id"
+                                                    required data-live-search="true" data-live-search-style="begins" 
+                                                    title="Select Action Type...">
+                                                    @foreach ($usertypes as $usertype)
+                                                        <option value="{{ $usertype->id }}">{{ $usertype->display_name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
                                                         </div>
+                                                        
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn btn-secondary"
                                                                 data-dismiss="modal">Close</button>
@@ -492,7 +586,7 @@
 
 
                                         <!-- Delete session Model-->
-                                        <div class="modal fade" id="delete{{ $row->id }}" tabindex="-1"
+                                        <div class="modal fade" id="deletes{{ $row->id }}" tabindex="-1"
                                             role="dialog" aria-labelledby="demoModalLabel" aria-hidden="true">
                                             <div class="modal-dialog modal-sm" role="document">
                                                 <div class="modal-content">

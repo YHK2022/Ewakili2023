@@ -126,7 +126,10 @@ public function roles()
     {
         return $this->belongsToMany(Roles::class, 'role_users', 'user_id', 'role_id');
     }
-    
+    public function actionUser()
+    {
+        return $this->belongsToMany(ActionUserType::class, 'action_user_type_users', 'user_id', 'action_user_type_id');
+    }
     public function actionusers()
     {
         return $this->belongsToMany(ActionUserType::class, 'action_user_type_users', 'action_user_type_id', 'user_id');
