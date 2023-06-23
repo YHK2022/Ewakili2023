@@ -121,9 +121,7 @@
                                             <div class="form-group">
                                                 <label for="exampleInputPassword1">Roles
                                                 </label>
-                                                <select class="form-control selectpicker" name="role_id" required
-                                                    data-live-search="true" data-live-search-style="begins"
-                                                    title="Select Role..." >
+                                                  <select data-placeholder="Select Roles" class="chosen-select" multiple="" name="role_id" data-live-search-style="begins"  tabindex="-1">
                                                     @foreach ($roles as $role)
                                                         <option value="{{ $role->id }}">{{ $role->name }}</option>
                                                     @endforeach
@@ -143,47 +141,15 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-sm-6">
-                                            {{-- <div class="form-group">
-                                                <label for="exampleInputPassword1">Action User Type
-                                                </label>
-                                                <select class="form-control selectpicker" name="action_user_type_id"
-                                                    required data-live-search="true" data-live-search-style="begins"
-                                                    title="Select Action Type...">
-                                                    @foreach ($usertypes as $usertype)
+                                            <div class="form-group">
+                                                <label>Action User Type</label>
+                                                <select data-placeholder="Select Action User Type" class="chosen-select" multiple="" name="action_user_type_id"  tabindex="-1">
+													@foreach ($usertypes as $usertype)
                                                         <option value="{{ $usertype->id }}">{{ $usertype->display_name }}
                                                         </option>
                                                     @endforeach
-                                                </select>
-                                            </div> --}}
-
-                                                <div class="form-group">
-                                                    <section class="ftco-section">
-		<div class="container">
-			<div class="row justify-content-center">
-				<div class="col-md-6 text-center mb-5">
-					<h2 class="heading-section">Multiselect #01</h2>
-				</div>
-			</div>
-			<div class="row justify-content-center">
-				<div class="col-md-8 col-lg-5 d-flex justify-content-center align-items-center">
-					<div class="d-flex text-left align-items-center w-100">
-						<strong class="sl">Select Language:</strong>
-				    <select id="multiple-checkboxes" multiple="multiple">
-			        <option value="php">PHP</option>
-			        <option value="javascript">JavaScript</option>
-			        <option value="java">Java</option>
-			        <option value="sql">SQL</option>
-			        <option value="jquery">Jquery</option>
-			        <option value=".net">.Net</option>
-				    </select>
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
-                                                 </div>
-
-                                            
+													</select>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -341,10 +307,8 @@
                                                               <div class="col-sm-6">
                                                                  <div class="form-group">
                                                                       <label for="exampleInputPassword1">Roles</label>
-                                                                        <select class="form-control selectpicker" name="role_id" required
-                                                                          data-live-search="true" data-live-search-style="begins"
-                                                                                   title="Select Role..." value="{{ $row->role_id }}">
-                                                                              @foreach ($roles as $role)
+                                                                        <select data-placeholder="Select Roles" class="chosen-select" multiple="" data-live-search-style="begins" value="{{ $row->role_id }}" tabindex="-1">
+                                                                              @foreach ($row->roles as $role)
                                                                              <option value="{{ $role->id }}">{{ $role->name }}</option>
                                                                              @endforeach
                                                                          </select>
@@ -354,11 +318,12 @@
                                                               <div class="form-group">
                                                 <label for="exampleInputPassword1">Action User Type
                                                 </label>
-                                                <select class="form-control selectpicker" name="action_user_type_id"
-                                                    required data-live-search="true" data-live-search-style="begins"
-                                                    title="Select Action Type..." value="{{ $row->role_id }}">
+                                            <select data-placeholder="Select Roles" class="chosen-select" multiple="" data-live-search-style="begins"  tabindex="-1">
                                                     @foreach ($usertypes as $usertype)
-                                                        <option value="{{ $usertype->id }}">{{ $usertype->display_name }}
+                                                        {{-- <option value="{{ $usertype->id }}">{{ $usertype->display_name }}
+                                                        </option> --}}
+                                                        <option value="{{ $usertype->id }}" {{ in_array($usertype->id, $selectedUserTypes) ? 'selected' : '' }}>
+                                                            {{ $usertype->display_name }}
                                                         </option>
                                                     @endforeach
                                                 </select>
@@ -549,8 +514,7 @@
                                                                 <div class="col-sm-6">
                                                                   <div class="form-group">
                                                                      <label for="exampleInputPassword1">Roles</label>
-                                                                      <select class="form-control selectpicker" name="role_id" required
-                                                                        data-live-search="true" data-live-search-style="begins" title="Select Role...">
+                                                                <select data-placeholder="Select Roles" class="chosen-select" multiple="" data-live-search-style="begins"  tabindex="-1">
                                                                           @foreach ($roles as $role)
                                                                            <option value="{{ $role->id }}">{{ $role->name }}</option>
                                                                            @endforeach
@@ -561,9 +525,7 @@
                                             <div class="form-group">
                                                 <label for="exampleInputPassword1">Action User Type
                                                 </label>
-                                                <select class="form-control selectpicker" name="action_user_type_id"
-                                                    required data-live-search="true" data-live-search-style="begins" 
-                                                    title="Select Action Type...">
+                                            <select data-placeholder="Select Roles" class="chosen-select" multiple="" data-live-search-style="begins"  tabindex="-1">
                                                     @foreach ($usertypes as $usertype)
                                                         <option value="{{ $usertype->id }}">{{ $usertype->display_name }}
                                                         </option>

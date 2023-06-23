@@ -32,9 +32,12 @@
     <link href="{{ asset('app-css-js/dist/css/bootstrap-select-country.min.css') }}" rel="stylesheet">
     <link href="{{ asset('app-css-js/plugins/bootstrap/dist/js/bootstrap-select.min.js') }}" rel="stylesheet">
 
-    <link href="{{ asset('app-css-js/dist/css/custom.css') }}" rel="stylesheet">
-    <link  rel="stylesheet" href="{{ asset('app-css-js/pluginss/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}" >
+        <link href="{{ asset('app-css-js/plug/css/chosen/bootstrap-chosen.css') }}" rel="stylesheet">
+        {{-- <link rel="stylesheet" href="css/chosen/bootstrap-chosen.css"> --}}
 
+
+    <link href="{{ asset('app-css-js/dist/css/custom.css') }}" rel="stylesheet">
+    <link href="{{ asset('app-css-js/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}" rel="stylesheet">
 
     <!-- Datatable Dependency start -->
     <link rel="stylesheet" type="text/css"
@@ -408,7 +411,8 @@
         src="https://cdn.datatables.net/buttons/1.4.1/js/buttons.print.min.js"></script>
             <script src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.print.min.js"></script>
 
-    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+
+    {{-- <script src="https://code.jquery.com/jquery-3.3.1.js"></script> --}}
     <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/1.5.2/js/dataTables.buttons.min.js"></script>
@@ -424,12 +428,13 @@
        <script src="{{asset('app-css-js/js/datagrid/datatables/datatables.bundle.js')}}"></script>
        <script src="{{asset('app-css-js/js/datagrid/datatables/datatables.export.js')}}"></script>
 
-        <script src="{{asset('app-css-js/jss/jquery.min.js')}}"></script>
-       <script src="{{asset('app-css-js/jss/popper.js')}}"></script>
-       <script src="{{asset('app-css-js/jss/bootstrap.min.js')}}"></script>
-       <script src="{{asset('app-css-js/jss/datagrid/datatables/datatables.export.js')}}"></script>
-       <script src="{{asset('app-css-js/jss/main.js')}}"></script>
+       <script src="{{asset('app-css-js/plug/js/vendor/jquery-1.12.4.min.js')}}"></script>
 
+       <script src="{{asset('app-css-js/plug/js/chosen/chosen.jquery.js')}}"></script>
+        <script src="{{asset('app-css-js/plug/js/chosen/chosen-active.js')}}"></script>
+        
+        <script src="js/chosen/chosen.jquery.js"></script>
+        <script src="js/chosen/chosen-active.js"></script>
     <script>
 
 
