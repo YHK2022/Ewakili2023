@@ -17,7 +17,7 @@ use App\ActionUserTypeUser;
 use App\Models\Masterdata\ActionUserType;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Validation\Rule;
 
 
 class UserController extends Controller
@@ -157,89 +157,200 @@ class UserController extends Controller
      * @param \Illuminate\Http\Request $request
      * @param \Illuminate\Http\Response
      */
-    public function add_user(Request $request)
-    {
+//     public function add_user(Request $request)
+//     {
 
-        if(Auth::check()){
-$uuid = Str::uuid();
-$request->request->add(['password' => bcrypt($request->get('password'))]);
-$request->request->add(['active' => 'true']);
-$request->request->add(['enabled' => 'true']);
-$request->request->add(['account_non_expired' => 'true']);
-$request->request->add(['account_non_locked' => 'true']);
-$request->request->add(['credentials_non_expired' => 'true']);
-$request->request->add(['uid' => $uuid]);
-$user = User::create($request->all());
-$request->request->add(['user_id' => $user->id]);
+//         if(Auth::check()){
+// $uuid = Str::uuid();
+// $request->request->add(['password' => bcrypt($request->get('password'))]);
+// $request->request->add(['active' => 'true']);
+// $request->request->add(['enabled' => 'true']);
+// $request->request->add(['account_non_expired' => 'true']);
+// $request->request->add(['account_non_locked' => 'true']);
+// $request->request->add(['credentials_non_expired' => 'true']);
+// $request->request->add(['uid' => $uuid]);
+// $user = User::create($request->all());
+// $request->request->add(['user_id' => $user->id]);
 
-$usertypeuser = RoleUser::create([
-    "user_id" => $user->id,
-    "role_id" => $request->role_id,
-]);
+// $usertypeuser = RoleUser::create([
+//     "user_id" => $user->id,
+//     "role_id" => $request->role_id,
+// ]);
 
-ActionUserTypeUser::create([
-    "user_id" => $user->id,
-    "action_user_type_id" => $request->action_user_type_id,
-]);
+// ActionUserTypeUser::create([
+//     "user_id" => $user->id,
+//     "action_user_type_id" => $request->action_user_type_id,
+// ]);
 
 
+
+//             return back()->with('success', 'User added successfully');
+
+//         }
+//         return Redirect::to("auth/login")->withErrors('You do not have access!');
+//     }
+
+
+public function add_user(Request $request)
+{
+    if (Auth::check()) {
+        try {
+            $uuid = Str::uuid();
+            $request->merge([
+                'password' => bcrypt($request->input('password')),
+                'active' => true,
+                'enabled' => true,
+                'account_non_expired' => true,
+                'account_non_locked' => true,
+                'credentials_non_expired' => true,
+                'uid' => $uuid,
+            ]);
+                        DB::beginTransaction();
+            $user = User::create($request->except('role_id', 'action_user_type_id'));
+
+            $roleIds = $request->input('role_id', []);
+            if (is_array($roleIds)) {
+                foreach ($roleIds as $roleId) {
+                    DB::table('role_users')->insert([
+                        'user_id' => $user->id,
+                        'role_id' => $roleId,
+                    ]);
+                }
+            }
+
+           $actionUserTypeIds = $request->input('action_user_type_id', []);
+            if (is_array($actionUserTypeIds)) {
+                foreach ($actionUserTypeIds as $actionUserTypeId) {
+                    DB::table('action_user_type_users')->insert([
+                        'user_id' => $user->id,
+                        'action_user_type_id' => $actionUserTypeId,
+                    ]);
+                }
+            }
+
+            DB::commit();
 
             return back()->with('success', 'User added successfully');
-
+        } catch (\Throwable $th) {
+            return back()->with('warning', 'User addition failed');
         }
-        return Redirect::to("auth/login")->withErrors('You do not have access!');
     }
 
+    return redirect()->route('auth.login')->withErrors('You do not have access!');
+}
 
     /**
      * edit user permission
      * @param \Illuminate\Http\Request $request
      * @param \Illuminate\Http\Response
      */
-    public function edit_user(Request $request, $id)
-    {
+    // public function edit_user(Request $request, $id)
+    // {
+             
+    //     // if(Auth::check()){
 
-        if(Auth::check()){
+    //         // try {
+    //     //         $this->validate($request, [
+    //     //     'full_name' => [
+    //     //         'max:255',
+    //     //         Rule::unique('users')->ignore($id)->where(function ($query) {
+    //     //             return $query->where('is_deleted', false);
+    //     //         }),
+    //     //     ],
+    //     //     'email' => [
+    //     //         'email',
+    //     //         'max:255',
+    //     //         Rule::unique('users')->ignore($id)->where(function ($query) {
+    //     //             return $query->where('is_deleted', false);
+    //     //         }),
+    //     //     ],
+    //     // ]);
 
-            try {
-                $this->validate($request, [
-            'full_name' => [
-                'max:255',
-                Rule::unique('users')->ignore($id)->where(function ($query) {
-                    return $query->where('is_deleted', false);
-                }),
-            ],
-            'email' => [
-                'email',
-                'max:255',
-                Rule::unique('users')->ignore($id)->where(function ($query) {
-                    return $query->where('is_deleted', false);
-                }),
-            ],
-        ]);
+    //     $input = $request->except('password');
+    //     if (!isset($input['active'])) {
+    //         $input['active'] = false;
+    //     }
 
-        $input = $request->except('password');
-        if (!isset($input['active'])) {
-            $input['active'] = false;
-        }
+    //     if (!empty($request['password'])) {
+    //         $input['password'] = bcrypt($request['password']);
+    //     }
 
-        if (!empty($request['password'])) {
-            $input['password'] = bcrypt($request['password']);
-        }
+    //     $lims_user_data = User::find($id);
+    //     $lims_user_data->update($input);
+    //     $lims_user_data->roles()->sync([$request->role_id]);
+    //     $lims_user_data->actionUser()->sync([$request->action_user_type_id]);
 
-        $lims_user_data = User::find($id);
-        $lims_user_data->update($input);
+    //             return back()->with('success', 'User  edited successfully');
 
-                return back()->with('success', 'User  edited successfully');
+    //         // } catch (\Throwable $th) {
 
-            } catch (\Throwable $th) {
+    //         //     return back()->with('warning', 'User permission not added');
+    //         // }
 
-                return back()->with('warning', 'User permission not added');
+    //     // }
+    //     // return Redirect::to("auth/login")->withErrors('You do not have access!');
+    // }
+
+
+public function edit_user(Request $request, $id)
+{
+    if (Auth::check()) {
+        try {
+            $uuid = Str::uuid();
+            $request->merge([
+                'password' => bcrypt($request->input('password')),
+                'active' => true,
+                'enabled' => true,
+                'account_non_expired' => true,
+                'account_non_locked' => true,
+                'credentials_non_expired' => true,
+                'uid' => $uuid,
+            ]);
+
+            DB::beginTransaction();
+
+            $user = User::findOrFail($id);
+            $user->update($request->except('role_id', 'action_user_type_id'));
+
+            $roleIds = $request->input('role_id', []);
+            if (is_array($roleIds)) {
+                // Delete existing role_user records for the user
+                DB::table('role_users')->where('user_id', $id)->delete();
+
+                // Insert new role_user records for the user
+                foreach ($roleIds as $roleId) {
+                    DB::table('role_users')->insert([
+                        'user_id' => $user->id,
+                        'role_id' => $roleId,
+                    ]);
+                }
             }
 
+            $actionUserTypeIds = $request->input('action_user_type_id', []);
+            if (is_array($actionUserTypeIds)) {
+                // Delete existing action_user_type_user records for the user
+                DB::table('action_user_type_users')->where('user_id', $id)->delete();
+
+                // Insert new action_user_type_user records for the user
+                foreach ($actionUserTypeIds as $actionUserTypeId) {
+                    DB::table('action_user_type_users')->insert([
+                        'user_id' => $user->id,
+                        'action_user_type_id' => $actionUserTypeId,
+                    ]);
+                }
+            }
+
+            DB::commit();
+
+            return back()->with('success', 'User edited successfully');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return back()->with('warning', 'User edit failed');
         }
-        return Redirect::to("auth/login")->withErrors('You do not have access!');
     }
+
+    return redirect()->route('auth.login')->withErrors('You do not have access!');
+}
 
 
     /**
@@ -249,21 +360,31 @@ ActionUserTypeUser::create([
      */
     public function delete_user(Request $request, $id)
     {
-        if(Auth::check()){
+        // if(Auth::check()){
 
-            try {
-                $user = User::findOrFail($id);
-                $user->delete();
+        //     try {
+                DB::beginTransaction();
 
-                return back()->with('success', 'User  deleted successfully');
+            // Delete related records in role_users table
+            DB::table('role_users')->where('user_id', $id)->delete();
 
-            } catch (\Throwable $th) {
+            // Delete related records in action_user_type_users table
+            DB::table('action_user_type_users')->where('user_id', $id)->delete();
 
-                return back()->with('warning', 'User not deleted');
-            }
+            // Delete the user
+            $user = User::findOrFail($id);
+            $user->delete();
 
-        }
-        return Redirect::to("auth/login")->withErrors('You do not have access!');
+            DB::commit();
+            return back()->with('success', 'User  deleted successfully');
+
+        //     } catch (\Throwable $th) {
+
+        //         return back()->with('warning', 'User not deleted');
+        //     }
+
+        // }
+        // return Redirect::to("auth/login")->withErrors('You do not have access!');
     }
 
     public function profile()
