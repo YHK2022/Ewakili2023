@@ -91,7 +91,7 @@ foreach ($petitionSessions as $petition_session_id) {
                     'user' => $user,
                     'link' => $links,
                 ];
-                // Mail::to($user->email)->send(new \App\Mail\LoginLinkMail($data));
+                Mail::to($user->email)->send(new \App\Mail\LoginLinkMail($data));
                 // Store the sent email information to prevent duplicate emails
                 \App\LoginLinkMail::create([
                     'user_id' => $user->id,

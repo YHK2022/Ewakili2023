@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html class="no-js" lang="en">
     <head>
@@ -6,7 +5,7 @@
         <meta http-equiv="x-ua-compatible" content="ie=edge">
         <title>
 			@section('title')
-			e-Wakili | Login
+			e-Wakili | Registration
 			@show
 		</title>
         <meta name="description" content="">
@@ -43,13 +42,9 @@
         <div class="auth-wrapper">
             <div class="container-fluid">
 					<div class="row justify-content-center">
-                    <div class="col-xl-4 col-lg-6 col-md-7 my-auto p-0">
+                    <div class="col-xl-5 col-lg-5 col-md-7 my-auto p-0">
                         <div class="authentication-form mx-auto" >
-                            <div class="logo-centered">
-							<img src="{{ URL::to('/public/images/Judiciary-Logo.png') }}" style="height:60px; width: 60px;"  alt="logo icon">
-                            </div>
-                            
-                            <center><h3>Sign In to e-Wakili</h3></center>
+                            <h3><center>Reset Your Account Password</center></h3>
 
                             <!-- Start Alert-->
 							@if (session('success'))
@@ -81,8 +76,9 @@
 
 							<!-- End Alert-->
 
-                            <form method="POST" action="{{ url('post-login')}}" >
+                                <form method="POST" action="{{ url('forget-password')}}" >
 							{{ csrf_field() }}
+                               <input type="hidden" name="token" value="{{ $token }}">
                                 <div class="form-group">
                                     <input type="text" name="email" class="form-control is-valid" placeholder="Email" value="{{ old('email') }}" id="exampleInputUsername">
                                     <i class="ik ik-user"></i>
@@ -91,23 +87,17 @@
                                     <input type="password" name="password" class="form-control is-valid" placeholder="Password" id="exampleInputPassword">
                                     <i class="ik ik-lock"></i>
                                 </div>
-                                <div class="row">
-                                    <div class="col text-left">
-                                        <label class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" id="item_checkbox" name="item_checkbox" value="option1">
-                                            <span class="custom-control-label">&nbsp;Remember Me</span>
-                                        </label>
-                                    </div>
-                                    <div class="col text-right">
-                                        <a href="{{ url('reset-password') }}">Forgot Password ?</a>
-                                    </div>
+                                <div class="form-group">
+                                    <input type="password" name="password_confirmation" class="form-control is-valid" placeholder="Password" id="exampleInputPassword">
+                                    <i class="ik ik-lock"></i>
                                 </div>
+                               
                                 <div class="sign-btn text-center">
-                                    <button class="btn btn-theme" data-loading-text="Processing.....">Sign In</button>
+                                    <button class="btn btn-theme" data-loading-text="Processing.....">Reset Password</button>
                                 </div>
                             </form>
                             <div class="register">
-                                <p>Khow the Advocate! <i class="ik ik-home"></i> <a href="{{ url('/') }}">Go back home</a></p>
+                                <p>Already Registered? <a style="color:blue;" href="{{ URL('login') }}"> Sign In Here</a> | <i class="ik ik-home"></i> <a href="{{ url('/') }}">Home</a></p>
                             </div>
                         </div>
                     </div>
@@ -144,3 +134,5 @@
         </script>
     </body>
 </html>
+
+

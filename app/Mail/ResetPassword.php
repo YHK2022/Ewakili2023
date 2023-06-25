@@ -7,10 +7,9 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class ForgotPasswordMail extends Mailable
+class ResetPassword extends Mailable
 {
     use Queueable, SerializesModels;
-
     public $token;
 
     /**
@@ -30,8 +29,8 @@ class ForgotPasswordMail extends Mailable
      */
     public function build()
     {
-        return $this->markdown('emails.password-verify')->with([
-            'token' => $this->token
-        ]);
+        // return $this->markdown('emails.password-reset');
+        return $this->subject('Reset Password')
+            ->view('emails.password-reset');
     }
 }

@@ -82,7 +82,9 @@ Route::get('/user/verify/{token}', 'AuthController@verifyUser');
 //Password reset
 Route::get('reset-password', 'AuthController@resetPassword');
 Route::post('post-reset-password', 'AuthController@postResetPassword');
-Route::get('/user/reset/{token}', 'AuthController@reset');
+// Route::get('/user/reset/{token}', 'AuthController@reset');
+Route::get('forget-password/{token}', 'AuthController@showResetPasswordForm');
+Route::post('forget-password','AuthController@submitResetPasswordForm');
 
 
 // ****** ENDS *********//
