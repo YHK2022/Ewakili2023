@@ -77,7 +77,7 @@
                                 <a class="nav-link" id="pills-timeline-tab" data-toggle="pill" href="#practising"
                                     role="tab" aria-controls="pills-timeline" aria-selected="true">Resubmission Applications <span
                                         class="badge bg-warning" style="color: white">
-                                        {{-- {{ $practising_count }} --}}
+                                        {{ $resubmit_applications_count }}
                                     </span></a>
                             </li>
                             <li class="nav-item">
@@ -158,7 +158,7 @@
                                             </tr>
                                         </thead>
                                        <tbody>
-                                           @foreach ($applications as $key => $application)
+                                           @foreach ($resubmit_applications as $key => $application)
                                         <tr>
                                             <td id="table_id">{{ ++$key }}</td>
                                             <td id="table_id">{{ $application->profile_detail->fullname }}</td>

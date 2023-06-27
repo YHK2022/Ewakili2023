@@ -46,22 +46,31 @@ class PetitionApplicationUnderReviewController extends Controller
         if(Auth::check()){
             $user_id = Auth::user()->id;
             $profile = Profile::where('user_id', $user_id)->first();
-            
-
             $stage = 1;
             $application_type = "PETITION";
             $status = "PENDING";
+            $resubmit = "RE SUBMIT";
 
 
-            $applications = Application::where('current_stage', $stage)->where('type', $application_type)->where('status', $status)->orderBy('created_at', 'desc')->paginate(20);
+            $applications = Application::where('current_stage', $stage)->where('type', $application_type)
+            ->where('status', $status)->orderBy('created_at', 'desc')->paginate(20);
             $application_count = Application::where('current_stage', $stage)->where('type', $application_type)
             ->where('status', $status)->orderBy('created_at', 'desc')->count();
              $approved_count = Application::where('current_stage', 2)->where('type', $application_type)
             ->where('status', $status)->orderBy('created_at', 'desc')->count();
              $approved_applications = Application::where('current_stage', 2)->where('type', $application_type)
             ->where('status', $status)->orderBy('created_at', 'desc')->get();
+
+            $resubmit_applications =  Application::where('current_stage', $stage)->where('type', $application_type)
+            ->where('status', $resubmit)->orderBy('created_at', 'desc')->paginate(20);
+             $resubmit_applications_count =  Application::where('current_stage', $stage)->where('type', $application_type)
+            ->where('status', $resubmit)->orderBy('created_at', 'desc')->count();
+
+
             return view('management.petition_application.under_review.index', [
                 'profile' => $profile,
+                'resubmit_applications_count' => $resubmit_applications_count,
+                'resubmit_applications' => $resubmit_applications,
                 'applications' => $applications,
                 'application_count' => $application_count,
                 'approved_count' => $approved_count,
@@ -78,19 +87,30 @@ class PetitionApplicationUnderReviewController extends Controller
             $user_id = Auth::user()->id;
             $profile = Profile::where('user_id', $user_id)->first();
             $stage = 2;
+            $status = 'PENDING';
             $application_type = "PETITION";
+            $resubmit = 'RE SUBMIT';
 
          
-            $applications = Application::where('current_stage', $stage)->where('type', $application_type)->orderBy('created_at', 'desc')->paginate(20);
+            $applications = Application::where('current_stage', $stage)->where('status', $status)->where('type', $application_type)
+            ->orderBy('created_at', 'desc')->paginate(20);
             $applications_count = Application::where('current_stage', $stage)->where('type', $application_type)
-            ->orderBy('created_at', 'desc')->count();
+            ->orderBy('created_at', 'desc')->where('status', $status)->count();
              $approved_count = Application::where('current_stage', 3)->where('type', $application_type)
             ->orderBy('created_at', 'desc')->count();
              $approved_applications = Application::where('current_stage', 3)->where('type', $application_type)
             ->orderBy('created_at', 'desc')->get();
 
+            $resubmit_applications =  Application::where('current_stage', $stage)->where('type', $application_type)
+            ->where('status', $resubmit)->orderBy('created_at', 'desc')->paginate(20);
+
+             $resubmit_applications_count =  Application::where('current_stage', $stage)->where('type', $application_type)
+            ->where('status', $resubmit)->orderBy('created_at', 'desc')->count();
+
             return view('management.petition_application.rhc.index', [
                 'profile' => $profile,
+                'resubmit_applications' => $resubmit_applications,
+                'resubmit_applications_count' => $resubmit_applications_count,
                 'applications' => $applications,
                 'applications_count' => $applications_count,
                 'approved_count' => $approved_count,
@@ -175,8 +195,8 @@ class PetitionApplicationUnderReviewController extends Controller
                 if ($stage->status == "RE SUBMIT") 
                 {
                     $cj = DB::table('applications')
-                     ->where('id', $id)->update([ 'current_stage' => 1]);
-
+                     ->where('id', $id)->update([ 'current_stage' => 1, 'status'=>'RE SUBMIT']);
+        
                     $comment = new ApplicationApproval();
                     $comment->comment = $request->input('comment');
                     $comment->active = true;
@@ -432,7 +452,7 @@ class PetitionApplicationUnderReviewController extends Controller
                         if ($stage->status == "RE SUBMIT") 
                         {
                           $cj = DB::table('applications')
-                             ->where('id', $id)->update(['status' => "PENDING", 'current_stage' => 3]);
+                             ->where('id', $id)->update(['status' => "RE SUBMIT", 'current_stage' => 3]);
                           $comment = new ApplicationApproval();
                           $comment->comment = $request->input('comment');
                           $comment->active = true;
@@ -523,7 +543,7 @@ class PetitionApplicationUnderReviewController extends Controller
               $comment->application_id = $stage->id;
               $comment->user_id = Auth()->user()->id;
               $comment->save();
-             $profile_picture = DB::table('applications')->where('id', $id)->update(['status' => "PENDING",
+             $profile_picture = DB::table('applications')->where('id', $id)->update(['status' => "RE SUBMIT",
             'current_stage' => 2]);
                   }
 
@@ -547,8 +567,6 @@ class PetitionApplicationUnderReviewController extends Controller
 
             $stage = 4;
             $status = "PENDING";
-           
-
             $application_type = "PETITION";
 
             $applications = Application::where('current_stage', $stage)->where('type', $application_type)->where('status', $status)->orderBy('created_at', 'desc')->paginate(20);
@@ -578,16 +596,28 @@ class PetitionApplicationUnderReviewController extends Controller
             $stage = 3;
             $application_type = "PETITION";
              $status = "PENDING";
-            $applications = Application::where('current_stage', $stage)->where('type', $application_type)->orderBy('created_at', 'desc')->paginate(20);
-            $application_count = Application::where('current_stage', $stage)->where('type', $application_type)
+             $resubmit = 'RE SUBMIT';
+
+            $applications = Application::where('current_stage', $stage)->where('type', $application_type)->where('status', $status)
+            ->orderBy('created_at', 'desc')->paginate(20);
+            $application_count = Application::where('current_stage', $stage)->where('status', $status)->where('type', $application_type)
             ->orderBy('created_at', 'desc')->count();
+
              $approved_count = Application::where('current_stage', 4)->where('status', 'PENDING')
             ->orderBy('created_at', 'desc')->count();
              $approved_applications = Application::where('current_stage', 4)->where('status', 'PENDING')
             ->orderBy('created_at', 'desc')->get();
 
+            $resubmit_applications =  Application::where('current_stage', $stage)->where('type', $application_type)
+            ->where('status', $resubmit)->orderBy('created_at', 'desc')->paginate(20);
+
+             $resubmit_applications_count =  Application::where('current_stage', $stage)->where('type', $application_type)
+            ->where('status', $resubmit)->orderBy('created_at', 'desc')->count();
+
             return view('management.petition_application.cle.index', [
                 'profile' => $profile,
+                'resubmit_applications' => $resubmit_applications,
+                'resubmit_applications_count' => $resubmit_applications_count,
                 'applications' => $applications,
                  'approved_count' => $approved_count,
                 'approved_applications' => $approved_applications,
