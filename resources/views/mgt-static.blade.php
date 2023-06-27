@@ -428,7 +428,7 @@
        <script src="{{asset('app-css-js/js/datagrid/datatables/datatables.bundle.js')}}"></script>
        <script src="{{asset('app-css-js/js/datagrid/datatables/datatables.export.js')}}"></script>
 
-       <script src="{{asset('app-css-js/plug/js/vendor/jquery-1.12.4.min.js')}}"></script>
+       {{-- <script src="{{asset('app-css-js/plug/js/vendor/jquery-1.12.4.min.js')}}"></script> --}}
 
        <script src="{{asset('app-css-js/plug/js/chosen/chosen.jquery.js')}}"></script>
         <script src="{{asset('app-css-js/plug/js/chosen/chosen-active.js')}}"></script>

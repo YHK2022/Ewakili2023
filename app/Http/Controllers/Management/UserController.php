@@ -47,6 +47,8 @@ class UserController extends Controller
               ->groupBy('users.id', 'ru.role_id')
                ->with('roles')
                ->orderBy('users.id', 'DESC')
+               ->where('users.active', true)
+               ->whereIn('ro.id',[2,3])
                ->paginate(100);
 
            
@@ -56,6 +58,15 @@ class UserController extends Controller
                               ->join('role_users as ru', 'ru.user_id', '=', 'users.id')
                               ->join('action_user_type_users as ac', 'ac.user_id', '=', 'users.id')
                             ->orderBy('id', 'desc')
+                            ->where('users.active', true)
+                              ->paginate(100);
+                $inactive = User::select('users.id', 'users.full_name', 'users.email',
+                              'users.phone_number', 'users.username','users.address',
+                               'ru.role_id','ac.action_user_type_id')
+                              ->join('role_users as ru', 'ru.user_id', '=', 'users.id')
+                              ->join('action_user_type_users as ac', 'ac.user_id', '=', 'users.id')
+                            ->orderBy('id', 'desc')
+                            ->where('users.active', false)
                               ->paginate(100);
                 // dd($nonstaffs);
                 $cle = User::select('users.id', 'users.full_name', 'users.email',
@@ -63,11 +74,12 @@ class UserController extends Controller
                                'ru.role_id','ac.action_user_type_id')
                               ->join('role_users as ru', 'ru.user_id', '=', 'users.id')
                               ->join('action_user_type_users as ac', 'ac.user_id', '=', 'users.id')
+                              ->where('users.active', true)
                               ->paginate(100);
 
 
             return view('management.user_management.users.index', 
-            compact('profile','permissions','roles','staffs','nonstaffs', 'usertypes'))
+            compact('profile','permissions','roles','staffs','nonstaffs', 'usertypes','inactive'))
             ->with('i', ($request->input('page', 1) - 1 ) * 100);
         }
         return Redirect::to("auth/login")->withErrors('You do not have access!');
@@ -157,38 +169,6 @@ class UserController extends Controller
      * @param \Illuminate\Http\Request $request
      * @param \Illuminate\Http\Response
      */
-//     public function add_user(Request $request)
-//     {
-
-//         if(Auth::check()){
-// $uuid = Str::uuid();
-// $request->request->add(['password' => bcrypt($request->get('password'))]);
-// $request->request->add(['active' => 'true']);
-// $request->request->add(['enabled' => 'true']);
-// $request->request->add(['account_non_expired' => 'true']);
-// $request->request->add(['account_non_locked' => 'true']);
-// $request->request->add(['credentials_non_expired' => 'true']);
-// $request->request->add(['uid' => $uuid]);
-// $user = User::create($request->all());
-// $request->request->add(['user_id' => $user->id]);
-
-// $usertypeuser = RoleUser::create([
-//     "user_id" => $user->id,
-//     "role_id" => $request->role_id,
-// ]);
-
-// ActionUserTypeUser::create([
-//     "user_id" => $user->id,
-//     "action_user_type_id" => $request->action_user_type_id,
-// ]);
-
-
-
-//             return back()->with('success', 'User added successfully');
-
-//         }
-//         return Redirect::to("auth/login")->withErrors('You do not have access!');
-//     }
 
 
 public function add_user(Request $request)
@@ -244,54 +224,7 @@ public function add_user(Request $request)
      * @param \Illuminate\Http\Request $request
      * @param \Illuminate\Http\Response
      */
-    // public function edit_user(Request $request, $id)
-    // {
-             
-    //     // if(Auth::check()){
-
-    //         // try {
-    //     //         $this->validate($request, [
-    //     //     'full_name' => [
-    //     //         'max:255',
-    //     //         Rule::unique('users')->ignore($id)->where(function ($query) {
-    //     //             return $query->where('is_deleted', false);
-    //     //         }),
-    //     //     ],
-    //     //     'email' => [
-    //     //         'email',
-    //     //         'max:255',
-    //     //         Rule::unique('users')->ignore($id)->where(function ($query) {
-    //     //             return $query->where('is_deleted', false);
-    //     //         }),
-    //     //     ],
-    //     // ]);
-
-    //     $input = $request->except('password');
-    //     if (!isset($input['active'])) {
-    //         $input['active'] = false;
-    //     }
-
-    //     if (!empty($request['password'])) {
-    //         $input['password'] = bcrypt($request['password']);
-    //     }
-
-    //     $lims_user_data = User::find($id);
-    //     $lims_user_data->update($input);
-    //     $lims_user_data->roles()->sync([$request->role_id]);
-    //     $lims_user_data->actionUser()->sync([$request->action_user_type_id]);
-
-    //             return back()->with('success', 'User  edited successfully');
-
-    //         // } catch (\Throwable $th) {
-
-    //         //     return back()->with('warning', 'User permission not added');
-    //         // }
-
-    //     // }
-    //     // return Redirect::to("auth/login")->withErrors('You do not have access!');
-    // }
-
-
+  
 public function edit_user(Request $request, $id)
 {
     if (Auth::check()) {
@@ -309,13 +242,12 @@ public function edit_user(Request $request, $id)
 
             DB::beginTransaction();
 
-            $user = User::findOrFail($id);
+            $user = User::where('id', $id)->firstOrFail();
             $user->update($request->except('role_id', 'action_user_type_id'));
-
             $roleIds = $request->input('role_id', []);
             if (is_array($roleIds)) {
                 // Delete existing role_user records for the user
-                DB::table('role_users')->where('user_id', $id)->delete();
+                DB::table('role_users')->where('user_id', $user->id)->delete();
 
                 // Insert new role_user records for the user
                 foreach ($roleIds as $roleId) {
@@ -329,7 +261,7 @@ public function edit_user(Request $request, $id)
             $actionUserTypeIds = $request->input('action_user_type_id', []);
             if (is_array($actionUserTypeIds)) {
                 // Delete existing action_user_type_user records for the user
-                DB::table('action_user_type_users')->where('user_id', $id)->delete();
+                DB::table('action_user_type_users')->where('user_id', $user->id)->delete();
 
                 // Insert new action_user_type_user records for the user
                 foreach ($actionUserTypeIds as $actionUserTypeId) {
@@ -353,6 +285,7 @@ public function edit_user(Request $request, $id)
 }
 
 
+
     /**
      * delete user permission
      * @param \Illuminate\Http\Request $request
@@ -360,31 +293,27 @@ public function edit_user(Request $request, $id)
      */
     public function delete_user(Request $request, $id)
     {
-        // if(Auth::check()){
+        if(Auth::check()){
 
-        //     try {
+            try {
+            
                 DB::beginTransaction();
 
-            // Delete related records in role_users table
-            DB::table('role_users')->where('user_id', $id)->delete();
-
-            // Delete related records in action_user_type_users table
-            DB::table('action_user_type_users')->where('user_id', $id)->delete();
-
-            // Delete the user
+            // Deactivate user
             $user = User::findOrFail($id);
-            $user->delete();
+            $user->active = false;
+            $user->save();
 
             DB::commit();
-            return back()->with('success', 'User  deleted successfully');
+            return back()->with('success', 'User  Deactivates successfully');
 
-        //     } catch (\Throwable $th) {
+            } catch (\Throwable $th) {
 
-        //         return back()->with('warning', 'User not deleted');
-        //     }
+                return back()->with('warning', 'User not Deactivated');
+            }
 
-        // }
-        // return Redirect::to("auth/login")->withErrors('You do not have access!');
+        }
+        return Redirect::to("auth/login")->withErrors('You do not have access!');
     }
 
     public function profile()
@@ -392,15 +321,7 @@ public function edit_user(Request $request, $id)
         
        if (Auth::check()) {
             $lims_user_data = User::where('id', Auth()->user()->id)->first();
-            //  $staffs = User::select('users.id', 'users.full_name', 'users.email',
-            //                   'users.phone_number', 'users.username',
-            //                    'ru.role_id')
-            //                   ->join('role_user as ru', 'ru.user_id', '=', 'users.id')
-            //                   ->join('roles as ro', 'ro.role_id', '=', 'ru.id')
-            //                   ->where('id', auth()->user()->id)
-            //                    ->get();
-            // $role = DB::table('roles')->find($staffs->role_id);
-            // dd($staffs);
+          
             return view('management.user_management.users.profile', compact('lims_user_data'));
         } else {
             return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');

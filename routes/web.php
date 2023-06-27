@@ -489,7 +489,9 @@ Route::group(['prefix' => 'user-management'], function() {
     Route::get('/user', 'Management\UserController@get_index');
     Route::post('/user/add', 'Management\UserController@add_user');
     Route::match(['get', 'post'], '/user/edit/{id}', 'Management\UserController@edit_user');
+
     Route::match(['get', 'post'], '/user/delete/{id}', 'Management\UserController@delete_user');
+    
     // Route::get('/profile/{id}', 'Management\UserController@profile');
 Route::get('/user/list', 'Management\UserController@getUsers');
 

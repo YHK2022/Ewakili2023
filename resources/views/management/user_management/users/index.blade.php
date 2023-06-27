@@ -178,6 +178,11 @@
                                     role="tab" aria-controls="pills-timeline" aria-selected="true">Staffs <span
                                         class="badge bg-warning" style="color: white"></span></a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="pills-timeline-tab" data-toggle="pill" href="#inactive"
+                                    role="tab" aria-controls="pills-timeline" aria-selected="true">InActive Users <span
+                                        class="badge bg-warning" style="color: white"></span></a>
+                            </li>
                         </ul>
                         <div class="tab-content" id="pills-tabContent">
 
@@ -197,7 +202,7 @@
                                         <th id="table_id">Email</th>
                                         <th id="table_id">Phone Number</th>
                                         <th id="table_id">Role</th>
-                                        <th id="table_id" data-priority="2">Action</th>
+                                        {{-- <th id="table_id" data-priority="2">Action</th> --}}
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -217,7 +222,7 @@
                                                 </ul>
 
                                             </td>
-                                            <td id="table_id">
+                                            {{-- <td id="table_id">
 
                                                 <a href="#edits{{ $row->id }}" title="Edit" data-toggle="modal"
                                                     data-id="{{ $row->id }}"
@@ -227,7 +232,7 @@
                                                     data-id="{{ $row->id }}"
                                                     data-target="#deletes{{ $row->id }}"><i
                                                         class="ik ik-trash-2"></i></a>
-                                            </td>
+                                            </td> --}}
                                         </tr>
 
                                         <!-- Edit Session Model-->
@@ -466,16 +471,6 @@
                                                             <div class="row">
                                                                 <div class="col-sm-6">
                                                                     <div class="form-group">
-                                                                        <label for="exampleInputPassword1">
-                                                                            User Name</label>
-                                                                        <input type="text" name="name"
-                                                                            value="{{ $row->username }}"
-                                                                            class="form-control  is-valid"
-                                                                            placeholder="username" required>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-sm-6">
-                                                                    <div class="form-group">
                                                                         <label for="exampleInputPassword1">Phone Number
                                                                         </label>
                                                                         <input type="text" name="email"
@@ -491,23 +486,23 @@
                                                                 <div class="col-sm-6">
                                                                   <div class="form-group">
                                                                      <label for="exampleInputPassword1">Roles</label>
-                                                                      <select data-placeholder="Select Roles" name="roles" class="chosen-select" multiple="" data-live-search-style="begins" tabindex="-1">
-                        @foreach ($roles as $role)
-                            <option value="{{ $role->id }}" {{ in_array($role->id, $row->roles->pluck('id')->toArray()) ? 'selected' : '' }}>
-                                {{ $role->display_name }}
-                            </option>
-                        @endforeach
-                    </select>
+                                                                      <select data-placeholder="Select Roles" name="role_id[]" class="chosen-select" multiple="" data-live-search-style="begins" tabindex="-1">
+                                                 @foreach ($roles as $role)
+                                                <option value="{{ $role->id }}" {{ in_array($role->id, $row->roles->pluck('id')->toArray()) ? 'selected' : '' }}>
+                                                {{ $role->display_name }}
+                                                 </option>
+                                                 @endforeach
+                                                      </select>
                                                                     </div>
                                                                 </div>
                                         <div class="col-sm-6">
                                             <div class="form-group">
                                                 <label for="exampleInputPassword1">Action User Type
                                                 </label>
-                                           <select data-placeholder="Select User Types" name="action_user_types" class="chosen-select" multiple="" data-live-search-style="begins" tabindex="-1">
-                        @foreach ($usertypes as $usertype)
-                            <option value="{{ $usertype->id }}" {{ in_array($usertype->id, $row->actionUser->pluck('id')->toArray()) ? 'selected' : '' }}>
-                                {{ $usertype->display_name }}
+                                           <select data-placeholder="Select User Types" name="action_user_type_id[]" class="chosen-select" multiple="" data-live-search-style="begins" tabindex="-1">
+                                                @foreach ($usertypes as $usertype)
+                                                  <option value="{{ $usertype->id }}" {{ in_array($usertype->id, $row->actionUser->pluck('id')->toArray()) ? 'selected' : '' }}>
+                                                    {{ $usertype->display_name }}
                             </option>
                         @endforeach
                     </select>
@@ -536,21 +531,21 @@
                                                         action="{{ url('user-management/user/delete', $row->id) }}">
                                                         {{ csrf_field() }}
                                                         <div class="modal-header">
-                                                            <h5 class="modal-title" id="demoModalLabel">Delete
+                                                            <h5 class="modal-title" id="demoModalLabel">Deactivate
                                                                 User</h5>
                                                             <button type="button" class="close" data-dismiss="modal"
                                                                 aria-label="Close"><span
                                                                     aria-hidden="true">&times;</span></button>
                                                         </div>
                                                         <div class="modal-body">
-                                                            Are you sure you want to delete User:
+                                                            Are you sure you want to Deactivate User:
                                                             <strong> {{ $row->full_name }} </strong>?
                                                         </div>
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn btn-secondary"
                                                                 data-dismiss="modal">Close</button>
                                                             <button type="submit" class="btn btn-danger">Yes
-                                                                Delete</button>
+                                                                Deactivate</button>
                                                         </div>
                                                     </form>
                                                 </div>
@@ -562,7 +557,188 @@
                                     </table>
                                 </div>
                             </div>
+<div class="tab-pane fade" id="inactive" role="tabpanel"
+                                aria-labelledby="pills-timeline-tab">
+                                <div class="card-body">
+                                    <table class="table table-hover" id="table_id3">
+                                        <thead>
+                                            <tr>
+                                                 <tr>
+                                         <th id="table_id3" data-priority="1">#</th>
+                                        <th id="table_id3">Full Name</th>
+                                        <th id="table_id3">Email</th>
+                                        <th id="table_id3">Phone Number</th>
+                                        <th id="table_id3">Role</th>
+                                        <th id="table_id3" data-priority="2">Action</th>
 
+
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($inactive as $key => $row)
+                                        <tr>
+                                            <td id="table_id3">{{ ++$key }}</td>
+                                            <td id="table_id3">{{ $row->full_name }}</td>
+                                            <td id="table_id3">{{ $row->email }}</td>
+                                            <td id="table_id3">{{ $row->phone_number }}</td>
+
+                                              <td id="table_id3">
+                                    <ul style="list-style: none; padding: 0; margin: 0;">
+                                        @foreach ($row->roles as $role)
+                                          <span class="badge bg-primary" style="background-color: blue; color: white;  margin-bottom: 5px;">
+                                           {{ $role->display_name }}
+                                          </span>
+                                        @endforeach
+                                          </ul>
+
+                                           @foreach ($row->actionUser as $role)
+                                          <span class="badge bg-danger" style="background-color: blue; color: white;  margin-bottom: 5px;">
+                                           {{ $role->display_name }}
+                                          </span>
+                                        @endforeach
+                                          </ul>
+                                    </td>
+
+                                            <td id="table_id3">
+
+                                                <a href="#edit{{ $row->id }}" title="Edit" data-toggle="modal"
+                                                    data-id="{{ $row->id }}"
+                                                    data-target="#edit{{ $row->id }}"><i
+                                                        class="ik ik-edit-2"></i></a>
+                                                <a href="#delete{{ $row->id }}" title="Delete" data-toggle="modal"
+                                                    data-id="{{ $row->id }}"
+                                                    data-target="#delete{{ $row->id }}"><i
+                                                        class="ik ik-trash-2"></i></a>
+                                            </td>
+                                        </tr>
+
+                                        <!-- Edit Session Model-->
+                                        <div class="modal fade" id="edit{{ $row->id }}" tabindex="-1"
+                                            role="dialog" aria-labelledby="demoModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal-lg" role="document">
+                                                <div class="modal-content">
+                                                    <form class="forms-sample" method="POST"
+                                                        action="{{ url('user-management/user/edit', $row->id) }}">
+                                                        {{ csrf_field() }}
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="demoModalLabel">Edit User</h5>
+                                                            <button type="button" class="close" data-dismiss="modal"
+                                                                aria-label="Close"><span
+                                                                    aria-hidden="true">&times;</span></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <div class="row">
+                                                                <div class="col-sm-6">
+                                                                    <div class="form-group">
+                                                                        <label for="exampleInputPassword1">Full
+                                                                            Name</label>
+                                                                        <input type="text" name="name"
+                                                                            value="{{ $row->full_name }}"
+                                                                            class="form-control  is-valid"
+                                                                            placeholder="name" required>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    <div class="form-group">
+                                                                        <label for="exampleInputPassword1">Email
+                                                                        </label>
+                                                                        <input type="text" name="email"
+                                                                            value="{{ $row->email }}"
+                                                                            class="form-control  is-valid"
+                                                                            placeholder="name" required>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-sm-6">
+                                                                    <div class="form-group">
+                                                                        <label for="exampleInputPassword1">Phone Number
+                                                                        </label>
+                                                                        <input type="text" name="email"
+                                                                            value="{{ $row->phone_number }}"
+                                                                            class="form-control  is-valid"
+                                                                            placeholder="name" required>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            
+
+                                                             <div class="row">
+                                                                <div class="col-sm-6">
+                                                                  <div class="form-group">
+                                                                     <label for="exampleInputPassword1">Roles</label>
+                                                                      <select data-placeholder="Select Roles" name="role_id[]" class="chosen-select" multiple="" data-live-search-style="begins" tabindex="-1">
+                                                 @foreach ($roles as $role)
+                                                <option value="{{ $role->id }}" {{ in_array($role->id, $row->roles->pluck('id')->toArray()) ? 'selected' : '' }}>
+                                                {{ $role->display_name }}
+                                                 </option>
+                                                 @endforeach
+                                                      </select>
+                                                                    </div>
+                                                                </div>
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label for="exampleInputPassword1">Action User Type
+                                                </label>
+                                           <select data-placeholder="Select User Types" name="action_user_type_id[]" class="chosen-select" multiple="" data-live-search-style="begins" tabindex="-1">
+                                                @foreach ($usertypes as $usertype)
+                                                  <option value="{{ $usertype->id }}" {{ in_array($usertype->id, $row->actionUser->pluck('id')->toArray()) ? 'selected' : '' }}>
+                                                    {{ $usertype->display_name }}
+                            </option>
+                        @endforeach
+                    </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                                        </div>
+                                                        
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary"
+                                                                data-dismiss="modal">Close</button>
+                                                            <button type="submit" class="btn btn-danger">Edit</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                        <!-- Delete session Model-->
+                                        <div class="modal fade" id="delete{{ $row->id }}" tabindex="-1"
+                                            role="dialog" aria-labelledby="demoModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal-sm" role="document">
+                                                <div class="modal-content">
+                                                    <form class="forms-sample" method="POST"
+                                                        action="{{ url('user-management/user/delete', $row->id) }}">
+                                                        {{ csrf_field() }}
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="demoModalLabel">Deactivate
+                                                                User</h5>
+                                                            <button type="button" class="close" data-dismiss="modal"
+                                                                aria-label="Close"><span
+                                                                    aria-hidden="true">&times;</span></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            Are you sure you want to Deactivate User:
+                                                            <strong> {{ $row->full_name }} </strong>?
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary"
+                                                                data-dismiss="modal">Close</button>
+                                                            <button type="submit" class="btn btn-danger">Yes
+                                                                Deactivate</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                        
 
                         </div>

@@ -13,6 +13,9 @@
     </div>
 
     <div class="sidebar-content">
+          <?php
+                               $roleId = Auth::user()->roles()->pluck('role_id')->first();
+                        ?>
         <div class="nav-container">
             <nav id="main-menu-navigation" class="navigation-main">
                 <div class="nav-lavel">Navigation</div>
@@ -28,6 +31,7 @@
 
                 <div @if (\Request::is('sessions/petition-session') || \Request::is('sessions/pending-admission')) class="nav-item has-sub active open" @endif
                     class="nav-item has-sub">
+                    @if($roleId ==1 || $roleId == 5 )
                     <a class="dropdown" href="javascript:void(0)"><i class="ik ik-repeat"></i><span>Sessions
                             Management</span></a>
                     <div class="submenu-content">
@@ -36,6 +40,7 @@
                         <a @if (\Request::is('sessions/pending-admission')) class="menu-item active" @endif
                             href="{{ url('sessions/pending-admission') }}" class="menu-item">Pending Admission </a>
                     </div>
+                    @endif
                 </div>
 
                 <div @if (
@@ -49,30 +54,32 @@
                             Applications</span></a>
                       
                     <div class="submenu-content">
-                       <?php
-                               $roleId = Auth::user()->roles()->pluck('role_id')->first();
-                        ?>
+                     
+                        @if($roleId ==1  || $roleId == 4 || $roleId == 5)
                         <a @if (\Request::is('petition/under-review')) class="menu-item active" @endif
                             href="{{ url('petition/under-review') }}" class="menu-item">Under Review </a>
-                         @if($roleId == 7 || $roleId == 1)
+                        @endif    
+                         @if($roleId == 1 || $roleId == 6 || $roleId == 7)
                         <a @if (\Request::is('petition/rhc-review')) class="menu-item active" @endif
                             href="{{ url('petition/rhc-review') }}" class="menu-item">RHC Review </a>
                         @endif
-                        @if($roleId == 8 || $roleId == 1 )
+                        @if($roleId == 1 || $roleId == 8 || $roleId == 2 || $roleId == 13 )
                          <a @if (\Request::is('petition/cle-inspection')) class="menu-item active" @endif
                             href="{{ url('petition/cle-inspection') }}" class="menu-item">CLE Inspection </a>
                        @endif
+                        @if($roleId == 1 || $roleId == 10 )
                       <a @if  (\Request::is('petition/cj-appearance')) class="menu-item active" @endif
                             href="{{ url('petition/cj-appearance') }}" class="menu-item">CJ Appearance </a>
+                        @endif    
                         <a @if (\Request::is('petition/new-applicant')) class="menu-item active" @endif
                             href="{{ url('petition/new-applicant') }}" class="menu-item">New Applicants </a>
                     </div>
                 </div>
-
+                  @if($roleId ==1 || $roleId == 13 )
                   <div @if (\Request::is('advocate/roll')) class="nav-item active" @endif class="nav-item">
                     <a href="{{ url('petition/legal-objections') }}"><i class="ik ik-users"></i><span>Legal Professional Objections</span></a>
                 </div>
-
+                @endif
                 <div @if (
                     \Request::is('petition-resume/rhc-inspection') ||
                         \Request::is('petition-resume/cle-approval') ||
@@ -81,13 +88,20 @@
                     <a class="dropdown" href="javascript:void(0)"><i class="ik ik-file-text"></i><span>Resume
                             Petition</span></a>
                     <div class="submenu-content">
+                         @if($roleId == 1 || $roleId == 6 || $roleId == 7)
                         <a @if (\Request::is('petition-resume/rhc')) class="menu-item active" @endif
                             href="{{ url('resume/resume-petition/rhc') }}" class="menu-item">RHC Inspection </a>
+                        @endif
+                        @if($roleId == 1 || $roleId == 8 || $roleId == 2 || $roleId == 13 )
                         <a @if (\Request::is('petition-resume/cle-approval')) class="menu-item active" @endif
                             href="{{ url('resume/resume-petition/cle-approval') }}" class="menu-item">CLE Approval </a>
+                        @endif
+                        @if($roleId == 1 || $roleId == 10 )    
                         <a @if (\Request::is('resume/resume-petition/cj')) class="menu-item active" @endif
                             href="{{ url('resume/resume-petition/cj-approval') }}" class="menu-item">CJ Approval </a>
+                          @endif    
                     </div>
+                  
                 </div>
 
                 <div @if (
@@ -124,7 +138,7 @@
 
                 <div class="nav-lavel">Permit Applications</div>
 
-
+                @if($roleId ==1  || $roleId == 4 || $roleId == 5 || $roleId == 6 || $roleId == 7 || $roleId == 10)
                 <div @if (
                     \Request::is('out-of-time/under-review') ||
                         \Request::is('out-of-time/rhc-review') ||
@@ -133,12 +147,18 @@
                     <a class="dropdown" href="javascript:void(0)"><i class="ik ik-file-text"></i><span>Late
                             Renewals</span></a>
                     <div class="submenu-content">
+                        @if($roleId ==1  || $roleId == 4 || $roleId == 5)
                         <a @if (\Request::is('permit/late-renewal/under-review')) class="menu-item active" @endif
                             href="{{ url('permit/late-renewal/under-review') }}" class="menu-item">Under Reveiw </a>
+                        @endif    
+                        @if($roleId == 1 || $roleId == 6 || $roleId == 7)
                         <a @if (\Request::is('permit/late-renewal/rhc')) class="menu-item active" @endif
                             href="{{ url('permit/late-renewal/rhc') }}" class="menu-item">RHC Review </a>
+                        @endif  
+                        @if($roleId == 1 || $roleId == 10 )   
                         <a @if (\Request::is('permit/late-renewal/cj')) class="menu-item active" @endif
                             href="{{ url('permit/late-renewal/cj') }}" class="menu-item">CJ Approval </a>
+                        @endif    
                     </div>
                 </div>
 
@@ -147,12 +167,18 @@
                     <a class="dropdown" href="javascript:void(0)"><i class="ik ik-file-text"></i><span>Resume
                             Practising</span></a>
                     <div class="submenu-content">
+                        @if($roleId ==1  || $roleId == 4 || $roleId == 5)
                         <a @if (\Request::is('permit/resume-practising/under-review')) class="menu-item active" @endif
                             href="{{ url('permit/resume-practising/under-review') }}" class="menu-item">Under Review </a>
+                        @endif
+                        @if($roleId == 1 || $roleId == 6 || $roleId == 7)    
                         <a @if (\Request::is('permit/resume-practising/rhc')) class="menu-item active" @endif
                             href="{{ url('permit/resume-practising/rhc') }}" class="menu-item">RHC Review </a>
+                        @endif
+                        @if($roleId == 1 || $roleId == 10 )     
                         <a @if (\Request::is('permit/resume-practising/cj')) class="menu-item active" @endif
                             href="{{ url('permit/resume-practising/cj') }}" class="menu-item">CJ Approval </a>
+                        @endif    
                     </div>
                 </div>
 
@@ -161,12 +187,18 @@
                     <a class="dropdown" href="javascript:void(0)"><i
                             class="ik ik-file-text"></i><span>Suspending</span></a>
                     <div class="submenu-content">
+                        @if($roleId ==1  || $roleId == 4 || $roleId == 5)
                         <a @if (\Request::is('permit/suspend/under-review')) class="menu-item active" @endif
                             href="{{ url('permit/suspend/under-review') }}" class="menu-item">Under Review </a>
+                        @endif
+                        @if($roleId == 1 || $roleId == 6 || $roleId == 7)    
                         <a @if (\Request::is('permit/suspend/rhc-review')) class="menu-item active" @endif
                             href="{{ url('permit/suspend/rhc') }}" class="menu-item">RHC Review </a>
+                       @endif
+                        @if($roleId == 1 || $roleId == 10 )    
                         <a @if (\Request::is('permit/suspend/cj')) class="menu-item active" @endif
                             href="{{ url('permit/suspend/cj') }}" class="menu-item">CJ Approval </a>
+                        @endif    
                     </div>
                 </div>
 
@@ -178,12 +210,18 @@
                     <a class="dropdown" href="javascript:void(0)"><i class="ik ik-file-text"></i><span>None
                             Practising</span></a>
                     <div class="submenu-content">
+                        @if($roleId ==1  || $roleId == 4 || $roleId == 5)
                         <a @if (\Request::is('permit/non-practising/under-review')) class="menu-item active" @endif
                             href="{{ url('permit/non-practising/under-review') }}" class="menu-item">Under Review </a>
+                        @endif    
+                         @if($roleId == 1 || $roleId == 6 || $roleId == 7)     
                         <a @if (\Request::is('permit/non-practising/rhc')) class="menu-item active" @endif
                             href="{{ url('permit/non-practising/rhc') }}" class="menu-item">RHC Review </a>
+                        @endif    
+                         @if($roleId == 1 || $roleId == 10 )     
                         <a @if (\Request::is('permit/non-practising/cj')) class="menu-item active" @endif
                             href="{{ url('permit/non-practising/cj') }}" class="menu-item">CJ Approval </a>
+                        @endif    
                     </div>
                 </div>
 
@@ -192,12 +230,18 @@
                     <a class="dropdown" href="javascript:void(0)"><i
                             class="ik ik-file-text"></i><span>Retiring</span></a>
                     <div class="submenu-content">
+                        @if($roleId ==1  || $roleId == 4 || $roleId == 5)
                         <a @if (\Request::is('permit/retire-practising/under-review')) class="menu-item active" @endif
                             href="{{ url('permit/retire-practising/under-review') }}" class="menu-item">Under Review </a>
+                        @endif    
+                        @if($roleId == 1 || $roleId == 6 || $roleId == 7)    
                         <a @if (\Request::is('permit/retire-practising/rhc')) class="menu-item active" @endif
                             href="{{ url('permit/retire-practising/rhc') }}" class="menu-item">RHC Review </a>
+                        @endif    
+                        @if($roleId == 1 || $roleId == 10 )    
                         <a @if (\Request::is('permit/retire-practising/cj')) class="menu-item active" @endif
                             href="{{ url('permit/retire-practising/cj') }}" class="menu-item">CJ Approval </a>
+                        @endif    
                     </div>
                 </div>
 
@@ -209,12 +253,18 @@
                     <a class="dropdown" href="javascript:void(0)"><i class="ik ik-file-text"></i><span>Not for
                             Profit</span></a>
                     <div class="submenu-content">
+                        @if($roleId ==1  || $roleId == 4 || $roleId == 5)
                         <a @if (\Request::is('permit/non-profit/under-review')) class="menu-item active" @endif
                             href="{{ url('permit/non-profit/under-review') }}" class="menu-item">Under Review </a>
+                        @endif    
+                        @if($roleId == 1 || $roleId == 6 || $roleId == 7)    
                         <a @if (\Request::is('permit/non-profit/rhc')) class="menu-item active" @endif
                             href="{{ url('permit/non-profit/rhc') }}" class="menu-item">RHC Review </a>
+                        @endif    
+                        @if($roleId == 1 || $roleId == 10 )    
                         <a @if (\Request::is('permit/non-profit/cj')) class="menu-item active" @endif
                             href="{{ url('permit/non-profit/cj') }}" class="menu-item">CJ Approval </a>
+                        @endif    
                     </div>
                 </div>
 
@@ -226,15 +276,21 @@
                     <a class="dropdown" href="javascript:void(0)"><i class="ik ik-file-text"></i><span>Name
                             Change</span></a>
                     <div class="submenu-content">
+                        @if($roleId ==1  || $roleId == 4 || $roleId == 5)
                         <a @if (\Request::is('permit/name-change/under-review')) class="menu-item active" @endif
                             href="{{ url('permit/name-change/under-review') }}" class="menu-item">Under Review </a>
+                        @endif    
+                        @if($roleId == 1 || $roleId == 6 || $roleId == 7)    
                         <a @if (\Request::is('permit/name-change/rhc-review')) class="menu-item active" @endif
                             href="{{ url('permit/name-change/rhc') }}" class="menu-item">RHC Review </a>
+                        @endif    
+                        @if($roleId == 1 || $roleId == 10 )    
                         <a @if (\Request::is('permit/name-change/jk')) class="menu-item active" @endif
                             href="{{ url('permit/name-change/jk') }}" class="menu-item">JK Approval </a>
+                        @endif    
                     </div>
                 </div>
-
+              @endif
                 <div @if (
                     \Request::is('temp-admission/new-application') ||
                         \Request::is('temp-admission/rhc-review') ||
@@ -247,13 +303,19 @@
                         <a @if (\Request::is('temp-admission/new-application')) class="menu-item active" @endif
                             href="{{ url('permit/temp-admission/new-application') }}" class="menu-item">New Applications
                         </a>
+                        @if($roleId ==1  || $roleId == 4 || $roleId == 5)
                         <a @if (\Request::is('temp-admission/rhc-review')) class="menu-item active" @endif
                             href="{{ url('permit/temp-admission/rhc') }}" class="menu-item">RHC Review </a>
+                        @endif    
+                        @if($roleId == 1 || $roleId == 6 || $roleId == 7)     
                         <a @if (\Request::is('temp-admission/cj-approval')) class="menu-item active" @endif
                             href="{{ url('permit/temp-admission/cj') }}" class="menu-item">CJ Approval </a>
+                        @endif    
+                        @if($roleId == 1 || $roleId == 10 )      
                         <a @if (\Request::is('temp-admission/temp-advocates')) class="menu-item active" @endif
                             href="{{ url('permit/temp-admission/temp-advocates') }}" class="menu-item">Temporary Advocates
                         </a>
+                       @endif 
                     </div>
                 </div>
 
@@ -279,7 +341,7 @@
                         </a>
                     </div>
                 </div>
-
+               @if($roleId == 1 || $roleId == 20 ) 
                 <div @if (
                     \Request::is('bills/pending') ||
                         \Request::is('bills/paid') ||
@@ -305,9 +367,9 @@
                        
                     </div>
                 </div>
-
+               @endif 
+                @if($roleId == 1 ) 
                 <div class="nav-lavel">Reports & Settings</div>
-
                 <div @if (
                     \Request::is('manage/personal-details') ||
                         \Request::is('manage/qualifications') ||
@@ -413,7 +475,7 @@
                 <div class="nav-item">
                     <a href="{{ url('settings/system/logs') }}"><i class="ik ik-paperclip"></i><span>System Logs</span></a>
                 </div>
-
+            @endif
             </nav>
         </div>
     </div>
