@@ -93,9 +93,9 @@
                                 </h5> --}}
 
                                 <h5 class="mt-20 mb-0">{{ $advocate->profile_detail->fullname }}</h5>
-                                <h5 class="mt-20 mb-0" style="font-size:17px;color:blue;">
+                                {{-- <h5 class="mt-20 mb-0" style="font-size:17px;color:blue;">
                                     <strong>{{ $advocate->status }}</strong>
-                                </h5>
+                                </h5> --}}
                             </div>
                             <div class="badge badge-pill badge-dark">Admission<br />{{ $petition->admit_as }}</div>
                             <div class="badge badge-pill badge-dark">Petition Number.<br />{{ $petition->petition_no }}</div>

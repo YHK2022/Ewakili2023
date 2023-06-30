@@ -92,9 +92,9 @@
                                 </h5> --}}
 
                                 <h5 class="mt-20 mb-0">{{ $advocate->profile_detail->fullname }}</h5>
-                                <h5 class="mt-20 mb-0" style="font-size:17px;color:blue;">
+                                {{-- <h5 class="mt-20 mb-0" style="font-size:17px;color:blue;">
                                     <strong>{{ $advocate->status }}</strong>
-                                </h5>
+                                </h5> --}}
                             </div>
                             {{-- <div class="badge badge-pill badge-dark">Admission<br />{{ $advocate->admission }}</div> --}}
                             <div class="badge badge-pill badge-dark">Petition Number.<br />{{ $advocate->id }}</div>
@@ -161,10 +161,10 @@
                                 <div class="card-body">
                                     @if ($personal_infos != 'No data')
                                         <div class="col-12">
-                                            <p class="lead"><i class="ik ik-user"></i> Personal Profile Information</p>
+                                            {{-- <p class="lead"><i class="ik ik-user"></i> Personal Profile Information</p> --}}
                                             <div class="table-responsive">
                                                 @foreach ($personal_infos as $personal_info)
-                                                    <table class="table table-borderless" style="font: size 20px;">
+                                                    {{-- <table class="table table-borderless" style="font: size 20px;">
                                                         <tr>
                                                             <th style="width:20%;text-align:right;">Gender:</th>
                                                             <td>{{ $personal_info->gender }}</td>
@@ -185,7 +185,31 @@
                                                             <th style="width:20%;text-align:right;">ID Number:</th>
                                                             <td>{{ $personal_info->id_number }}</td>
                                                         </tr>
-                                                    </table>
+                                                    </table> --}}
+                                                         <div class="table-responsive">
+    <table class="table table-borderless">
+        <thead>
+            <tr>
+                <th style="background-color: #dc143c; color: white;">Gender</th>
+                <th style="background-color: #dc143c; color: white;">Date of Birth</th>
+                <th style="background-color: #dc143c; color: white;">Nationality</th>
+                <th style="background-color: #dc143c; color: white;">ID Type</th>
+                <th style="background-color: #dc143c; color: white;">ID Number</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ $personal_info->gender }}</td>
+                <td>{{ $personal_info->dob }}</td>
+                <td>{{ $personal_info->nationality }}</td>
+                <td>{{ $personal_info->id_type }}</td>
+                <td>{{ $personal_info->id_number }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+
                                                 @endforeach
                                             </div>
                                         </div>
@@ -419,10 +443,10 @@
                                 <div class="card-body">
                                     @if ($applications != 'No data')
                                         <div class="col-12">
-                                            <p class="lead"><i class="ik ik-clipboard"></i> Applications</p>
+                                            {{-- <p class="lead"><i class="ik ik-clipboard"></i> Applications</p> --}}
                                             <div class="table-responsive">
                                                 @foreach ($applications as $key => $application)
-                                                    <table class="table table-borderless" style="font: size 20px;">
+                                                    {{-- <table class="table table-borderless" style="font: size 20px;">
                                                         <tr>
                                                             <th style="width:20%;text-align:right;">Application Type:</th>
                                                             <td>{{ $application->type }} </td>
@@ -435,7 +459,28 @@
                                                             <th style="width:20%;text-align:right;">Status:</th>
                                                             <td>{{ $application->status }}</td>
                                                         </tr>
-                                                    </table>
+                                                    </table> --}}
+
+                                                    <div class="table-responsive">
+    <table class="table table-borderless">
+        <thead>
+            <tr>
+                <th style="background-color: #dc143c; color: white;">Application Type</th>
+                <th style="background-color: #dc143c; color: white;">Date Submitted</th>
+                <th style="background-color: #dc143c; color: white;">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                
+                <td>{{ $application->type }} </td>
+                <td>{{ $application->submission_at }}</td>
+                <td>{{ $application->status }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
                                                     <hr>
                                                 @endforeach
                                             </div>

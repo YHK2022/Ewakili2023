@@ -37,13 +37,36 @@ class PermitController extends Controller
             $stage = 1;
             $application_type = "PERMIT NON PRACTISING";
             $status = "PENDING";
-
+            $resubmit = "RE SUBMIT";
             $applications = Application::where('current_stage', $stage)
                 ->where('type', $application_type)->where('status', $status)
                 ->orderBy('created_at', 'desc')->paginate(20);
+            $applications_count = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->count();
+
+             $submit_applications = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $resubmit)
+                ->orderBy('created_at', 'desc')->paginate(20);
+            
+             $submit_applications_count = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $resubmit)
+                ->orderBy('created_at', 'desc')->count();   
+            $approved_applications = Application::where('current_stage', 2)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->paginate(20);
+            $approved_applications_count = Application::where('current_stage', 2)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->count();   
+
             return view('management.permit_application.non_practising.under_review.index', [
                 'profile' => $profile,
                 'applications' => $applications,
+                'applications_count' => $applications_count,
+                'submit_applications' => $submit_applications,
+                'submit_applications_count' => $submit_applications_count,
+                'approved_applications' => $approved_applications,
+                'approved_applications_count' => $approved_applications_count,
             ]);
         }
         return Redirect::to("auth/login")->withErrors('You do not have access!');
@@ -59,14 +82,38 @@ class PermitController extends Controller
             $stage = 2;
             $application_type = "PERMIT NON PRACTISING";
             $status = "PENDING";
+            $resubmit = 'RE SUBMIT';
 
             $applications = Application::where('current_stage', $stage)
                 ->where('type', $application_type)->where('status', $status)
                 ->orderBy('created_at', 'desc')->paginate(20);
+            $applications_count = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->count();
+
+             $submit_applications = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $resubmit)
+                ->orderBy('created_at', 'desc')->paginate(20);
+            
+             $submit_applications_count = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $resubmit)
+                ->orderBy('created_at', 'desc')->count(); 
+
+             $approved_applications = Application::where('current_stage', 4)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->paginate(20);
+            $approved_applications_count = Application::where('current_stage', 4)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->count();    
 
             return view('management.permit_application.non_practising.rhc.index', [
                 'profile' => $profile,
                 'applications' => $applications,
+                'applications_count' => $applications_count,
+                'submit_applications' => $submit_applications,
+                'submit_applications_count' => $submit_applications_count,
+                'approved_applications' => $approved_applications,
+                'approved_applications_count' => $approved_applications_count,
             ]);
         }
         return Redirect::to("auth/login")->withErrors('You do not have access!');
@@ -82,14 +129,35 @@ class PermitController extends Controller
             $stage = 4;
             $application_type = "PERMIT NON PRACTISING";
             $status = "PENDING";
-
-            $applications = Application::where('current_stage', $stage)->where('status', $status)
-                ->where('type', $application_type)
+            $resubmit = 'RE SUBMIT';
+           $applications = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $status)
                 ->orderBy('created_at', 'desc')->paginate(20);
+            $applications_count = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->count();
 
+             $submit_applications = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $resubmit)
+                ->orderBy('created_at', 'desc')->paginate(20);
+            
+             $submit_applications_count = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $resubmit)
+                ->orderBy('created_at', 'desc')->count(); 
+             $approved_applications = Application::where('current_stage', 2)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->paginate(20);
+            $approved_applications_count = Application::where('current_stage', 2)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->count();      
             return view('management.permit_application.non_practising.cj.index', [
                 'profile' => $profile,
                 'applications' => $applications,
+                'applications_count' => $applications_count,
+                'submit_applications' => $submit_applications,
+                'submit_applications_count' => $submit_applications_count,
+                'approved_applications' => $approved_applications,
+                'approved_applications_count' => $approved_applications_count,
             ]);
         }
         return Redirect::to("auth/login")->withErrors('You do not have access!');
@@ -593,13 +661,36 @@ class PermitController extends Controller
             $stage = 1;
             $application_type = "PERMIT SUSPENDED";
             $status = "PENDING";
+            $resubmit = 'RE SUBMIT';
 
             $applications = Application::where('current_stage', $stage)
                 ->where('type', $application_type)->where('status', $status)
                 ->orderBy('created_at', 'desc')->paginate(20);
+            $applications_count = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->count();
+
+             $submit_applications = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $resubmit)
+                ->orderBy('created_at', 'desc')->paginate(20);
+            
+             $submit_applications_count = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $resubmit)
+                ->orderBy('created_at', 'desc')->count(); 
+            $approved_applications = Application::where('current_stage', 2)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->paginate(20);
+            $approved_applications_count = Application::where('current_stage', 2)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->count();     
             return view('management.permit_application.suspend.under_review.index', [
                 'profile' => $profile,
                 'applications' => $applications,
+                'applications_count' => $applications_count,
+                'submit_applications' => $submit_applications,
+                'submit_applications_count' => $submit_applications_count,
+                'approved_applications' => $approved_applications,
+                'approved_applications_count' => $approved_applications_count,
             ]);
         }
         return Redirect::to("auth/login")->withErrors('You do not have access!');
@@ -615,13 +706,36 @@ class PermitController extends Controller
             $stage = 2;
             $application_type = "PERMIT SUSPENDED";
             $status = "PENDING";
+            $resubmit = 'RE SUBMIT';
 
             $applications = Application::where('current_stage', $stage)
                 ->where('type', $application_type)->where('status', $status)
                 ->orderBy('created_at', 'desc')->paginate(20);
+            $applications_count = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->count();
+
+             $submit_applications = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $resubmit)
+                ->orderBy('created_at', 'desc')->paginate(20);
+            
+             $submit_applications_count = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $resubmit)
+                ->orderBy('created_at', 'desc')->count(); 
+            $approved_applications = Application::where('current_stage', 4)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->paginate(20);
+            $approved_applications_count = Application::where('current_stage', 4)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->count();     
             return view('management.permit_application.suspend.rhc.index', [
                 'profile' => $profile,
                 'applications' => $applications,
+                'applications_count' => $applications_count,
+                'submit_applications' => $submit_applications,
+                'submit_applications_count' => $submit_applications_count,
+                'approved_applications' => $approved_applications,
+                'approved_applications_count' => $approved_applications_count,
             ]);
         }
         return Redirect::to("auth/login")->withErrors('You do not have access!');
@@ -637,13 +751,36 @@ class PermitController extends Controller
             $stage = 4;
             $application_type = "PERMIT SUSPENDED";
             $status = "PENDING";
+            $resubmit = 'RE SUBMIT';
 
             $applications = Application::where('current_stage', $stage)
                 ->where('type', $application_type)->where('status', $status)
                 ->orderBy('created_at', 'desc')->paginate(20);
+            $applications_count = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->count();
+
+             $submit_applications = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $resubmit)
+                ->orderBy('created_at', 'desc')->paginate(20);
+            
+             $submit_applications_count = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $resubmit)
+                ->orderBy('created_at', 'desc')->count(); 
+            $approved_applications = Application::where('current_stage', 2)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->paginate(20);
+            $approved_applications_count = Application::where('current_stage', 2)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->count();     
             return view('management.permit_application.suspend.cj.index', [
                 'profile' => $profile,
                 'applications' => $applications,
+                'applications_count' => $applications_count,
+                'submit_applications' => $submit_applications,
+                'submit_applications_count' => $submit_applications_count,
+                'approved_applications' => $approved_applications,
+                'approved_applications_count' => $approved_applications_count,
             ]);
         }
         return Redirect::to("auth/login")->withErrors('You do not have access!');
@@ -1151,13 +1288,35 @@ class PermitController extends Controller
             $stage = 1;
             $application_type = "PERMIT RESUME PRACTISING";
             $status = "PENDING";
-
+            $resubmit = 'RE SUBMIT';
             $applications = Application::where('current_stage', $stage)
                 ->where('type', $application_type)->where('status', $status)
                 ->orderBy('created_at', 'desc')->paginate(20);
+            $applications_count = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->count();
+
+             $submit_applications = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $resubmit)
+                ->orderBy('created_at', 'desc')->paginate(20);
+            
+             $submit_applications_count = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $resubmit)
+                ->orderBy('created_at', 'desc')->count(); 
+            $approved_applications = Application::where('current_stage', 2)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->paginate(20);
+            $approved_applications_count = Application::where('current_stage', 2)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->count();   
             return view('management.permit_application.resume_practising.under_review.index', [
                 'profile' => $profile,
                 'applications' => $applications,
+                'applications_count' => $applications_count,
+                'submit_applications' => $submit_applications,
+                'submit_applications_count' => $submit_applications_count,
+                'approved_applications' => $approved_applications,
+                'approved_applications_count' => $approved_applications_count,
             ]);
         }
         return Redirect::to("auth/login")->withErrors('You do not have access!');
@@ -1174,13 +1333,35 @@ class PermitController extends Controller
             $application_type = "PERMIT RESUME PRACTISING";
             $status = "PENDING";
 
+           $resubmit = 'RE SUBMIT';
             $applications = Application::where('current_stage', $stage)
                 ->where('type', $application_type)->where('status', $status)
                 ->orderBy('created_at', 'desc')->paginate(20);
+            $applications_count = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->count();
 
+             $submit_applications = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $resubmit)
+                ->orderBy('created_at', 'desc')->paginate(20);
+            
+             $submit_applications_count = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $resubmit)
+                ->orderBy('created_at', 'desc')->count(); 
+            $approved_applications = Application::where('current_stage', 4)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->paginate(20);
+            $approved_applications_count = Application::where('current_stage', 4)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->count();  
             return view('management.permit_application.resume_practising.rhc.index', [
                 'profile' => $profile,
                 'applications' => $applications,
+                'applications_count' => $applications_count,
+                'submit_applications' => $submit_applications,
+                'submit_applications_count' => $submit_applications_count,
+                'approved_applications' => $approved_applications,
+                'approved_applications_count' => $approved_applications_count,
             ]);
         }
         return Redirect::to("auth/login")->withErrors('You do not have access!');
@@ -1197,13 +1378,37 @@ class PermitController extends Controller
             $application_type = "PERMIT RESUME PRACTISING";
             $status = "PENDING";
 
+            $resubmit = 'RE SUBMIT';
             $applications = Application::where('current_stage', $stage)
                 ->where('type', $application_type)->where('status', $status)
                 ->orderBy('created_at', 'desc')->paginate(20);
+            $applications_count = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->count();
 
+             $submit_applications = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $resubmit)
+                ->orderBy('created_at', 'desc')->paginate(20);
+            
+             $submit_applications_count = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $resubmit)
+                ->orderBy('created_at', 'desc')->count(); 
+
+             $approved_applications = Application::where('current_stage', 4)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->paginate(20);
+            $approved_applications_count = Application::where('current_stage', 4)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->count();     
+            
             return view('management.permit_application.resume_practising.cj.index', [
                 'profile' => $profile,
                 'applications' => $applications,
+                'applications_count' => $applications_count,
+                'submit_applications' => $submit_applications,
+                'submit_applications_count' => $submit_applications_count,
+                'approved_applications' => $approved_applications,
+                'approved_applications_count' => $approved_applications_count,
             ]);
         }
         return Redirect::to("auth/login")->withErrors('You do not have access!');
@@ -1703,14 +1908,38 @@ class PermitController extends Controller
             $profile = Profile::where('user_id', $user_id)->first();
 
             $stage = 1;
-            $application_type = "PETITION";
+            $application_type = "PERMIT RENEWAL";
             $status = "PENDING";
+            $resubmit = 'RE SUBMIT';
+            $applications = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->paginate(20);
+            $applications_count = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->count();
 
-            $applications = Application::where('current_stage', $stage)->where('type', $application_type)->where('status', $status)->orderBy('created_at', 'desc')->paginate(20);
-
+             $submit_applications = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $resubmit)
+                ->orderBy('created_at', 'desc')->paginate(20);
+            
+             $submit_applications_count = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $resubmit)
+                ->orderBy('created_at', 'desc')->count(); 
+             $approved_applications = Application::where('current_stage', 2)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->paginate(20);
+            $approved_applications_count = Application::where('current_stage', 2)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->count();    
+    
             return view('management.permit_application.late_renewal.under_review.index', [
                 'profile' => $profile,
                 'applications' => $applications,
+                'applications_count' => $applications_count,
+                'submit_applications' => $submit_applications,
+                'submit_applications_count' => $submit_applications_count,
+                'approved_applications' => $approved_applications,
+                'approved_applications_count' => $approved_applications_count,
             ]);
         }
         return Redirect::to("auth/login")->withErrors('You do not have access!');
@@ -1723,14 +1952,37 @@ class PermitController extends Controller
             $profile = Profile::where('user_id', $user_id)->first();
 
             $stage = 1;
-            $application_type = "PETITION";
+            $application_type = "PERMIT RENEWAL";
             $status = "PENDING";
+            $resubmit = 'RE SUBMIT';
+            $applications = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->paginate(20);
+            $applications_count = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->count();
 
-            $applications = Application::where('current_stage', $stage)->where('type', $application_type)->where('status', $status)->orderBy('created_at', 'desc')->paginate(20);
-
+             $submit_applications = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $resubmit)
+                ->orderBy('created_at', 'desc')->paginate(20);
+            
+             $submit_applications_count = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $resubmit)
+                ->orderBy('created_at', 'desc')->count(); 
+            $approved_applications = Application::where('current_stage', 2)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->paginate(20);
+            $approved_applications_count = Application::where('current_stage', 2)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->count();     
             return view('management.permit_application.late_renewal.rhc.index', [
                 'profile' => $profile,
                 'applications' => $applications,
+                'applications_count' => $applications_count,
+                'submit_applications' => $submit_applications,
+                'submit_applications_count' => $submit_applications_count,
+                'approved_applications' => $approved_applications,
+                'approved_applications_count' => $approved_applications_count,
             ]);
         }
         return Redirect::to("auth/login")->withErrors('You do not have access!');
@@ -1744,14 +1996,37 @@ class PermitController extends Controller
             $profile = Profile::where('user_id', $user_id)->first();
 
             $stage = 1;
-            $application_type = "PETITION";
+            $application_type = "PERMIT RENEWAL";
             $status = "PENDING";
+            $resubmit = 'RE SUBMIT';
+            $applications = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->paginate(20);
+            $applications_count = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->count();
 
-            $applications = Application::where('current_stage', $stage)->where('type', $application_type)->where('status', $status)->orderBy('created_at', 'desc')->paginate(20);
-
+             $submit_applications = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $resubmit)
+                ->orderBy('created_at', 'desc')->paginate(20);
+            
+             $submit_applications_count = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $resubmit)
+                ->orderBy('created_at', 'desc')->count(); 
+            $approved_applications = Application::where('current_stage', 2)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->paginate(20);
+            $approved_applications_count = Application::where('current_stage', 2)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->count();     
             return view('management.permit_application.late_renewal.cj.index', [
                 'profile' => $profile,
                 'applications' => $applications,
+                'applications_count' => $applications_count,
+                'submit_applications' => $submit_applications,
+                'submit_applications_count' => $submit_applications_count,
+                'approved_applications' => $approved_applications,
+                'approved_applications_count' => $approved_applications_count,
             ]);
         }
         return Redirect::to("auth/login")->withErrors('You do not have access!');
@@ -1768,13 +2043,37 @@ class PermitController extends Controller
             $stage = 1;
             $application_type = "PERMIT RETIRE PRACTISING";
             $status = "PENDING";
+            $resubmit = 'RE SUBMIT';
 
             $applications = Application::where('current_stage', $stage)
                 ->where('type', $application_type)->where('status', $status)
                 ->orderBy('created_at', 'desc')->paginate(20);
+            $applications_count = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->count();
+
+             $submit_applications = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $resubmit)
+                ->orderBy('created_at', 'desc')->paginate(20);
+            
+             $submit_applications_count = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $resubmit)
+                ->orderBy('created_at', 'desc')->count(); 
+             $approved_applications = Application::where('current_stage', 2)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->paginate(20);
+            $approved_applications_count = Application::where('current_stage', 2)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->count();   
+    
             return view('management.permit_application.retire_practising.under_review.index', [
                 'profile' => $profile,
                 'applications' => $applications,
+                'applications_count' => $applications_count,
+                'submit_applications' => $submit_applications,
+                'submit_applications_count' => $submit_applications_count,
+                'approved_applications' => $approved_applications,
+                'approved_applications_count' => $approved_applications_count,
             ]);
         }
         return Redirect::to("auth/login")->withErrors('You do not have access!');
@@ -1790,13 +2089,37 @@ class PermitController extends Controller
             $stage = 2;
             $application_type = "PERMIT RETIRE PRACTISING";
             $status = "PENDING";
-
+            $resubmit = 'RE SUBMIT';
             $applications = Application::where('current_stage', $stage)
                 ->where('type', $application_type)->where('status', $status)
                 ->orderBy('created_at', 'desc')->paginate(20);
+            $applications_count = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->count();
+
+             $submit_applications = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $resubmit)
+                ->orderBy('created_at', 'desc')->paginate(20);
+            
+             $submit_applications_count = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $resubmit)
+                ->orderBy('created_at', 'desc')->count(); 
+             $approved_applications = Application::where('current_stage', 4)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->paginate(20);
+            $approved_applications_count = Application::where('current_stage', 4)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->count();  
+                
+    
             return view('management.permit_application.retire_practising.rhc.index', [
                 'profile' => $profile,
                 'applications' => $applications,
+                'applications_count' => $applications_count,
+                'submit_applications' => $submit_applications,
+                'submit_applications_count' => $submit_applications_count,
+                'approved_applications' => $approved_applications,
+                'approved_applications_count' => $approved_applications_count,
             ]);
         }
         return Redirect::to("auth/login")->withErrors('You do not have access!');
@@ -1811,13 +2134,36 @@ class PermitController extends Controller
             $stage = 4;
             $application_type = "PERMIT RETIRE PRACTISING";
             $status = "PENDING";
-
-            $applications = Application::where('current_stage', $stage)
+            $resubmit = 'RE SUBMIT';
+           $applications = Application::where('current_stage', $stage)
                 ->where('type', $application_type)->where('status', $status)
                 ->orderBy('created_at', 'desc')->paginate(20);
+            $applications_count = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->count();
+
+             $submit_applications = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $resubmit)
+                ->orderBy('created_at', 'desc')->paginate(20);
+            
+             $submit_applications_count = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $resubmit)
+                ->orderBy('created_at', 'desc')->count(); 
+             $approved_applications = Application::where('current_stage', 2)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->paginate(20);
+            $approved_applications_count = Application::where('current_stage', 2)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->count();   
+    
             return view('management.permit_application.retire_practising.cj.index', [
                 'profile' => $profile,
                 'applications' => $applications,
+                'applications_count' => $applications_count,
+                'submit_applications' => $submit_applications,
+                'submit_applications_count' => $submit_applications_count,
+                'approved_applications' => $approved_applications,
+                'approved_applications_count' => $approved_applications_count,
             ]);
         }
         return Redirect::to("auth/login")->withErrors('You do not have access!');
@@ -2318,14 +2664,37 @@ class PermitController extends Controller
 
             $stage = 1;
             $application_type = "PERMIT NON PROFIT";
-            // $status = "PENDING";
+            $status = "PENDING";
+            $resubmit = 'RE SUBMIT';
 
-            $applications = Application::where('current_stage', $stage)
-                ->where('type', $application_type)
+             $applications = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $status)
                 ->orderBy('created_at', 'desc')->paginate(20);
+            $applications_count = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->count();
+
+             $submit_applications = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $resubmit)
+                ->orderBy('created_at', 'desc')->paginate(20);
+            
+             $submit_applications_count = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $resubmit)
+                ->orderBy('created_at', 'desc')->count(); 
+            $approved_applications = Application::where('current_stage', 2)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->paginate(20);
+            $approved_applications_count = Application::where('current_stage', 2)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->count();      
             return view('management.permit_application.non_profit.under_review.index', [
                 'profile' => $profile,
                 'applications' => $applications,
+                'applications_count' => $applications_count,
+                'submit_applications' => $submit_applications,
+                'submit_applications_count' => $submit_applications_count,
+                'approved_applications' => $approved_applications,
+                'approved_applications_count' => $approved_applications_count,
             ]);
         }
         return Redirect::to("auth/login")->withErrors('You do not have access!');
@@ -2341,14 +2710,36 @@ class PermitController extends Controller
             $stage = 2;
             $application_type = "PERMIT NON PROFIT";
             $status = "PENDING";
-
+            $resubmit = 'RE SUBMIT';
             $applications = Application::where('current_stage', $stage)
                 ->where('type', $application_type)->where('status', $status)
                 ->orderBy('created_at', 'desc')->paginate(20);
+            $applications_count = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->count();
+
+             $submit_applications = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $resubmit)
+                ->orderBy('created_at', 'desc')->paginate(20);
+            
+             $submit_applications_count = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $resubmit)
+                ->orderBy('created_at', 'desc')->count(); 
+            $approved_applications = Application::where('current_stage', 4)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->paginate(20);
+            $approved_applications_count = Application::where('current_stage', 4)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->count();      
 
             return view('management.permit_application.non_profit.rhc.index', [
                 'profile' => $profile,
                 'applications' => $applications,
+                'applications_count' => $applications_count,
+                'submit_applications' => $submit_applications,
+                'submit_applications_count' => $submit_applications_count,
+                'approved_applications' => $approved_applications,
+                'approved_applications_count' => $approved_applications_count,
             ]);
         }
         return Redirect::to("auth/login")->withErrors('You do not have access!');
@@ -2364,14 +2755,36 @@ class PermitController extends Controller
             $stage = 4;
             $application_type = "PERMIT NON PROFIT";
             $status = "PENDING";
-
-            $applications = Application::where('current_stage', $stage)
+            $resubmit = 'RE SUBMIT';
+           $applications = Application::where('current_stage', $stage)
                 ->where('type', $application_type)->where('status', $status)
                 ->orderBy('created_at', 'desc')->paginate(20);
+            $applications_count = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->count();
+
+             $submit_applications = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $resubmit)
+                ->orderBy('created_at', 'desc')->paginate(20);
+            
+             $submit_applications_count = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $resubmit)
+                ->orderBy('created_at', 'desc')->count(); 
+            $approved_applications = Application::where('current_stage', 2)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->paginate(20);
+            $approved_applications_count = Application::where('current_stage', 2)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->count();      
 
             return view('management.permit_application.non_profit.cj.index', [
                 'profile' => $profile,
                 'applications' => $applications,
+                'applications_count' => $applications_count,
+                'submit_applications' => $submit_applications,
+                'submit_applications_count' => $submit_applications_count,
+                'approved_applications' => $approved_applications,
+                'approved_applications_count' => $approved_applications_count,
             ]);
         }
         return Redirect::to("auth/login")->withErrors('You do not have access!');
@@ -2876,14 +3289,36 @@ class PermitController extends Controller
             $stage = 1;
             $application_type = "PERMIT NAME CHANGE";
             $status = "PENDING";
-
+            $resubmit = 'RE SUBMIT';
             $applications = Application::where('current_stage', $stage)
                 ->where('type', $application_type)->where('status', $status)
                 ->orderBy('created_at', 'desc')->paginate(20);
+            $applications_count = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->count();
+
+             $submit_applications = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $resubmit)
+                ->orderBy('created_at', 'desc')->paginate(20);
+            
+             $submit_applications_count = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $resubmit)
+                ->orderBy('created_at', 'desc')->count(); 
+            $approved_applications = Application::where('current_stage', 2)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->paginate(20);
+            $approved_applications_count = Application::where('current_stage', 2)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->count();    
 
             return view('management.permit_application.name_change.under_review.index', [
                 'profile' => $profile,
                 'applications' => $applications,
+                'applications_count' => $applications_count,
+                'submit_applications' => $submit_applications,
+                'submit_applications_count' => $submit_applications_count,
+                'approved_applications' => $approved_applications,
+                'approved_applications_count' => $approved_applications_count,
             ]);
         }
         return Redirect::to("auth/login")->withErrors('You do not have access!');
@@ -2898,14 +3333,36 @@ class PermitController extends Controller
             $stage = 2;
             $application_type = "PERMIT NAME CHANGE";
             $status = "PENDING";
-
+            $resubmit = 'RE SUBMIT';
             $applications = Application::where('current_stage', $stage)
                 ->where('type', $application_type)->where('status', $status)
                 ->orderBy('created_at', 'desc')->paginate(20);
+            $applications_count = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->count();
+
+             $submit_applications = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $resubmit)
+                ->orderBy('created_at', 'desc')->paginate(20);
+            
+             $submit_applications_count = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $resubmit)
+                ->orderBy('created_at', 'desc')->count(); 
+            $approved_applications = Application::where('current_stage', 5)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->paginate(20);
+            $approved_applications_count = Application::where('current_stage', 5)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->count();    
 
             return view('management.permit_application.name_change.rhc.index', [
                 'profile' => $profile,
                 'applications' => $applications,
+                'applications_count' => $applications_count,
+                'submit_applications' => $submit_applications,
+                'submit_applications_count' => $submit_applications_count,
+                'approved_applications' => $approved_applications,
+                'approved_applications_count' => $approved_applications_count,
             ]);
         }
         return Redirect::to("auth/login")->withErrors('You do not have access!');
@@ -2921,14 +3378,36 @@ class PermitController extends Controller
             $application_type = "PERMIT NAME CHANGE";
             $status = "PENDING";
             $accept = "ACCEPT";
-
-            $applications = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $status)->orWhere('status', $accept)
+            $resubmit = 'RE SUBMIT';
+           $applications = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $status)
                 ->orderBy('created_at', 'desc')->paginate(20);
+            $applications_count = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->count();
+
+             $submit_applications = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $resubmit)
+                ->orderBy('created_at', 'desc')->paginate(20);
+            
+             $submit_applications_count = Application::where('current_stage', $stage)
+                ->where('type', $application_type)->where('status', $resubmit)
+                ->orderBy('created_at', 'desc')->count(); 
+            $approved_applications = Application::where('current_stage', 2)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->paginate(20);
+            $approved_applications_count = Application::where('current_stage', 2)
+                ->where('type', $application_type)->where('status', $status)
+                ->orderBy('created_at', 'desc')->count();    
 
             return view('management.permit_application.name_change.jk.index', [
                 'profile' => $profile,
                 'applications' => $applications,
+                'applications_count' => $applications_count,
+                'submit_applications' => $submit_applications,
+                'submit_applications_count' => $submit_applications_count,
+                'approved_applications' => $approved_applications,
+                'approved_applications_count' => $approved_applications_count,
             ]);
         }
         return Redirect::to("auth/login")->withErrors('You do not have access!');
@@ -2986,6 +3465,7 @@ class PermitController extends Controller
             try {
 
                 $stage = Application::findOrFail($id);
+                dd($stage);
                 $uuid = Str::uuid();
 
                 $this->validate($request, [
@@ -2997,10 +3477,15 @@ class PermitController extends Controller
 
                 if ($stage->status == "ACCEPT") {
                     $profile_id = Application::find($id)->profile_id;
-                    $newname = NameChange::where('profile_id', $profile_id)->orderby('created_at', 'DESC')->first()->new_name;
+                    $newname = NameChange::where('profile_id', $profile_id)->orderby('created_at', 'DESC')
+                    ->first()->new_name;
                     $nameChange = DB::table('profiles')
                         ->where('id', $profile_id)
                         ->update(['fullname' => $newname]);
+                    $appps = DB::table('applications')
+                    ->where('id', $id)
+                    ->update(['status' => "ACCEPT",
+                        'current_stage' => 5]);    
                 }
 
                 if ($stage->status == "RE SUBMIT") {

@@ -69,7 +69,7 @@
                             <li class="nav-item">
                                 <a class="nav-link" id="pills-timeline-tab" data-toggle="pill" href="#all"
                                     role="tab" aria-controls="pills-timeline" aria-selected="true">Pending Applications <span
-                                        class="badge bg-warning" style="color: white">
+                                        class=" badge " style="color:white; background-color:#de2a3c;">
                                         {{ $application_count }}
                                     </span></a>
                             </li>
