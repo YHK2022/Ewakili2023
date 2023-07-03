@@ -494,7 +494,6 @@ if ($qualification) {
             $imageName = $imageName . '_' . time() . '.' . $ext;
             $petition->move('public/images/files', $imageName);
 
-        
 
             $document = new Document;
             $document->user_id = $user_id;
@@ -2725,7 +2724,7 @@ if ($qualification) {
                 $progress_form = 5;
                 $value = 1;
              $profile_id = Profile::where('user_id', $user_id)->first()->id;
-                $status = "PENDING";
+                $status = "Under Review";
                 $new_progress = $progress + $progress_form;
 
                 $progress = DB::table('application_moves')
@@ -2760,8 +2759,8 @@ if ($qualification) {
                 $progress_form = 5;
                 $value = 1;
                  $resubmission = true;
-             $profile_id = Profile::where('user_id', $user_id)->first()->id;
-                $status = "PENDING";
+                $profile_id = Profile::where('user_id', $user_id)->first()->id;
+                $status = "Under Review";
                 $new_progress = $progress + $progress_form;
 
                

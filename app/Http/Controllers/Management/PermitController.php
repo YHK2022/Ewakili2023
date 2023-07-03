@@ -36,8 +36,8 @@ class PermitController extends Controller
 
             $stage = 1;
             $application_type = "PERMIT NON PRACTISING";
-            $status = "PENDING";
-            $resubmit = "RE SUBMIT";
+            $status = "Under Review";
+            $resubmit = "RETURN";
             $applications = Application::where('current_stage', $stage)
                 ->where('type', $application_type)->where('status', $status)
                 ->orderBy('created_at', 'desc')->paginate(20);
@@ -81,8 +81,8 @@ class PermitController extends Controller
 
             $stage = 2;
             $application_type = "PERMIT NON PRACTISING";
-            $status = "PENDING";
-            $resubmit = 'RE SUBMIT';
+            $status = "Under Review";
+            $resubmit = 'RETURN';
 
             $applications = Application::where('current_stage', $stage)
                 ->where('type', $application_type)->where('status', $status)
@@ -128,8 +128,8 @@ class PermitController extends Controller
 
             $stage = 4;
             $application_type = "PERMIT NON PRACTISING";
-            $status = "PENDING";
-            $resubmit = 'RE SUBMIT';
+            $status = "Under Review";
+            $resubmit = 'RETURN';
            $applications = Application::where('current_stage', $stage)
                 ->where('type', $application_type)->where('status', $status)
                 ->orderBy('created_at', 'desc')->paginate(20);
@@ -176,7 +176,7 @@ class PermitController extends Controller
             ]);
             $stage->status = $request->input('status');
             $stage->save();
-            if ($stage->status == "RE SUBMIT") {
+            if ($stage->status == "RETURN") {
                 $cj = DB::table('applications')
                     ->where('id', $id)
                     ->update([
@@ -185,7 +185,7 @@ class PermitController extends Controller
                 $comment = new ApplicationApproval();
                 $comment->comment = $request->input('comment');
                 $comment->active = true;
-                $comment->decision = "RE SUBMIT";
+                $comment->decision = "RETURN";
                 $comment->action_user_type_id = 2;
                 $comment->uid = $uuid;
                 $comment->application_id = $stage->id;
@@ -197,7 +197,7 @@ class PermitController extends Controller
                 //Update profile picture values
                 $profile_picture = DB::table('applications')
                     ->where('id', $id)
-                    ->update(['status' => "PENDING",
+                    ->update(['status' => "Under Review",
                         'current_stage' => 2]);
             }
 
@@ -249,16 +249,16 @@ class PermitController extends Controller
 
                 }
 
-                if ($stage->status == "RE SUBMIT") {
+                if ($stage->status == "RETURN") {
                     $application = DB::table('applications')
                         ->where('id', $id)
-                        ->update(['status' => "PENDING",
+                        ->update(['status' => "Under Review",
                             'current_stage' => 2]);
 
                     $comment = new ApplicationApproval();
                     $comment->comment = $request->input('comment');
                     $comment->active = true;
-                    $comment->decision = "RE SUBMIT";
+                    $comment->decision = "RETURN";
                     $comment->action_user_type_id = 6;
                     $comment->uid = $uuid;
                     $comment->application_id = $stage->id;
@@ -290,10 +290,10 @@ class PermitController extends Controller
             $stage->status = $request->input('status');
             $stage->save();
 
-            if ($stage->status == "RE SUBMIT") {
+            if ($stage->status == "RETURN") {
                 $comment = new ApplicationApproval();
                 $comment->comment = $request->input('comment');
-                $comment->decision = "RE SUBMIT";
+                $comment->decision = "RETURN";
                 $comment->active = true;
                 $comment->uid = $uuid;
                 $comment->action_user_type_id = 3;
@@ -304,7 +304,7 @@ class PermitController extends Controller
                 //Update profile picture values
                 $profile_picture = DB::table('applications')
                     ->where('id', $id)
-                    ->update(['status' => "PENDING",
+                    ->update(['status' => "Under Review",
                         'current_stage' => 1]);
             }
 
@@ -312,7 +312,7 @@ class PermitController extends Controller
                 //Update profile picture values
                 $profile_picture = DB::table('applications')
                     ->where('id', $id)
-                    ->update(['status' => "PENDING",
+                    ->update(['status' => "Under Review",
                         'current_stage' => 4]);
             }
 
@@ -394,7 +394,7 @@ class PermitController extends Controller
             if (Application::where('profile_id', $profile_id)->exists()) {
                 // $applications = Application::where('profile_id', $profile_id)->get();
                 $application_type = "PERMIT NON PRACTISING";
-                $status = "PENDING";
+                $status = "Under Review";
                 $applications = Application::where('profile_id', $profile_id)->where('type', $application_type)
                     ->where('status', $status)->get();
                 $application_id = Application::where('profile_id', $profile_id)->where('type', $application_type)
@@ -504,7 +504,7 @@ class PermitController extends Controller
             if (Application::where('profile_id', $profile_id)->exists()) {
                 // $applications = Application::where('profile_id', $profile_id)->get();
                 $application_type = "PERMIT NON PRACTISING";
-                $status = "PENDING";
+                $status = "Under Review";
                 $applications = Application::where('profile_id', $profile_id)->where('type', $application_type)
                     ->where('status', $status)->get();
                 $application_id = Application::where('profile_id', $profile_id)->where('type', $application_type)
@@ -609,7 +609,7 @@ class PermitController extends Controller
             //check applications
             if (Application::where('profile_id', $profile_id)->exists()) {
                 $application_type = "PERMIT NON PRACTISING";
-                $status = "PENDING";
+                $status = "Under Review";
                 $applications = Application::where('profile_id', $profile_id)->where('type', $application_type)
                     ->where('status', $status)->get();
                 $application_id = Application::where('profile_id', $profile_id)->where('type', $application_type)
@@ -649,7 +649,7 @@ class PermitController extends Controller
 
     // end for non practising application
 
-    // application for suspending
+    // application for susUnder Review
 
     public function get_suspend_index()
     {
@@ -660,8 +660,8 @@ class PermitController extends Controller
 
             $stage = 1;
             $application_type = "PERMIT SUSPENDED";
-            $status = "PENDING";
-            $resubmit = 'RE SUBMIT';
+            $status = "Under Review";
+            $resubmit = 'RETURN';
 
             $applications = Application::where('current_stage', $stage)
                 ->where('type', $application_type)->where('status', $status)
@@ -705,8 +705,8 @@ class PermitController extends Controller
 
             $stage = 2;
             $application_type = "PERMIT SUSPENDED";
-            $status = "PENDING";
-            $resubmit = 'RE SUBMIT';
+            $status = "Under Review";
+            $resubmit = 'RETURN';
 
             $applications = Application::where('current_stage', $stage)
                 ->where('type', $application_type)->where('status', $status)
@@ -750,8 +750,8 @@ class PermitController extends Controller
 
             $stage = 4;
             $application_type = "PERMIT SUSPENDED";
-            $status = "PENDING";
-            $resubmit = 'RE SUBMIT';
+            $status = "Under Review";
+            $resubmit = 'RETURN';
 
             $applications = Application::where('current_stage', $stage)
                 ->where('type', $application_type)->where('status', $status)
@@ -858,7 +858,7 @@ class PermitController extends Controller
             if (Application::where('profile_id', $profile_id)->exists()) {
                 // $applications = Application::where('profile_id', $profile_id)->get();
                 $application_type = "PERMIT SUSPENDED";
-                $status = "PENDING";
+                $status = "Under Review";
                 $applications = Application::where('profile_id', $profile_id)->where('type', $application_type)
                     ->where('status', $status)->get();
                 $application_id = Application::where('profile_id', $profile_id)->where('type', $application_type)
@@ -968,7 +968,7 @@ class PermitController extends Controller
             if (Application::where('profile_id', $profile_id)->exists()) {
                 // $applications = Application::where('profile_id', $profile_id)->get();
                 $application_type = "PERMIT SUSPENDED";
-                $status = "PENDING";
+                $status = "Under Review";
                 $applications = Application::where('profile_id', $profile_id)->where('type', $application_type)
                     ->where('status', $status)->get();
                 $application_id = Application::where('profile_id', $profile_id)->where('type', $application_type)
@@ -1077,7 +1077,7 @@ class PermitController extends Controller
             if (Application::where('profile_id', $profile_id)->exists()) {
                 // $applications = Application::where('profile_id', $profile_id)->get();
                 $application_type = "PERMIT SUSPENDED";
-                $status = "PENDING";
+                $status = "Under Review";
                 $applications = Application::where('profile_id', $profile_id)->where('type', $application_type)
                     ->where('status', $status)->get();
                 $application_id = Application::where('profile_id', $profile_id)->where('type', $application_type)
@@ -1128,7 +1128,7 @@ class PermitController extends Controller
             ]);
             $stage->status = $request->input('status');
             $stage->save();
-            if ($stage->status == "RE SUBMIT") {
+            if ($stage->status == "RETURN") {
                 $cj = DB::table('applications')
                     ->where('id', $id)
                     ->update([
@@ -1137,7 +1137,7 @@ class PermitController extends Controller
                 $comment = new ApplicationApproval();
                 $comment->comment = $request->input('comment');
                 $comment->active = true;
-                $comment->decision = "RE SUBMIT";
+                $comment->decision = "RETURN";
                 $comment->action_user_type_id = 2;
                 $comment->uid = $uuid;
                 $comment->application_id = $stage->id;
@@ -1149,7 +1149,7 @@ class PermitController extends Controller
                 //Update profile picture values
                 $profile_picture = DB::table('applications')
                     ->where('id', $id)
-                    ->update(['status' => "PENDING",
+                    ->update(['status' => "Under Review",
                         'current_stage' => 2]);
             }
 
@@ -1190,7 +1190,7 @@ class PermitController extends Controller
 
             $non_practising = new AdvocateStatusChange();
             $non_practising->active = true;
-            $non_practising->description = "Application for Suspending";
+            $non_practising->description = "Application for SusUnder Review";
             $non_practising->uid = $uuid;
             $non_practising->start_date = $currDate;
             $non_practising->end_date = $currDate;
@@ -1202,16 +1202,16 @@ class PermitController extends Controller
 
         }
 
-        if ($stage->status == "RE SUBMIT") {
+        if ($stage->status == "RETURN") {
             $cj = DB::table('applications')
                 ->where('id', $id)
-                ->update(['status' => "PENDING",
+                ->update(['status' => "Under Review",
                     'current_stage' => 2]);
 
             $comment = new ApplicationApproval();
             $comment->comment = $request->input('comment');
             $comment->active = true;
-            $comment->decision = "RE SUBMIT";
+            $comment->decision = "RETURN";
             $comment->action_user_type_id = 6;
             $comment->uid = $uuid;
             $comment->application_id = $stage->id;
@@ -1243,10 +1243,10 @@ class PermitController extends Controller
             $stage->status = $request->input('status');
             $stage->save();
 
-            if ($stage->status == "RE SUBMIT") {
+            if ($stage->status == "RETURN") {
                 $comment = new ApplicationApproval();
                 $comment->comment = $request->input('comment');
-                $comment->decision = "RE SUBMIT";
+                $comment->decision = "RETURN";
                 $comment->active = true;
                 $comment->uid = $uuid;
                 $comment->action_user_type_id = 3;
@@ -1257,7 +1257,7 @@ class PermitController extends Controller
                 //Update profile picture values
                 $profile_picture = DB::table('applications')
                     ->where('id', $id)
-                    ->update(['status' => "PENDING", 'resubmission' => false,
+                    ->update(['status' => "Under Review", 'resubmission' => false,
                         'current_stage' => 1]);
             }
 
@@ -1265,7 +1265,7 @@ class PermitController extends Controller
                 //Update profile picture values
                 $profile_picture = DB::table('applications')
                     ->where('id', $id)
-                    ->update(['status' => "PENDING",
+                    ->update(['status' => "Under Review",
                         'current_stage' => 4]);
             }
 
@@ -1287,8 +1287,8 @@ class PermitController extends Controller
 
             $stage = 1;
             $application_type = "PERMIT RESUME PRACTISING";
-            $status = "PENDING";
-            $resubmit = 'RE SUBMIT';
+            $status = "Under Review";
+            $resubmit = 'RETURN';
             $applications = Application::where('current_stage', $stage)
                 ->where('type', $application_type)->where('status', $status)
                 ->orderBy('created_at', 'desc')->paginate(20);
@@ -1331,9 +1331,9 @@ class PermitController extends Controller
 
             $stage = 2;
             $application_type = "PERMIT RESUME PRACTISING";
-            $status = "PENDING";
+            $status = "Under Review";
 
-           $resubmit = 'RE SUBMIT';
+           $resubmit = 'RETURN';
             $applications = Application::where('current_stage', $stage)
                 ->where('type', $application_type)->where('status', $status)
                 ->orderBy('created_at', 'desc')->paginate(20);
@@ -1376,9 +1376,9 @@ class PermitController extends Controller
 
             $stage = 4;
             $application_type = "PERMIT RESUME PRACTISING";
-            $status = "PENDING";
+            $status = "Under Review";
 
-            $resubmit = 'RE SUBMIT';
+            $resubmit = 'RETURN';
             $applications = Application::where('current_stage', $stage)
                 ->where('type', $application_type)->where('status', $status)
                 ->orderBy('created_at', 'desc')->paginate(20);
@@ -1486,7 +1486,7 @@ class PermitController extends Controller
             if (Application::where('profile_id', $profile_id)->exists()) {
                 // $applications = Application::where('profile_id', $profile_id)->get();
                 $application_type = "PERMIT RESUME PRACTISING";
-                $status = "PENDING";
+                $status = "Under Review";
                 $applications = Application::where('profile_id', $profile_id)->where('type', $application_type)
                     ->where('status', $status)->get();
                 $application_id = Application::where('profile_id', $profile_id)->where('type', $application_type)
@@ -1596,7 +1596,7 @@ class PermitController extends Controller
             if (Application::where('profile_id', $profile_id)->exists()) {
                 // $applications = Application::where('profile_id', $profile_id)->get();
                 $application_type = "PERMIT RESUME PRACTISING";
-                $status = "PENDING";
+                $status = "Under Review";
                 $applications = Application::where('profile_id', $profile_id)->where('type', $application_type)
                     ->where('status', $status)->get();
                 $application_id = Application::where('profile_id', $profile_id)->where('type', $application_type)
@@ -1705,7 +1705,7 @@ class PermitController extends Controller
             if (Application::where('profile_id', $profile_id)->exists()) {
                 // $applications = Application::where('profile_id', $profile_id)->get();
                 $application_type = "PERMIT RESUME PRACTISING";
-                $status = "PENDING";
+                $status = "Under Review";
                 $applications = Application::where('profile_id', $profile_id)->where('type', $application_type)
                     ->where('status', $status)->get();
                 $application_id = Application::where('profile_id', $profile_id)->where('type', $application_type)
@@ -1756,7 +1756,7 @@ class PermitController extends Controller
             ]);
             $stage->status = $request->input('status');
             $stage->save();
-            if ($stage->status == "RE SUBMIT") {
+            if ($stage->status == "RETURN") {
                 $cj = DB::table('applications')
                     ->where('id', $id)
                     ->update([
@@ -1765,7 +1765,7 @@ class PermitController extends Controller
                 $comment = new ApplicationApproval();
                 $comment->comment = $request->input('comment');
                 $comment->active = true;
-                $comment->decision = "RE SUBMIT";
+                $comment->decision = "RETURN";
                 $comment->action_user_type_id = 2;
                 $comment->uid = $uuid;
                 $comment->application_id = $stage->id;
@@ -1777,7 +1777,7 @@ class PermitController extends Controller
                 //Update profile picture values
                 $profile_picture = DB::table('applications')
                     ->where('id', $id)
-                    ->update(['status' => "PENDING",
+                    ->update(['status' => "Under Review",
                         'current_stage' => 2]);
             }
 
@@ -1829,16 +1829,16 @@ class PermitController extends Controller
 
                 }
 
-                if ($stage->status == "RE SUBMIT") {
+                if ($stage->status == "RETURN") {
                     $application = DB::table('applications')
                         ->where('id', $id)
-                        ->update(['status' => "PENDING",
+                        ->update(['status' => "Under Review",
                             'current_stage' => 2]);
 
                     $comment = new ApplicationApproval();
                     $comment->comment = $request->input('comment');
                     $comment->active = true;
-                    $comment->decision = "RE SUBMIT";
+                    $comment->decision = "RETURN";
                     $comment->action_user_type_id = 6;
                     $comment->uid = $uuid;
                     $comment->application_id = $stage->id;
@@ -1868,10 +1868,10 @@ class PermitController extends Controller
             $stage->status = $request->input('status');
             $stage->save();
 
-            if ($stage->status == "RE SUBMIT") {
+            if ($stage->status == "RETURN") {
                 $comment = new ApplicationApproval();
                 $comment->comment = $request->input('comment');
-                $comment->decision = "RE SUBMIT";
+                $comment->decision = "RETURN";
                 $comment->active = true;
                 $comment->uid = $uuid;
                 $comment->action_user_type_id = 3;
@@ -1882,7 +1882,7 @@ class PermitController extends Controller
                 //Update profile picture values
                 $profile_picture = DB::table('applications')
                     ->where('id', $id)
-                    ->update(['status' => "PENDING", 'resubmission' => false,
+                    ->update(['status' => "Under Review", 'resubmission' => false,
                         'current_stage' => 1]);
             }
 
@@ -1890,7 +1890,7 @@ class PermitController extends Controller
                 //Update profile picture values
                 $profile_picture = DB::table('applications')
                     ->where('id', $id)
-                    ->update(['status' => "PENDING",
+                    ->update(['status' => "Under Review",
                         'current_stage' => 4]);
             }
 
@@ -1909,8 +1909,8 @@ class PermitController extends Controller
 
             $stage = 1;
             $application_type = "PERMIT RENEWAL";
-            $status = "PENDING";
-            $resubmit = 'RE SUBMIT';
+            $status = "Under Review";
+            $resubmit = 'RETURN';
             $applications = Application::where('current_stage', $stage)
                 ->where('type', $application_type)->where('status', $status)
                 ->orderBy('created_at', 'desc')->paginate(20);
@@ -1953,8 +1953,8 @@ class PermitController extends Controller
 
             $stage = 1;
             $application_type = "PERMIT RENEWAL";
-            $status = "PENDING";
-            $resubmit = 'RE SUBMIT';
+            $status = "Under Review";
+            $resubmit = 'RETURN';
             $applications = Application::where('current_stage', $stage)
                 ->where('type', $application_type)->where('status', $status)
                 ->orderBy('created_at', 'desc')->paginate(20);
@@ -1997,8 +1997,8 @@ class PermitController extends Controller
 
             $stage = 1;
             $application_type = "PERMIT RENEWAL";
-            $status = "PENDING";
-            $resubmit = 'RE SUBMIT';
+            $status = "Under Review";
+            $resubmit = 'RETURN';
             $applications = Application::where('current_stage', $stage)
                 ->where('type', $application_type)->where('status', $status)
                 ->orderBy('created_at', 'desc')->paginate(20);
@@ -2042,8 +2042,8 @@ class PermitController extends Controller
 
             $stage = 1;
             $application_type = "PERMIT RETIRE PRACTISING";
-            $status = "PENDING";
-            $resubmit = 'RE SUBMIT';
+            $status = "Under Review";
+            $resubmit = 'RETURN';
 
             $applications = Application::where('current_stage', $stage)
                 ->where('type', $application_type)->where('status', $status)
@@ -2088,8 +2088,8 @@ class PermitController extends Controller
 
             $stage = 2;
             $application_type = "PERMIT RETIRE PRACTISING";
-            $status = "PENDING";
-            $resubmit = 'RE SUBMIT';
+            $status = "Under Review";
+            $resubmit = 'RETURN';
             $applications = Application::where('current_stage', $stage)
                 ->where('type', $application_type)->where('status', $status)
                 ->orderBy('created_at', 'desc')->paginate(20);
@@ -2133,8 +2133,8 @@ class PermitController extends Controller
 
             $stage = 4;
             $application_type = "PERMIT RETIRE PRACTISING";
-            $status = "PENDING";
-            $resubmit = 'RE SUBMIT';
+            $status = "Under Review";
+            $resubmit = 'RETURN';
            $applications = Application::where('current_stage', $stage)
                 ->where('type', $application_type)->where('status', $status)
                 ->orderBy('created_at', 'desc')->paginate(20);
@@ -2241,7 +2241,7 @@ class PermitController extends Controller
             if (Application::where('profile_id', $profile_id)->exists()) {
                 // $applications = Application::where('profile_id', $profile_id)->get();
                 $application_type = "PERMIT RETIRE PRACTISING";
-                $status = "PENDING";
+                $status = "Under Review";
                 $applications = Application::where('profile_id', $profile_id)->where('type', $application_type)
                     ->where('status', $status)->get();
                 $application_id = Application::where('profile_id', $profile_id)->where('type', $application_type)
@@ -2351,7 +2351,7 @@ class PermitController extends Controller
             if (Application::where('profile_id', $profile_id)->exists()) {
                 // $applications = Application::where('profile_id', $profile_id)->get();
                 $application_type = "PERMIT RETIRE PRACTISING";
-                $status = "PENDING";
+                $status = "Under Review";
                 $applications = Application::where('profile_id', $profile_id)->where('type', $application_type)
                     ->where('status', $status)->get();
                 $application_id = Application::where('profile_id', $profile_id)->where('type', $application_type)
@@ -2460,7 +2460,7 @@ class PermitController extends Controller
             if (Application::where('profile_id', $profile_id)->exists()) {
                 // $applications = Application::where('profile_id', $profile_id)->get();
                 $application_type = "PERMIT RETIRE PRACTISING";
-                $status = "PENDING";
+                $status = "Under Review";
                 $applications = Application::where('profile_id', $profile_id)->where('type', $application_type)
                     ->where('status', $status)->get();
                 $application_id = Application::where('profile_id', $profile_id)->where('type', $application_type)
@@ -2512,7 +2512,7 @@ class PermitController extends Controller
             $stage->status = $request->input('status');
             $stage->save();
 
-            if ($stage->status == "RE SUBMIT") {
+            if ($stage->status == "RETURN") {
                 $cj = DB::table('applications')
                     ->where('id', $id)
                     ->update([
@@ -2520,7 +2520,7 @@ class PermitController extends Controller
                 $comment = new ApplicationApproval();
                 $comment->comment = $request->input('comment');
                 $comment->active = true;
-                $comment->decision = "RE SUBMIT";
+                $comment->decision = "RETURN";
                 $comment->action_user_type_id = 2;
                 $comment->uid = $uuid;
                 $comment->application_id = $stage->id;
@@ -2532,7 +2532,7 @@ class PermitController extends Controller
                 //Update profile picture values
                 $profile_picture = DB::table('applications')
                     ->where('id', $id)
-                    ->update(['status' => "PENDING",
+                    ->update(['status' => "Under Review",
                         'current_stage' => 2]);
             }
 
@@ -2582,15 +2582,15 @@ class PermitController extends Controller
 
                 }
 
-                if ($stage->status == "RE SUBMIT") {
+                if ($stage->status == "RETURN") {
                     $cj = DB::table('applications')
                         ->where('id', $id)
-                        ->update(['status' => "PENDING",
+                        ->update(['status' => "Under Review",
                             'current_stage' => 2]);
                     $comment = new ApplicationApproval();
                     $comment->comment = $request->input('comment');
                     $comment->active = true;
-                    $comment->decision = "RE SUBMIT";
+                    $comment->decision = "RETURN";
                     $comment->action_user_type_id = 6;
                     $comment->uid = $uuid;
                     $comment->application_id = $stage->id;
@@ -2625,14 +2625,14 @@ class PermitController extends Controller
                 //Update profile picture values
                 $profile_picture = DB::table('applications')
                     ->where('id', $id)
-                    ->update(['status' => "PENDING",
+                    ->update(['status' => "Under Review",
                         'current_stage' => 4]);
             }
 
-            if ($stage->status == "RE SUBMIT") {
+            if ($stage->status == "RETURN") {
                 $comment = new ApplicationApproval();
                 $comment->comment = $request->input('comment');
-                $comment->decision = "RE SUBMIT";
+                $comment->decision = "RETURN";
                 $comment->active = true;
                 $comment->uid = $uuid;
                 $comment->action_user_type_id = 3;
@@ -2642,7 +2642,7 @@ class PermitController extends Controller
 
                 $profile_picture = DB::table('applications')
                     ->where('id', $id)
-                    ->update(['status' => "PENDING", 'resubmission' => false,
+                    ->update(['status' => "Under Review", 'resubmission' => false,
                         'current_stage' => 1]);
 
             }
@@ -2664,8 +2664,8 @@ class PermitController extends Controller
 
             $stage = 1;
             $application_type = "PERMIT NON PROFIT";
-            $status = "PENDING";
-            $resubmit = 'RE SUBMIT';
+            $status = "Under Review";
+            $resubmit = 'RETURN';
 
              $applications = Application::where('current_stage', $stage)
                 ->where('type', $application_type)->where('status', $status)
@@ -2709,8 +2709,8 @@ class PermitController extends Controller
 
             $stage = 2;
             $application_type = "PERMIT NON PROFIT";
-            $status = "PENDING";
-            $resubmit = 'RE SUBMIT';
+            $status = "Under Review";
+            $resubmit = 'RETURN';
             $applications = Application::where('current_stage', $stage)
                 ->where('type', $application_type)->where('status', $status)
                 ->orderBy('created_at', 'desc')->paginate(20);
@@ -2754,8 +2754,8 @@ class PermitController extends Controller
 
             $stage = 4;
             $application_type = "PERMIT NON PROFIT";
-            $status = "PENDING";
-            $resubmit = 'RE SUBMIT';
+            $status = "Under Review";
+            $resubmit = 'RETURN';
            $applications = Application::where('current_stage', $stage)
                 ->where('type', $application_type)->where('status', $status)
                 ->orderBy('created_at', 'desc')->paginate(20);
@@ -2862,7 +2862,7 @@ class PermitController extends Controller
             if (Application::where('profile_id', $profile_id)->exists()) {
                 // $applications = Application::where('profile_id', $profile_id)->get();
                 $application_type = "PERMIT NON PROFIT";
-                $status = "PENDING";
+                $status = "Under Review";
                 $applications = Application::where('profile_id', $profile_id)->where('type', $application_type)
                     ->where('status', $status)->get();
                 $application_id = Application::where('profile_id', $profile_id)->where('type', $application_type)
@@ -2972,7 +2972,7 @@ class PermitController extends Controller
             if (Application::where('profile_id', $profile_id)->exists()) {
                 // $applications = Application::where('profile_id', $profile_id)->get();
                 $application_type = "PERMIT NON PROFIT";
-                $status = "PENDING";
+                $status = "Under Review";
                 $applications = Application::where('profile_id', $profile_id)->where('type', $application_type)
                     ->where('status', $status)->get();
                 $application_id = Application::where('profile_id', $profile_id)->where('type', $application_type)
@@ -3081,7 +3081,7 @@ class PermitController extends Controller
             if (Application::where('profile_id', $profile_id)->exists()) {
                 // $applications = Application::where('profile_id', $profile_id)->get();
                 $application_type = "PERMIT NON PROFIT";
-                $status = "PENDING";
+                $status = "Under Review";
                 $applications = Application::where('profile_id', $profile_id)->where('type', $application_type)
                     ->get();
                 $application_id = Application::where('profile_id', $profile_id)
@@ -3133,7 +3133,7 @@ class PermitController extends Controller
             $stage->status = $request->input('status');
             $stage->save();
 
-            if ($stage->status == "RE SUBMIT") {
+            if ($stage->status == "RETURN") {
 
                 $cj = DB::table('applications')
                     ->where('id', $id)
@@ -3142,7 +3142,7 @@ class PermitController extends Controller
                 $comment = new ApplicationApproval();
                 $comment->comment = $request->input('comment');
                 $comment->active = true;
-                $comment->decision = "RE SUBMIT";
+                $comment->decision = "RETURN";
                 $comment->action_user_type_id = 2;
                 $comment->uid = $uuid;
                 $comment->application_id = $stage->id;
@@ -3154,7 +3154,7 @@ class PermitController extends Controller
                 //Update profile picture values
                 $profile_picture = DB::table('applications')
                     ->where('id', $id)
-                    ->update(['status' => "PENDING",
+                    ->update(['status' => "Under Review",
                         'current_stage' => 2]);
             }
             // return view('management.permit_application.non_profit.under_review.index');
@@ -3208,16 +3208,16 @@ class PermitController extends Controller
 
                 }
 
-                if ($stage->status == "RE SUBMIT") {
+                if ($stage->status == "RETURN") {
                     $cj = DB::table('applications')
                         ->where('id', $id)
-                        ->update(['status' => "PENDING",
+                        ->update(['status' => "Under Review",
                             'current_stage' => 2]);
 
                     $comment = new ApplicationApproval();
                     $comment->comment = $request->input('comment');
                     $comment->active = true;
-                    $comment->decision = "RE SUBMIT";
+                    $comment->decision = "RETURN";
                     $comment->action_user_type_id = 6;
                     $comment->uid = $uuid;
                     $comment->application_id = $stage->id;
@@ -3250,17 +3250,17 @@ class PermitController extends Controller
                 //Update profile picture values
                 $profile_picture = DB::table('applications')
                     ->where('id', $id)
-                    ->update(['status' => "PENDING",
+                    ->update(['status' => "Under Review",
                         'current_stage' => 4]);
             }
-            if ($stage->status == "RE SUBMIT") {
+            if ($stage->status == "RETURN") {
                 $rhc = DB::table('applications')
                     ->where('id', $id)
-                    ->update(['status' => "PENDING",
+                    ->update(['status' => "Under Review",
                         'current_stage' => 1]);
                 $comment = new ApplicationApproval();
                 $comment->comment = $request->input('comment');
-                $comment->decision = "RE SUBMIT";
+                $comment->decision = "RETURN";
                 $comment->active = true;
                 $comment->uid = $uuid;
                 $comment->action_user_type_id = 3;
@@ -3288,8 +3288,8 @@ class PermitController extends Controller
 
             $stage = 1;
             $application_type = "PERMIT NAME CHANGE";
-            $status = "PENDING";
-            $resubmit = 'RE SUBMIT';
+            $status = "Under Review";
+            $resubmit = 'RETURN';
             $applications = Application::where('current_stage', $stage)
                 ->where('type', $application_type)->where('status', $status)
                 ->orderBy('created_at', 'desc')->paginate(20);
@@ -3332,8 +3332,8 @@ class PermitController extends Controller
             $profile = Profile::where('user_id', $user_id)->first();
             $stage = 2;
             $application_type = "PERMIT NAME CHANGE";
-            $status = "PENDING";
-            $resubmit = 'RE SUBMIT';
+            $status = "Under Review";
+            $resubmit = 'RETURN';
             $applications = Application::where('current_stage', $stage)
                 ->where('type', $application_type)->where('status', $status)
                 ->orderBy('created_at', 'desc')->paginate(20);
@@ -3376,9 +3376,9 @@ class PermitController extends Controller
             $profile = Profile::where('user_id', $user_id)->first();
             $stage = 5;
             $application_type = "PERMIT NAME CHANGE";
-            $status = "PENDING";
+            $status = "Under Review";
             $accept = "ACCEPT";
-            $resubmit = 'RE SUBMIT';
+            $resubmit = 'RETURN';
            $applications = Application::where('current_stage', $stage)
                 ->where('type', $application_type)->where('status', $status)
                 ->orderBy('created_at', 'desc')->paginate(20);
@@ -3426,7 +3426,7 @@ class PermitController extends Controller
             ]);
             $stage->status = $request->input('status');
             $stage->save();
-            if ($stage->status == "RE SUBMIT") {
+            if ($stage->status == "RETURN") {
                 $cj = DB::table('applications')
                     ->where('id', $id)
                     ->update([
@@ -3435,7 +3435,7 @@ class PermitController extends Controller
                 $comment = new ApplicationApproval();
                 $comment->comment = $request->input('comment');
                 $comment->active = true;
-                $comment->decision = "RE SUBMIT";
+                $comment->decision = "RETURN";
                 $comment->action_user_type_id = 2;
                 $comment->uid = $uuid;
                 $comment->application_id = $stage->id;
@@ -3447,7 +3447,7 @@ class PermitController extends Controller
                 //Update profile picture values
                 $profile_picture = DB::table('applications')
                     ->where('id', $id)
-                    ->update(['status' => "PENDING",
+                    ->update(['status' => "Under Review",
                         'current_stage' => 2]);
             }
             return Redirect::to("permit/name-change/under-review")
@@ -3488,15 +3488,15 @@ class PermitController extends Controller
                         'current_stage' => 5]);    
                 }
 
-                if ($stage->status == "RE SUBMIT") {
+                if ($stage->status == "RETURN") {
                     $cj = DB::table('applications')
                         ->where('id', $id)
-                        ->update(['status' => "PENDING",
+                        ->update(['status' => "Under Review",
                             'current_stage' => 2]);
                     $comment = new ApplicationApproval();
                     $comment->comment = $request->input('comment');
                     $comment->active = true;
-                    $comment->decision = "RE SUBMIT";
+                    $comment->decision = "RETURN";
                     $comment->action_user_type_id = 6;
                     $comment->uid = $uuid;
                     $comment->application_id = $stage->id;
@@ -3527,10 +3527,10 @@ class PermitController extends Controller
             $stage->status = $request->input('status');
             $stage->save();
 
-            if ($stage->status == "RE SUBMIT") {
+            if ($stage->status == "RETURN") {
                 $comment = new ApplicationApproval();
                 $comment->comment = $request->input('comment');
-                $comment->decision = "RE SUBMIT";
+                $comment->decision = "RETURN";
                 $comment->active = true;
                 $comment->uid = $uuid;
                 $comment->action_user_type_id = 3;
@@ -3541,7 +3541,7 @@ class PermitController extends Controller
                 //Update profile picture values
                 $profile_picture = DB::table('applications')
                     ->where('id', $id)
-                    ->update(['status' => "PENDING", 'resubmission' => false,
+                    ->update(['status' => "Under Review", 'resubmission' => false,
                         'current_stage' => 1]);
             }
 
@@ -3549,7 +3549,7 @@ class PermitController extends Controller
                 //Update profile picture values
                 $profile_picture = DB::table('applications')
                     ->where('id', $id)
-                    ->update(['status' => "PENDING",
+                    ->update(['status' => "Under Review",
                         'current_stage' => 5]);
             }
 
@@ -3631,7 +3631,7 @@ class PermitController extends Controller
             if (Application::where('profile_id', $profile_id)->exists()) {
                 // $applications = Application::where('profile_id', $profile_id)->get();
                 $application_type = "PERMIT NAME CHANGE";
-                $status = "PENDING";
+                $status = "Under Review";
                 $applications = Application::where('profile_id', $profile_id)->where('type', $application_type)
                     ->where('status', $status)->get();
                 $application_id = Application::where('profile_id', $profile_id)->where('type', $application_type)
@@ -3740,7 +3740,7 @@ class PermitController extends Controller
             if (Application::where('profile_id', $profile_id)->exists()) {
                 // $applications = Application::where('profile_id', $profile_id)->get();
                 $application_type = "PERMIT NAME CHANGE";
-                $status = "PENDING";
+                $status = "Under Review";
                 $accept = "ACCEPT";
 
                 $applications = Application::where('profile_id', $profile_id)->where('type', $application_type)
@@ -3848,7 +3848,7 @@ class PermitController extends Controller
             //check applications
             if (Application::where('profile_id', $profile_id)->exists()) {
                 $application_type = "PERMIT NAME CHANGE";
-                $status = "PENDING";
+                $status = "Under Review";
                 $applications = Application::where('profile_id', $profile_id)->where('type', $application_type)
                     ->where('status', $status)->get();
                 $application_id = Application::where('profile_id', $profile_id)->where('type', $application_type)
@@ -3990,7 +3990,7 @@ class PermitController extends Controller
 
             $stage = 1;
             $application_type = "PETITION";
-            $status = "PENDING";
+            $status = "Under Review";
 
             $applications = Application::where('type', $application_type)->where('status', $status)->orderBy('created_at', 'desc')->paginate(20);
 

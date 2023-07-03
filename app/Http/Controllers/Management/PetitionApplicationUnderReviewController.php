@@ -48,8 +48,8 @@ class PetitionApplicationUnderReviewController extends Controller
             $profile = Profile::where('user_id', $user_id)->first();
             $stage = 1;
             $application_type = "PETITION";
-            $status = "PENDING";
-            $resubmit = "RE SUBMIT";
+            $status = "Under Review";
+            $resubmit = "RETURN";
 
 
             $applications = Application::where('current_stage', $stage)->where('type', $application_type)
@@ -87,9 +87,9 @@ class PetitionApplicationUnderReviewController extends Controller
             $user_id = Auth::user()->id;
             $profile = Profile::where('user_id', $user_id)->first();
             $stage = 2;
-            $status = 'PENDING';
+            $status = 'Under Review';
             $application_type = "PETITION";
-            $resubmit = 'RE SUBMIT';
+            $resubmit = 'RETURN';
 
          
             $applications = Application::where('current_stage', $stage)->where('status', $status)->where('type', $application_type)
@@ -138,7 +138,7 @@ class PetitionApplicationUnderReviewController extends Controller
                 
              
 
-                if ($stage->status == "RE SUBMIT") 
+                if ($stage->status == "RETURN") 
                 {
                     $cj = DB::table('applications')
                      ->where('id', $id)->update([ 'current_stage' => 1]);
@@ -146,7 +146,7 @@ class PetitionApplicationUnderReviewController extends Controller
                     $comment = new ApplicationApproval();
                     $comment->comment = $request->input('comment');
                     $comment->active = true;
-                    $comment->decision = "RE SUBMIT";
+                    $comment->decision = "RETURN";
                     $comment->action_user_type_id = 2;
                     $comment->uid = $uuid;
                     $comment->application_id = $stage->id;
@@ -160,7 +160,7 @@ class PetitionApplicationUnderReviewController extends Controller
                 if ($stage->status == "ACCEPT") 
                 {
                    $profile_picture = DB::table('applications')
-                   ->where('id', $id)->update(['status' => "PENDING", 'current_stage' => 2 ]);
+                   ->where('id', $id)->update(['status' => "Under Review", 'current_stage' => 2 ]);
                     $petition = DB::table('petitions')
                        ->where('application_id', $id)
                         ->where('petition_no' , null) ->update(['petition_no' => $nextpetionNumber]);
@@ -192,15 +192,15 @@ class PetitionApplicationUnderReviewController extends Controller
                 
              
 
-                if ($stage->status == "RE SUBMIT") 
+                if ($stage->status == "RETURN") 
                 {
                     $cj = DB::table('applications')
-                     ->where('id', $id)->update([ 'current_stage' => 1, 'status'=>'RE SUBMIT']);
+                     ->where('id', $id)->update([ 'current_stage' => 1, 'status'=>'RETURN']);
         
                     $comment = new ApplicationApproval();
                     $comment->comment = $request->input('comment');
                     $comment->active = true;
-                    $comment->decision = "RE SUBMIT";
+                    $comment->decision = "RETURN";
                     $comment->action_user_type_id = 2;
                     $comment->uid = $uuid;
                     $comment->application_id = $stage->id;
@@ -213,16 +213,14 @@ class PetitionApplicationUnderReviewController extends Controller
                 if ($stage->status == "ACCEPT") 
                 {
                    $profile_picture = DB::table('applications')
-                   ->where('id', $id)->update(['status' => "PENDING", 'current_stage' => 3 ]);
+                   ->where('id', $id)->update(['status' => "Under Review", 'current_stage' => 3 ]);
                    
                 }
 
 
                 return Redirect::to("petition/rhc-review")->with('success', ' Application edited successfully');
 
-
-
-     }
+        }
         return Redirect::to("auth/login")->withErrors('You do not have access!');
     }
 
@@ -373,42 +371,13 @@ class PetitionApplicationUnderReviewController extends Controller
 
 // handle the response based on the status code
         if ($statusCode == 200) {
-
-            $gepgBillSubReqAck = simplexml_load_string($response);
-            $trxStsCode = $gepgBillSubReqAck->TrxStsCode;
-            // dd($trxStsCode);
-
-            // now that we have the GePG Bill Submission Request Acknowledgment,
-            // we can use it to retrieve the GePG Bill Submission Response
-
-            // set the URL and other cURL options for retrieving the response
-            $url = 'https://uat1.gepg.go.tz/api/bill/sigqrequest';
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $result); // $result is the XML data
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/xml'));
-
-            // execute the cURL request to retrieve the response
-            $response = curl_exec($ch);
-            $statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            // close the cURL resource
-            curl_close($ch);
-                $expireDate = date('Y-m-d H:i:s', strtotime('+10 days'));
-            // handle the response based on the status code
-            if ($statusCode == 200) {
-                $gepgBillSubResp = simplexml_load_string($response);
-                $billId = $gepgBillSubResp->BillTrxInf->BillId;
-                $trxSts = $gepgBillSubResp->BillTrxInf->TrxSts;
-                $payCntrNum = $gepgBillSubResp->BillTrxInf->PayCntrNum;
-                $trxStsCode = $gepgBillSubResp->BillTrxInf->TrxStsCode;
-
+            if ($response->successful()) {
+            
                                         $bill = new Bill;
                                         $bill->bill_date = $billDate;
                                         $bill->bill_id =  $billId;
                                         $bill->category = "PETITIONER";
-                                        $bill->control_number = $payCntrNum ;   //control number required
+                                        // $bill->control_number = $payCntrNum ;   //control number required
                                         $bill->control_number_requested = true;
                                         $bill->currency = 'TZS';
                                         $bill->due_date = $expireDate;
@@ -426,37 +395,27 @@ class PetitionApplicationUnderReviewController extends Controller
                                         $bill->application_id = $id;
                                         $bill->profile_id = $profile_id;
                                         $bill->save();
-
-                                        $data = [
-                                             'bill' => $bill
-            
-                                            ];
-
-                            Mail::to($userEmail->email)->send(new \App\Mail\BillEmail($data));
-
-            } else {
-                // the request for the GePG Bill Submission Response failed
-                // handle the error, if needed
-                echo "Error: Request for GePG Bill Submission Response failed. Status code: " . $statusCode;
-            }
         } else {
-            // the request for the GePG Bill Submission Request Acknowledgment failed
-            // handle the error, if needed
-                echo "Error: Request for GePG Bill Submission Request Acknowledgment failed. Status code: " .$statusCode;
+            // Handle error response from GePG
+            // Access the error information using $response->status() and $response->body()
+
+            // Display an error message to the user or perform appropriate actions
+            // return redirect()->route('error')->with('message', 'Failed to submit bill to GePG.');
         }
+    }
+        
 // Enter your National Identification Number (NIN)
 
-        dd($result);
 
                 } 
-                        if ($stage->status == "RE SUBMIT") 
+                        if ($stage->status == "RETURN") 
                         {
                           $cj = DB::table('applications')
-                             ->where('id', $id)->update(['status' => "RE SUBMIT", 'current_stage' => 3]);
+                             ->where('id', $id)->update(['status' => "RETURN", 'current_stage' => 3]);
                           $comment = new ApplicationApproval();
                           $comment->comment = $request->input('comment');
                           $comment->active = true;
-                          $comment->decision = "RE SUBMIT";
+                          $comment->decision = "RETURN";
                           $comment->action_user_type_id = 6;
                           $comment->uid = $uuid;
                           $comment->application_id = $stage->id;
@@ -467,6 +426,9 @@ class PetitionApplicationUnderReviewController extends Controller
 
         
     }
+
+
+    
 
      public function edit_cle(Request $request, $id)
    {
@@ -486,7 +448,7 @@ class PetitionApplicationUnderReviewController extends Controller
                 //Update profile picture values
                 $profile_picture = DB::table('applications')
                  ->where('id', $id)
-                    ->update(['status' => "PENDING",
+                    ->update(['status' => "Under Review",
                         'current_stage' => 3]);
 
                         $date = date('Y-m-d');
@@ -533,17 +495,17 @@ class PetitionApplicationUnderReviewController extends Controller
 
             }
 
-            if ($stage->status == "RE SUBMIT") {
+            if ($stage->status == "RETURN") {
                  $comment = new ApplicationApproval();
               $comment->comment = $request->input('comment');
               $comment->active = true;
-              $comment->decision = "RE SUBMIT";
+              $comment->decision = "RETURN";
               $comment->action_user_type_id = 5;
               $comment->uid = $uuid;
               $comment->application_id = $stage->id;
               $comment->user_id = Auth()->user()->id;
               $comment->save();
-             $profile_picture = DB::table('applications')->where('id', $id)->update(['status' => "RE SUBMIT",
+             $profile_picture = DB::table('applications')->where('id', $id)->update(['status' => "RETURN",
             'current_stage' => 2]);
                   }
 
@@ -566,7 +528,7 @@ class PetitionApplicationUnderReviewController extends Controller
             $profile = Profile::where('user_id', $user_id)->first();
 
             $stage = 4;
-            $status = "PENDING";
+            $status = "Under Review";
             $application_type = "PETITION";
 
             $applications = Application::where('current_stage', $stage)->where('type', $application_type)->where('status', $status)->orderBy('created_at', 'desc')->paginate(20);
@@ -595,17 +557,17 @@ class PetitionApplicationUnderReviewController extends Controller
             $profile = Profile::where('user_id', $user_id)->first();
             $stage = 3;
             $application_type = "PETITION";
-             $status = "PENDING";
-             $resubmit = 'RE SUBMIT';
+             $status = "Under Review";
+             $resubmit = 'RETURN';
 
             $applications = Application::where('current_stage', $stage)->where('type', $application_type)->where('status', $status)
             ->orderBy('created_at', 'desc')->paginate(20);
             $application_count = Application::where('current_stage', $stage)->where('status', $status)->where('type', $application_type)
             ->orderBy('created_at', 'desc')->count();
 
-             $approved_count = Application::where('current_stage', 4)->where('status', 'PENDING')
+             $approved_count = Application::where('current_stage', 4)->where('status', 'Under Review')
             ->orderBy('created_at', 'desc')->count();
-             $approved_applications = Application::where('current_stage', 4)->where('status', 'PENDING')
+             $approved_applications = Application::where('current_stage', 4)->where('status', 'Under Review')
             ->orderBy('created_at', 'desc')->get();
 
             $resubmit_applications =  Application::where('current_stage', $stage)->where('type', $application_type)
@@ -1103,7 +1065,7 @@ public function view_cle(Request $request, $id)
 
             $stage = 1;
             $application_type = "PETITION";
-            $status = "PENDING";
+            $status = "Under Review";
 
 
             $applications = Application::where('type', $application_type)->where('status', $status)->orderBy('created_at', 'desc')->paginate(200);

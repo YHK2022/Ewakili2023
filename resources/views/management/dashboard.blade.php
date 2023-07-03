@@ -57,7 +57,7 @@
                                         <div class="d-flex justify-content-between align-items-center">
                                             <div class="state">
                                                 <h6>Practicing</h6>
-                                                <h2>{{number_format($practising_count)}}</h2>
+                                                <h2>{{number_format($practising_count)}}[{{number_format($active_practising_count)}}]</h2>
                                             </div>
                                             <div class="icon">
                                                 <i class="ik ik-user-check"></i>
@@ -76,7 +76,7 @@
                                         <div class="d-flex justify-content-between align-items-center">
                                             <div class="state">
                                                 <h6>Non-Practicing</h6>
-                                                <h2>{{number_format($non_practising_count)}}</h2>
+                                                <h2>{{number_format($non_practising_count)}}[{{number_format($active_non_practising_count)}}]</h2>
                                             </div>
                                             <div class="icon">
                                                 <i class="ik ik-users"></i>

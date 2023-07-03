@@ -54,7 +54,7 @@ class ApplicationTrackingController extends Controller
 
             $stage = 1;
             $application_type = "PERMIT NON PRACTISING";
-            $status = "PENDING";
+            $status = "Under Review";
 
             $applications = Application::where('current_stage', $stage)
                 ->where('type', $application_type)->where('status', $status)
@@ -75,7 +75,7 @@ class ApplicationTrackingController extends Controller
 
             $stage = 1;
             $application_type = "PERMIT NAME CHANGE";
-            $status = "PENDING";
+            $status = "Under Review";
 
             $applications = Application::where('current_stage', $stage)
                 ->where('type', $application_type)->where('status', $status)

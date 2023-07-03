@@ -89,7 +89,7 @@ class RequestController extends Controller
             $submitdate = date('Y-m-d H:i:s');
             $uuid = Str::uuid();
             $appl_type = "PERMIT RENEWAL";
-            $status = "PENDING";
+            $status = "Under Review";
 
 
             $application = new Application();
@@ -165,7 +165,7 @@ class RequestController extends Controller
             $submitdate = date('Y-m-d H:i:s');
             $uuid = Str::uuid();
             $appl_type = "PERMIT_RENEWAL";
-            $status = "PENDING";
+            $status = "Under Review";
 
             //Chech if Application exists
             if (RenewalHistory::where('year', $renew_year)->where('profile_id', $profile_id)->exists()) {
@@ -348,7 +348,7 @@ class RequestController extends Controller
             $submitdate = date('Y-m-d H:i:s');
             $uuid = Str::uuid();
             $appl_type = "PERMIT NAME CHANGE";
-            $status = "PENDING";
+            $status = "Under Review";
 
 
             $application = new Application();
@@ -441,7 +441,7 @@ class RequestController extends Controller
             $submitdate = date('Y-m-d H:i:s');
             $uuid = Str::uuid();
             $appl_type = "PERMIT NON PRACTISING";
-            $status = "PENDING";
+            $status = "Under Review";
 
 
             $application = new Application();
@@ -521,7 +521,7 @@ class RequestController extends Controller
             $submitdate = date('Y-m-d H:i:s');
             $uuid = Str::uuid();
             $appl_type = "PERMIT SUSPENDED";
-            $status = "PENDING";
+            $status = "Under Review";
 
 
             $application = new Application();
@@ -604,7 +604,7 @@ class RequestController extends Controller
             $submitdate = date('Y-m-d H:i:s');
             $uuid = Str::uuid();
             $appl_type = "PERMIT NON PROFIT";
-            $status = "PENDING";
+            $status = "Under Review";
 
 
             $application = new Application();
@@ -685,7 +685,7 @@ class RequestController extends Controller
             $submitdate = date('Y-m-d H:i:s');
             $uuid = Str::uuid();
             $appl_type = "PERMIT RESUME PRACTISING";
-            $status = "PENDING";
+            $status = "Under Review";
 
 
             $application = new Application();
@@ -769,7 +769,7 @@ class RequestController extends Controller
             $submitdate = date('Y-m-d H:i:s');
             $uuid = Str::uuid();
             $appl_type = "PERMIT RETIRE PRACTISING";
-            $status = "PENDING";
+            $status = "Under Review";
 
 
             $application = new Application();

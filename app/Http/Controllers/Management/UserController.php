@@ -77,7 +77,7 @@ class UserController extends Controller
                               ->where('users.active', true)
                               ->paginate(100);
 
-
+            //   dd( $cle);
             return view('management.user_management.users.index', 
             compact('profile','permissions','roles','staffs','nonstaffs', 'usertypes','inactive'))
             ->with('i', ($request->input('page', 1) - 1 ) * 100);
@@ -152,8 +152,8 @@ class UserController extends Controller
                               ->where('action_user_type_id', 5)
                               ->with('actionusers')
                               ->get();
-
-                    //    dd($cles);
+      
+                    //    dd($cless);
 
             return view('management.user_management.users.cle-members', [
                 'cles' => $cles,

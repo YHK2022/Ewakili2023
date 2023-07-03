@@ -663,7 +663,7 @@ foreach ($profile_fees as $data){
         $application->active = "true";
         $application->uid = $uuid;
         $application->type = $data['app_type'];
-        $application->status = 'PENDING';
+        $application->status = 'Under Review';
         $application->resubmission = "true";
         $application->un_reviewed = "0";
         $application->current_stage = "1";

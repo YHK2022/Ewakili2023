@@ -29,6 +29,12 @@ Route::get('login/auto/{token}', [AuthController::class, 'autoLogin'])->name('lo
 // Route::get('login/auto/{token}', 'AuthController@autoLogin')->name('login.auto');
 Route::post('send-email', 'AuthController@sendEmail')->name('send.email');
 
+// gepg acknowlegment
+Route::post('/callback/gepg-bill-sub-req-ack', 'PaymentController@handleGePGBillSubReqAck');
+Route::post('/callback/gepg-bill-sub-resp', 'PaymentController@handleGePGBillSubResp');
+Route::post('/callback/gepg-bill-sub-resp-ack','PaymentController@handleGePGBillSubRespAck');
+Route::post('/callback/gepg-payment-notification', 'PaymentController@handleGePGPaymentNotification');
+Route::post('/callback/gepg-payment-acknowledgement', 'PaymentController@handleGePGPaymentAcknowledgement');
 
 //****Authentication Routes Start****** //
 Route::group(['prefix' => 'auth'], function() {

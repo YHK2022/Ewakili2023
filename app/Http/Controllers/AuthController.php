@@ -234,7 +234,9 @@ class AuthController extends Controller
 
 
           $practising_count = Advocate::where('status','=',$practising)->count();
+          $active_practising_count = Advocate::where('status','=',$practising)->where('paid_year', '=', date('Y'))->count();
           $non_practising_count = Advocate::where('status','=',$non_practising)->count();
+          $active_non_practising_count = Advocate::where('status','=',$non_practising)->where('paid_year', '=', date('Y'))->count();
           $suspended_count = Advocate::where('status','=',$suspended)->count();
           $non_profit_count = Advocate::where('status','=',$non_profit)->count();
           $retired_count = Advocate::where('status','=',$retired)->count();
@@ -260,6 +262,8 @@ class AuthController extends Controller
         //dd($progress);exit;
         return view('management.dashboard', [
           'profile' => $profile,
+          'active_practising_count' => $active_practising_count,
+          'active_non_practising_count' => $active_non_practising_count,
           'progress' => $progress,
           'qualification' => $qualification,
           // 'experience' => $experience,

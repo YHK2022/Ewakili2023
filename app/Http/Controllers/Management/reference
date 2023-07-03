@@ -46,22 +46,31 @@ class PetitionApplicationUnderReviewController extends Controller
         if(Auth::check()){
             $user_id = Auth::user()->id;
             $profile = Profile::where('user_id', $user_id)->first();
-            
-
             $stage = 1;
             $application_type = "PETITION";
             $status = "PENDING";
+            $resubmit = "RE SUBMIT";
 
 
-            $applications = Application::where('current_stage', $stage)->where('type', $application_type)->where('status', $status)->orderBy('created_at', 'desc')->paginate(20);
+            $applications = Application::where('current_stage', $stage)->where('type', $application_type)
+            ->where('status', $status)->orderBy('created_at', 'desc')->paginate(20);
             $application_count = Application::where('current_stage', $stage)->where('type', $application_type)
             ->where('status', $status)->orderBy('created_at', 'desc')->count();
              $approved_count = Application::where('current_stage', 2)->where('type', $application_type)
             ->where('status', $status)->orderBy('created_at', 'desc')->count();
              $approved_applications = Application::where('current_stage', 2)->where('type', $application_type)
             ->where('status', $status)->orderBy('created_at', 'desc')->get();
+
+            $resubmit_applications =  Application::where('current_stage', $stage)->where('type', $application_type)
+            ->where('status', $resubmit)->orderBy('created_at', 'desc')->paginate(20);
+             $resubmit_applications_count =  Application::where('current_stage', $stage)->where('type', $application_type)
+            ->where('status', $resubmit)->orderBy('created_at', 'desc')->count();
+
+
             return view('management.petition_application.under_review.index', [
                 'profile' => $profile,
+                'resubmit_applications_count' => $resubmit_applications_count,
+                'resubmit_applications' => $resubmit_applications,
                 'applications' => $applications,
                 'application_count' => $application_count,
                 'approved_count' => $approved_count,
@@ -78,19 +87,30 @@ class PetitionApplicationUnderReviewController extends Controller
             $user_id = Auth::user()->id;
             $profile = Profile::where('user_id', $user_id)->first();
             $stage = 2;
+            $status = 'PENDING';
             $application_type = "PETITION";
+            $resubmit = 'RE SUBMIT';
 
          
-            $applications = Application::where('current_stage', $stage)->where('type', $application_type)->orderBy('created_at', 'desc')->paginate(20);
+            $applications = Application::where('current_stage', $stage)->where('status', $status)->where('type', $application_type)
+            ->orderBy('created_at', 'desc')->paginate(20);
             $applications_count = Application::where('current_stage', $stage)->where('type', $application_type)
-            ->orderBy('created_at', 'desc')->count();
+            ->orderBy('created_at', 'desc')->where('status', $status)->count();
              $approved_count = Application::where('current_stage', 3)->where('type', $application_type)
             ->orderBy('created_at', 'desc')->count();
              $approved_applications = Application::where('current_stage', 3)->where('type', $application_type)
             ->orderBy('created_at', 'desc')->get();
 
+            $resubmit_applications =  Application::where('current_stage', $stage)->where('type', $application_type)
+            ->where('status', $resubmit)->orderBy('created_at', 'desc')->paginate(20);
+
+             $resubmit_applications_count =  Application::where('current_stage', $stage)->where('type', $application_type)
+            ->where('status', $resubmit)->orderBy('created_at', 'desc')->count();
+
             return view('management.petition_application.rhc.index', [
                 'profile' => $profile,
+                'resubmit_applications' => $resubmit_applications,
+                'resubmit_applications_count' => $resubmit_applications_count,
                 'applications' => $applications,
                 'applications_count' => $applications_count,
                 'approved_count' => $approved_count,
@@ -175,8 +195,8 @@ class PetitionApplicationUnderReviewController extends Controller
                 if ($stage->status == "RE SUBMIT") 
                 {
                     $cj = DB::table('applications')
-                     ->where('id', $id)->update([ 'current_stage' => 1]);
-
+                     ->where('id', $id)->update([ 'current_stage' => 1, 'status'=>'RE SUBMIT']);
+        
                     $comment = new ApplicationApproval();
                     $comment->comment = $request->input('comment');
                     $comment->active = true;
@@ -326,34 +346,20 @@ class PetitionApplicationUnderReviewController extends Controller
         curl_setopt($ch, CURLOPT_POSTFIELDS, $result); // $result is the XML data
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/xml'));
 
-        // Set the path to your private key and certificate files
-         $certificatePath = storage_path('gepgKeys/gepgpubliccertificate.pfx');
-         $privateKeyPath = storage_path('gepgKeys/gepgclientprivatekey.pfx');
+        // // Set the path to your private key and certificate files
+        //  $certificatePath = storage_path('gepgKeys/gepgpubliccertificate.pfx');
+        //  $privateKeyPath = storage_path('gepgKeys/gepgclientprivatekey.pfx');
 
-         // Set the password for the private key and certificate files
-        $privateKeyPassword = 'passpass';
-        $certificatePassword = 'passpass';
+        //  // Set the password for the private key and certificate files
+        // $privateKeyPassword = 'passpass';
+        // $certificatePassword = 'passpass';
 
-        // Read the private key file
-        // $privateKey = openssl_pkcs12_read(file_get_contents($privateKeyPath), $privateKeyData, $privateKeyPassword);
-
-        // Read the certificate file
-        // $certificate = openssl_pkcs12_read(file_get_contents($certificatePath), $certificateData, $certificatePassword);
-
-
-// if ($certificate) {
-//     $yy = "correct";
-//     dd($yy);
-// } else {
-//     $zz = "not correct";
-//     dd($zz);
-// }
-
-        // Set the cURL options for SSL certificate and private key
-        curl_setopt($ch, CURLOPT_SSLCERT, $certificatePath);
-        curl_setopt($ch, CURLOPT_SSLKEY, $privateKeyPath);
-        curl_setopt($ch, CURLOPT_SSLKEYPASSWD, $privateKeyPassword);
-        curl_setopt($ch, CURLOPT_SSLCERTPASSWD, $certificatePassword);
+ 
+        // // Set the cURL options for SSL certificate and private key
+        // curl_setopt($ch, CURLOPT_SSLCERT, $certificatePath);
+        // curl_setopt($ch, CURLOPT_SSLKEY, $privateKeyPath);
+        // curl_setopt($ch, CURLOPT_SSLKEYPASSWD, $privateKeyPassword);
+        // curl_setopt($ch, CURLOPT_SSLCERTPASSWD, $certificatePassword);
 
 
 // execute the cURL request to submit the bill and get the response
@@ -376,7 +382,7 @@ class PetitionApplicationUnderReviewController extends Controller
             // we can use it to retrieve the GePG Bill Submission Response
 
             // set the URL and other cURL options for retrieving the response
-            $url = 'http://<gepgIP>:<port>/api/bill/sigqrequest';
+            $url = 'https://uat1.gepg.go.tz/api/bill/sigqrequest';
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $url);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -426,7 +432,7 @@ class PetitionApplicationUnderReviewController extends Controller
             
                                             ];
 
-                            // Mail::to($userEmail->email)->send(new \App\Mail\BillEmail($data));
+                            Mail::to($userEmail->email)->send(new \App\Mail\BillEmail($data));
 
             } else {
                 // the request for the GePG Bill Submission Response failed
@@ -438,14 +444,15 @@ class PetitionApplicationUnderReviewController extends Controller
             // handle the error, if needed
                 echo "Error: Request for GePG Bill Submission Request Acknowledgment failed. Status code: " .$statusCode;
         }
+// Enter your National Identification Number (NIN)
 
-        dd($result);
+        // dd($result);
 
                 } 
                         if ($stage->status == "RE SUBMIT") 
                         {
                           $cj = DB::table('applications')
-                             ->where('id', $id)->update(['status' => "PENDING", 'current_stage' => 3]);
+                             ->where('id', $id)->update(['status' => "RE SUBMIT", 'current_stage' => 3]);
                           $comment = new ApplicationApproval();
                           $comment->comment = $request->input('comment');
                           $comment->active = true;
@@ -536,7 +543,7 @@ class PetitionApplicationUnderReviewController extends Controller
               $comment->application_id = $stage->id;
               $comment->user_id = Auth()->user()->id;
               $comment->save();
-             $profile_picture = DB::table('applications')->where('id', $id)->update(['status' => "PENDING",
+             $profile_picture = DB::table('applications')->where('id', $id)->update(['status' => "RE SUBMIT",
             'current_stage' => 2]);
                   }
 
@@ -560,8 +567,6 @@ class PetitionApplicationUnderReviewController extends Controller
 
             $stage = 4;
             $status = "PENDING";
-           
-
             $application_type = "PETITION";
 
             $applications = Application::where('current_stage', $stage)->where('type', $application_type)->where('status', $status)->orderBy('created_at', 'desc')->paginate(20);
@@ -591,16 +596,28 @@ class PetitionApplicationUnderReviewController extends Controller
             $stage = 3;
             $application_type = "PETITION";
              $status = "PENDING";
-            $applications = Application::where('current_stage', $stage)->where('type', $application_type)->orderBy('created_at', 'desc')->paginate(20);
-            $application_count = Application::where('current_stage', $stage)->where('type', $application_type)
+             $resubmit = 'RE SUBMIT';
+
+            $applications = Application::where('current_stage', $stage)->where('type', $application_type)->where('status', $status)
+            ->orderBy('created_at', 'desc')->paginate(20);
+            $application_count = Application::where('current_stage', $stage)->where('status', $status)->where('type', $application_type)
             ->orderBy('created_at', 'desc')->count();
+
              $approved_count = Application::where('current_stage', 4)->where('status', 'PENDING')
             ->orderBy('created_at', 'desc')->count();
              $approved_applications = Application::where('current_stage', 4)->where('status', 'PENDING')
             ->orderBy('created_at', 'desc')->get();
 
+            $resubmit_applications =  Application::where('current_stage', $stage)->where('type', $application_type)
+            ->where('status', $resubmit)->orderBy('created_at', 'desc')->paginate(20);
+
+             $resubmit_applications_count =  Application::where('current_stage', $stage)->where('type', $application_type)
+            ->where('status', $resubmit)->orderBy('created_at', 'desc')->count();
+
             return view('management.petition_application.cle.index', [
                 'profile' => $profile,
+                'resubmit_applications' => $resubmit_applications,
+                'resubmit_applications_count' => $resubmit_applications_count,
                 'applications' => $applications,
                  'approved_count' => $approved_count,
                 'approved_applications' => $approved_applications,

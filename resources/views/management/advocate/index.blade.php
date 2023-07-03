@@ -68,48 +68,51 @@
                         <ul class="nav nav-pills custom-pills" id="pills-tab" role="tablist">
                             <li class="nav-item">
                                 <a class="nav-link" id="pills-timeline-tab" data-toggle="pill" href="#all"
-                                    role="tab" aria-controls="pills-timeline" aria-selected="true">ALL <span
+                                    role="tab" aria-controls="pills-timeline" aria-selected="true">All <span
                                         class="badge bg-warning" style="color: white">{{ $all_count }}</span></a>
                             </li>
+                            {{-- <li class="nav-item">
+                                <a class="nav-link" id="pills-timeline-tab" data-toggle="pill" href="#activeadvocate"
+                                    role="tab" aria-controls="pills-timeline" aria-selected="true">Active Advocates <span
+                                        class="badge bg-warning" style="color: white">{{ $practising_count }}</span></a>
+                            </li> --}}
                             <li class="nav-item">
                                 <a class="nav-link" id="pills-timeline-tab" data-toggle="pill" href="#practising"
-                                    role="tab" aria-controls="pills-timeline" aria-selected="true">PRACTISING <span
+                                    role="tab" aria-controls="pills-timeline" aria-selected="true">Practising <span
                                         class="badge bg-warning" style="color: white">{{ $practising_count }}</span></a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#non_practising"
-                                    role="tab" aria-controls="pills-profile" aria-selected="false">NON PRACTISING <span
+                                    role="tab" aria-controls="pills-profile" aria-selected="false">Non Practising <span
                                         class="badge bg-warning" style="color: white">{{ $non_practising_count }}</span></a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" id="pills-setting-tab" data-toggle="pill" href="#suspended"
-                                    role="tab" aria-controls="pills-setting" aria-selected="false">SUSPENDED <span
+                                    role="tab" aria-controls="pills-setting" aria-selected="false">Suspended <span
                                         class="badge bg-warning" style="color: white">{{ $suspended_count }}</span></a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" id="pills-setting-tab" data-toggle="pill" href="#deferred"
-                                    role="tab" aria-controls="pills-setting" aria-selected="false">DEFERRED <span
+                                    role="tab" aria-controls="pills-setting" aria-selected="false">Deferred <span
                                         class="badge bg-warning" style="color: white">{{ $deferred_count }}</span></a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" id="pills-setting-tab" data-toggle="pill" href="#non_profit"
-                                    role="tab" aria-controls="pills-setting" aria-selected="false">NON PROFIT <span
+                                    role="tab" aria-controls="pills-setting" aria-selected="false">Non Profit <span
                                         class="badge bg-warning" style="color: white">{{ $non_profit_count }}</span></a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" id="pills-setting-tab" data-toggle="pill" href="#retired"
-                                    role="tab" aria-controls="pills-setting" aria-selected="false">RETIRED <span
+                                    role="tab" aria-controls="pills-setting" aria-selected="false">Retired <span
                                         class="badge bg-warning" style="color: white">{{ $retired_count }}</span></a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" id="pills-setting-tab" data-toggle="pill" href="#deceased"
-                                    role="tab" aria-controls="pills-setting" aria-selected="false">DECEASED <span
+                                    role="tab" aria-controls="pills-setting" aria-selected="false">Deceased <span
                                         class="badge bg-warning" style="color: white">{{ $deceased_count }}</span></a>
                             </li>
                         </ul>
                         <div class="tab-content" id="pills-tabContent">
-
-
                             <div class="tab-pane fade show active" id="all" role="tabpanel"aria-labelledby="pills-timeline-tab">
                          <div style="display: flex; justify-content: flex-end;padding-top:10px;padding-right:15px">
                           <form action="{{ url('advocate/roll') }}" method="GET" style="margin-bottom: 10px;">
@@ -225,7 +228,112 @@
                               <p>No results found.</p>
                             @endif
                             </div>
+                            {{-- <div class="tab-pane fade" id="activeadvocate" role="tabpanel"
+                                aria-labelledby="pills-timeline-tab">
+                                <div class="card-body">
+                                    <table class="table table-hover" id="table_id1">
+                                        <thead>
+                                            <tr>
+                                                <th id="table_id1" data-priority="1">#</th>
+                                                <th id="table_id1">Full Name</th>
+                                                <th id="table_id1">Roll Number</th>
+                                                <th id="table_id1">Admission Date</th>
+                                                <th id="table_id1">Status</th>
+                                                <th id="table_id1" data-priority="2">Action</th>
 
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($practising_all as $key => $advocate)
+                                                <tr>
+                                                    <td id="table_id1">{{ ++$key }}</td>
+                                                    <td id="table_id1">{{ $advocate->profile->fullname }}</td>
+                                                    <td id="table_id1">{{ $advocate->roll_no }}</td>
+                                                    <td id="table_id1"> {{ date('F d, Y', strtotime($advocate->admission)) }}</td>
+                                                    <td id="table_id1">
+                                                        @if ($advocate->paid_year != $cur_year)
+                                                            <span class="badge bg-danger" style="color: white">Not
+                                                                Active</span>
+                                                        @else
+                                                            <span class="badge bg-success"
+                                                                style="color: white">Active</span>
+                                                        @endif
+                                                    </td>
+                                                    <td id="table_id1">
+                                                        <div class="table-actions" style="justify-content: center;align-items: center;  display: flex;">
+                                                            <a href="{{ url('advocate/view', $advocate->uid) }}"
+                                                                title="View Profile"><i
+                                                                    class="ik ik-eye pull-left"></i></a>
+                                                            </div>
+                                                    </td>
+                                                </tr>
+
+                                                <!-- View Advocate Model-->
+                                                <div class="modal fade" id="view{{ $advocate->uid }}" tabindex="-1"
+                                                    role="dialog" aria-labelledby="demoModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog modal-lg" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title">
+                                                                    <center>Advocate Profile</center>
+                                                                </h5>
+                                                                <button type="button" class="close"
+                                                                    data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="col-lg-4 col-md-5">
+                                                                <div class="card">
+                                                                    <div class="card-body text-center">
+                                                                        <div class="profile-pic mb-20">
+
+                                                                            @if (!empty($profile->picture))
+                                                                                <img src="{{ asset('storage/files/' . $profile->picture) }}"
+                                                                                    width="150" class="rounded-circle"
+                                                                                    alt="user">
+                                                                            @else
+                                                                                <img src="{{ URL::to('images/user.png') }}"
+                                                                                    width="150" class="rounded-circle"
+                                                                                    alt="user">
+                                                                            @endif
+
+                                                                            @if ($advocate->paid_year != $cur_year)
+                                                                                <span class="badge bg-danger"
+                                                                                    style="color: white">Not Active Since
+                                                                                    {{ $advocate->paid_year }}</span>
+                                                                            @else
+                                                                                <span class="badge bg-success"
+                                                                                    style="color: white">Active -
+                                                                                    {{ $advocate->paid_year }}</span>
+                                                                            @endif
+
+                                                                            <h5 class="mt-20 mb-0">
+                                                                                {{ $advocate->profile->fullname }}</h5>
+                                                                            <a
+                                                                                style="font-size:17px;color:blue;"><strong>{{ $advocate->status }}</strong></a>
+                                                                        </div>
+                                                                        <div class="badge badge-pill badge-dark">
+                                                                            Admission<br />{{ $advocate->admission }}</div>
+                                                                        <div class="badge badge-pill badge-dark">Roll
+                                                                            No.<br />{{ $advocate->roll_no }}</div>
+                                                                    </div>
+
+                                                                    <hr class="mb-0">
+
+                                                                    <div class="card-body">
+                                                                        <h6 class="mt-30">Firm/Work Place:</h6>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div> --}}
                             <div class="tab-pane fade" id="practising" role="tabpanel"
                                 aria-labelledby="pills-timeline-tab">
                                 <div class="card-body">

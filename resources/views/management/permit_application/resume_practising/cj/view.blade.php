@@ -655,7 +655,7 @@
                                                 data-live-search-style="begins" title="Select Employee...">
                                                 <option value="ACCEPT">ACCEPT</option>
                                                 <option value="REJECT">REJECT</option>
-                                                <option value="RE SUBMIT">RE SUBMIT</option>
+                                                <option value="RETURN">RETURN</option>
 
                                             </select>
                                         </div>
