@@ -14,7 +14,7 @@
                         <div class="page-header-title">
                             <i class="ik ik-lock bg-red"></i>
                             <div class="d-inline">
-                                <h5>Application For Resume Practising</h5>
+                                <h5>Application For Non Practising</h5>
                                 <span>Current applications</span>
                             </div>
                         </div>
@@ -75,7 +75,7 @@
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" id="pills-timeline-tab" data-toggle="pill" href="#practising"
-                                    role="tab" aria-controls="pills-timeline" aria-selected="true">Resubmission Applications <span
+                                    role="tab" aria-controls="pills-timeline" aria-selected="true">Returned Applications <span
                                         class="badge bg-warning" style="color: white">
                                         {{ $submit_applications_count }}
                                     </span></a>

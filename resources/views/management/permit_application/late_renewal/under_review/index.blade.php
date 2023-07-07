@@ -75,7 +75,7 @@
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" id="pills-timeline-tab" data-toggle="pill" href="#practising"
-                                    role="tab" aria-controls="pills-timeline" aria-selected="true">Resubmission Applications <span
+                                    role="tab" aria-controls="pills-timeline" aria-selected="true">Returned Applications <span
                                         class="badge bg-warning" style="color: white">
                                         {{ $submit_applications_count }}
                                     </span></a>
@@ -114,13 +114,13 @@
                                             <td id="table_id">{{ ++$key }}</td>
                                             <td id="table_id">{{ $application->profile_detail->fullname }}</td>
                                             <td id="table_id">{{ $application->type }}</td>
-                                            <td id="table_id"> CJ REVIEW </td>
+                                            <td id="table_id"> FRONT DESK </td>
                                             <td id="table_id">{{ $application->status }}</td>
                                             <td id="table_id"> {{ date('F d, Y', strtotime($application->submission_at)) }}</td>
                                             <td id="table_id">
                                                 <div class="table-actions">
                                                     <div class="table-actions">
-                                                        <a href="{{ url('permit/name-change/jk/view', $application->uid) }}"
+                                                        <a href="{{ url('permit/late-renewal/view', $application->uid) }}"
                                                             title="View Profile"><i class="ik ik-eye pull-left"></i></a>
                                                     </div>
                                                 </div>
@@ -161,7 +161,7 @@
                                             <td id="table_id">
                                                 <div class="table-actions">
                                                     <div class="table-actions">
-                                                        <a href="{{ url('permit/non-practising/view', $application->uid) }}"
+                                                        <a href="{{ url('permit/late-renewal/view', $application->uid) }}"
                                                             title="View Profile"><i class="ik ik-eye pull-left"></i></a>
                                                     </div>
                                                 </div>
@@ -196,7 +196,7 @@
                                             <td id="table_id">{{ ++$key }}</td>
                                             <td id="table_id">{{ $application->profile_detail->fullname }}</td>
                                             <td id="table_id">{{ $application->type }}</td>
-                                            <td id="table_id"> CJ REVIEW </td>
+                                            <td id="table_id"> RHC REVIEW </td>
                                             <td id="table_id">{{ $application->status }}</td>
                                             <td id="table_id">{{ $application->submission_at }}</td>
                                             

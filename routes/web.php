@@ -63,12 +63,15 @@ Route::get('login', 'AuthController@index');
 Route::post('post-login', 'AuthController@postLogin');
 
 Route::get('advocate-registration', 'AuthController@advocateRegistration');
+Route::get('temporary-advocate-registration', 'AuthController@TemporaryadvocateRegistration');
+
 Route::get('attorney-registration', 'AuthController@registration');
 Route::get('litigant-registration', 'AuthController@registration');
 Route::get('bureau-registration', 'AuthController@registration');
 
 
 Route::post('advocate-post-registration', 'AuthController@AdvocatePostRegistration');
+Route::post('temporary-advocate-post-registration', 'AuthController@TemporaryAdvocatePostRegistration');
 Route::post('attorney-post-registration', 'AuthController@postRegistration');
 Route::post('litigant-post-registration', 'AuthController@postRegistration');
 Route::post('bureau-post-registration', 'AuthController@postRegistration');
@@ -211,8 +214,14 @@ Route::group(['prefix' => 'permit'], function () {
     Route::match(['get', 'post'], '/name-change/jk/edit/{id}', 'Management\PermitController@edit_jk');
 
     Route::get('/late-renewal/under-review', 'Management\PermitController@get_renewal_index');
+    Route::match(['get', 'post'], '/late-renewal/view/{id}', 'Management\PermitController@view_renewal_profile');
+    Route::match(['get', 'post'], '/late-renewal/under-review/edit/{id}', 'Management\PermitController@edit_renewal_front');
     Route::get('/late-renewal/rhc', 'Management\PermitController@get_renewal_rhc');
+    Route::match(['get', 'post'], '/late-renewal/rhc/view/{id}', 'Management\PermitController@view_renewal_rhc');
+    Route::match(['get', 'post'], '/late-renewal/rhc/edit/{id}', 'Management\PermitController@edit_renewal_rhc');
     Route::get('/late-renewal/cj', 'Management\PermitController@get_renewal_cj');
+    Route::match(['get', 'post'], '/late-renewal/cj/view/{id}', 'Management\PermitController@view_renewal_cj');
+    Route::match(['get', 'post'], '/late-renewal/cj/edit/{id}', 'Management\PermitController@edit_renewal_cj');
 
     Route::get('/resume-practising/under-review', 'Management\PermitController@get_resume_index');
     Route::match(['get', 'post'], '/resume-practising/view/{id}', 'Management\PermitController@view_resume_profile');

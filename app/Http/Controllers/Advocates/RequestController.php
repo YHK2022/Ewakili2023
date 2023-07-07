@@ -97,38 +97,40 @@ class RequestController extends Controller
             $application->active = "true";
             $application->uid = $uuid;
             $application->type = $appl_type;
-            $application->qualification = $qualification;
+            // $application->qualification = $qualification;
             $application->status = $status;
             $application->resubmission = "true";
             $application->un_reviewed = "0";
-            $application->current_stage = "2";
+            $application->current_stage = "1";
             $application->profile_id = $profile_id;
             $application->workflow_process_id = "1";
             $application->actionstatus = "0";
             $application->stage = "0";
-            // dd($application);
-            exit;
+          
             $application->save();
-
+               $file_names = ['Notice of Intention to Renew', 'Affidavit']; // Array of file names corresponding to the files
             if ($request->hasfile('files')) {
                 $files = $request->file('files');
 
-                foreach ($files as $file) {
+                foreach ($files as $key => $file) {
+                  $ext = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
+                  $name = $file_names[$key]; // Get the corresponding name from the array
+                  $imageName = $name . '_' . time() . '.' . $ext;
+                  $file->move('public/images/files', $imageName);
 
-                    $filename = pathinfo($file, PATHINFO_FILENAME);
-                    $extension = $request->file('files')->getClientOriginalExtension();
-                    $fileNameToStore = $filename . '_' . time() . '.' . $extension;
-                    $request->file('file')->storeAs('public/files', $fileNameToStore);
-
-                    $document = new Document;
-                    $document->user_id = $user_id;
-                    $document->name = $file['names'];
-                    $document->file = $fileNameToStore;
-                    $document->author = $profile_id;
-                    $document->upload_date = $submitdate;
-                    $document->status = $status;
-                    //dd($document);exit;
-                    $document->save();
+                     if($application){
+                         $document = new Document;
+                         $document->user_id = $user_id;
+                         $document->name = $name;
+                         $document->file = $imageName;
+                         $document->auther = $profile_id;
+                         $document->profile_id = $profile_id;
+                         $document->application_id = $application->id;
+                         $document->upload_date = $submitdate;
+                         $document->status = $status;
+                        // dd($document);
+                       $document->save();
+                     }
                 }
             }
             return back()->with('success', 'Request submitted successfully');

@@ -2,7 +2,7 @@
 
 @section('title')
     @parent
-    | Roll of Petition rhc
+    | Petition Profile
 @stop
 
 @section('content')
@@ -14,8 +14,8 @@
                         <div class="page-header-title">
                             <i class="ik ik-users bg-red"></i>
                             <div class="d-inline">
-                                <h5>Roll of Petition</h5>
-                                <span>Petition Profile</span>
+                                <h5>Petition Profile</h5>
+                                <span>Full profile details of the petitioner</span>
                             </div>
                         </div>
                     </div>
@@ -64,6 +64,7 @@
                 @endforeach
             @endif
 
+            
             <!-- End Alert-->
 
             <div class="row">
@@ -96,8 +97,8 @@
                                     <strong>{{ $advocate->status }}</strong>
                                 </h5> --}}
                             </div>
-                            {{-- <div class="badge badge-pill badge-dark">Admission<br />{{ $advocate->admission }}</div> --}}
-                            <div class="badge badge-pill badge-dark">Petition Number.<br />{{ $advocate->id }}</div>
+                            <div class="badge badge-pill badge-dark">Admission<br />{{ $petition->admit_as }}</div>
+                            <div class="badge badge-pill badge-dark">Petition Number.<br />{{ $petition->petition_no }}</div>
                         </div>
 
                         <hr class="mb-0">
@@ -285,7 +286,7 @@
                                                         </tr>
                                                         <tr>
                                                             <th style="width:20%;text-align:right;">Start Year:</th>
-                                                            <td>{{ $experience->start_year }}</td>
+                                                            <td>{{ $experience->begin_year }}</td>
                                                         </tr>
                                                         <tr>
                                                             <th style="width:20%;text-align:right;">End Year:</th>
@@ -508,118 +509,98 @@
 
             </div>
 
-             <div class="row">
-                <div class="col-12">
-                  @foreach ($approvals as $approval)
-                                           <?php
-                                               $user = DB::table('users')->find($approval->user_id);
-                                                $current_stage = DB::table('action_user_types')->find($approval->action_user_type_id);
 
-                                            ?>
-                                      
-                                            <div class="col-12">
-                                            <div class="table-responsive">
-                                                <table class="table table-borderless" style="font: size 20px;">
-                                                    <tr>
-                                                        <th style="width:20%;text-align:right;">DECISION:</th>
-                                                        <td>{{ $approval->decision }}</td>
-                                                    </tr>
-                                                      <tr>
-                                                        <th style="width:20%;text-align:right;">DECISION STAGE:</th>
-                                                        <td>{{ $current_stage->display_name }}</td>
-                                                    </tr>
-                                                      <tr>
-                                                        <th style="width:20%;text-align:right;">ATTENDANT NAME:</th>
-                                                        <td>{{ $user->full_name }}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th style="width:20%;text-align:right;">comment:</th>
-                                                        <td>{{ $approval->comment }}</td>
-                                                    </tr>
-                                                      <tr>
-                                                        <th style="width:20%;text-align:right;">Created Date:</th>
-                                                        <td>{{ $approval->created_at }}</td>
-                                                    </tr>
-                                                  
-                                                </table>
-                                            </div>
-                                        </div>
-                                      @endforeach
+  <div class="row row-cols-2 row-cols-lg-5 g-2 g-lg-3" >
+    <div class="col" >
+      <div class="p-3 border bg-light" style="border-radius:20px; border-color:rgb(243, 76, 76); border-style: solid;">Qualification
+     <div>
+            {{$application->qualification}}
+         </div>
+    </div>
+    </div>
+    @foreach ($petitions as $petition)
+         <div class="col">
+      <div class="p-3 border bg-light" style="border-radius:20px; border-color:rgb(243, 76, 76); border-style: solid;">Admit As
+         
+        <a  data-toggle="modal" data-target="#addSession" title="Add Session"><i style="color:red; padding-left:5px;" class="fa fa-plus" aria-hidden="true"></i></a>
+        <div>
+    {{$petition->admit_as}}
+</div>
+    </div>
+
+    </div>
+    <div class="col">
+      <div class="p-3 border bg-light" style="border-radius:20px; border-color:rgb(243, 76, 76); border-style: solid;">LST Reg Number
+<div>
+    {{$petition->lst_regno}}
+</div>
+    </div>
+     
+    </div>
+    @endforeach
+    
+    <div class="col">
+      <div class="p-3 border bg-light" style="border-radius:20px; border-color:rgb(243, 76, 76); border-style: solid;">Submission Date
+    
+       <div>
+            {{ date('F d, Y', strtotime($application->submission_at)) }}
+         </div>
+    </div>
+      
+    </div>
+</div>
+<br>
+
+@if ($docus)
+    <div class="col-12">
+        <p class="lead"><i class="ik ik-paperclip"></i> Attachments <a style="color:red;"> [ Edit ]</a></p>
+        <hr />
+        <div class="table-responsive">
+            <table class="table table-borderless" style="font-size: 13px;">
+                @foreach ($docus as $key => $attachments)
+                    <tr>
+                        <th style="width: 20%; text-align: right;">
+                            {{ date('F d, Y', strtotime($attachments->upload_date)) }}:</th>
+                        <td>
+                            <a style="color: blue; text-decoration: none;" data-toggle="modal"
+                                data-target="#document{{ $attachments->id }}">
+                                <i class="ik ik-paperclip"></i>
+                                {{ $attachments->name }}
+                            </a>
+                        </td>
+                    </tr>
+                @endforeach
+            </table>
+        </div>
+    </div>
+@else
+    <div class="col-12">
+        <p class="lead"><i class="ik ik-paperclip"></i> Attachments <a
+                style="color:red;" href="{{ url('petition/attachments') }}"> [ Edit ]</a></p>
+        <hr />
+        <p><i class="ik ik-alert-triangle" style="color:red;"></i> No attachment(s) to display !</p>
+    </div>
+@endif
+
+<!-- View pdf modal-->
+@foreach ($docus as $attachments)
+    <div class="modal fade" id="document{{ $attachments->id }}" tabindex="-1" role="dialog"
+        aria-labelledby="demoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="demoModalLabel">{{ $attachments->name }}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <iframe src="{{ asset('public/images/files/' . $attachments->file) }}" width="100%" height="600"></iframe>
                 </div>
             </div>
- 
-                @if ($docus)
-                                                    <div class="col-12">
-                                                        <p class="lead"><i class="ik ik-paperclip"></i> Attachments <a
-                                                                style="color:red;"></a></p>
-                                                        <hr />
-                                                        <div class="table-responsive">
-                                                            <table class="table table-borderless"
-                                                                style="font: size 20px;">
-                                                                @foreach ($docus as $key => $attachments)
-                                                                    <tr>
-                                                                        <th style="width:20%;text-align:right;">
-                                                                            {{ $attachments->upload_date }}:</th>
-                                                                        <td>
-                                                                            <a style="color:blue;text-decoration:none;"  data-toggle="collapse" href="#collapseExample{{$attachments->id}}" 
-                                                                            role="button" aria-expanded="false" aria-controls="collapseExample">
-                                                                               {{ $attachments->name }}
-                                                                             </a>
-                                                                            <div class="collapse" id="collapseExample{{$attachments->id}}">
-                                                                                 <div class="card card-body">
-                                                                                             <iframe src="{{ asset('public/images/files/' . $attachments->file) }}" width="100%" 
-                                                                                        height="600"></iframe>
-
-                                                                               </div>
-                                                                           </div>
-                                                                        </td>
-                                                                    </tr>
-
-                                                                    <!-- View pdf modal-->
-                                                                    <div class="modal fade"
-                                                                        id="document{{ $attachments->id }}"
-                                                                        tabindex="-1" role="dialog"
-                                                                        aria-labelledby="demoModalLabel"
-                                                                        aria-hidden="true">
-                                                                        <div class="modal-dialog modal-lg"
-                                                                            role="document">
-                                                                            <div class="modal-content">
-                                                                                <div class="modal-header">
-                                                                                    <h5 class="modal-title"
-                                                                                        id="demoModalLabel">
-                                                                                        {{ $attachments->name }}</h5>
-                                                                                    <button type="button" class="close"
-                                                                                        data-dismiss="modal"
-                                                                                        aria-label="Close"><span
-                                                                                            aria-hidden="true">&times;</span></button>
-                                                                                </div>
-                                                                                <div class="modal-body">
-                                                                                    {{-- <embed
-                                                                                        src="{{ url('public/images/files/' . $attachments->file) }}#toolbar=0"
-                                                                                        type="application/pdf"
-                                                                                        width="100%" height="500px" /> --}}
-
-                                                                                        <iframe src="{{ asset('public/images/files/' . $attachments->file) }}" width="100%" 
-                                                                                        height="600"></iframe>
-                                                                                </div>
-
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                @endforeach
-                                                            </table>
-                                                        </div>
-                                                    </div>
-                                                @else
-                                                    <div class="col-12">
-                                                        <p class="lead"><i class="ik ik-paperclip"></i> Attachments <a
-                                                                style="color:red;" href="{{ url('petition/attachments') }}"> [ Edit ]</a></p>
-                                                        <hr />
-                                                        <p><i class="ik ik-alert-triangle" style="color:red;"></i> No
-                                                            attachment(s) to display !</p>
-                                                    </div>
-                                                @endif
-
+        </div>
+    </div>
+@endforeach
             <div class="row">
                 <div class="col-lg-8 col-md-7" role="document">
                     <div class="modal-content">
@@ -637,6 +618,7 @@
                                                 value="{{ $application->status }}" required data-live-search="true"
                                                 data-live-search-style="begins" title="Select Employee...">
                                                 <option value="ACCEPT">ACCEPT</option>
+                                                <option value="REJECT">REJECT</option>
                                                 <option value="RETURN">RETURN</option>
 
                                             </select>
@@ -662,5 +644,45 @@
             </div>
         </div>
     </div>
+
+     <div class="modal fade" id="addSession" tabindex="-1" role="dialog" aria-labelledby="demoModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                            <form class="forms-sample" method="POST" action="{{ url('petition/cj-appearance/admit', $application->id) }}" >
+                                {{ csrf_field() }}
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="demoModalLabel">Admit As</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                            aria-hidden="true">&times;</span></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                      <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label for="exampleInputPassword1">Select Your Decision</label>
+                                            <select class="form-control selectpicker" name="admit_as"
+                                                 required data-live-search="true" 
+                                                data-live-search-style="begins" title="Select Employee...">
+                                                <option value="NON_PROFIT">NON PROFIT</option>
+                                                <option value="NON_PRACTISING ">NON PRACTISING </option>
+                                                <option value="PRACTISING ">PRACTISING </option>
+
+                                            </select>
+                                        </div>
+                                    </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-danger">Submit</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+
+    
 
 @endsection

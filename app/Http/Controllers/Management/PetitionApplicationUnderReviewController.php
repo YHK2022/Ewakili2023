@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers\Management;
-
 use App\Models\Masterdata\PetitionSession;
 use App\Models\Masterdata\Coram;
 use App\Models\Masterdata\CoramCleMember;
@@ -49,22 +48,20 @@ class PetitionApplicationUnderReviewController extends Controller
             $stage = 1;
             $application_type = "PETITION";
             $status = "Under Review";
-            $resubmit = "RETURN";
-
-
+            $resubmit = false;
             $applications = Application::where('current_stage', $stage)->where('type', $application_type)
-            ->where('status', $status)->orderBy('created_at', 'desc')->paginate(20);
+            ->where('resubmission', true)->orderBy('created_at', 'desc')->paginate(20);
             $application_count = Application::where('current_stage', $stage)->where('type', $application_type)
+            ->where('resubmission', true)->orderBy('created_at', 'desc')->count();
+             $approved_count = Application::where('current_stage', 2)->where('resubmission', true)->where('type', $application_type)
             ->where('status', $status)->orderBy('created_at', 'desc')->count();
-             $approved_count = Application::where('current_stage', 2)->where('type', $application_type)
-            ->where('status', $status)->orderBy('created_at', 'desc')->count();
-             $approved_applications = Application::where('current_stage', 2)->where('type', $application_type)
+             $approved_applications = Application::where('current_stage', 2)->where('resubmission', true)->where('type', $application_type)
             ->where('status', $status)->orderBy('created_at', 'desc')->get();
 
             $resubmit_applications =  Application::where('current_stage', $stage)->where('type', $application_type)
-            ->where('status', $resubmit)->orderBy('created_at', 'desc')->paginate(20);
+            ->where('resubmission', $resubmit)->orderBy('created_at', 'desc')->paginate(20);
              $resubmit_applications_count =  Application::where('current_stage', $stage)->where('type', $application_type)
-            ->where('status', $resubmit)->orderBy('created_at', 'desc')->count();
+            ->where('resubmission', $resubmit)->orderBy('created_at', 'desc')->count();
 
 
             return view('management.petition_application.under_review.index', [
@@ -89,23 +86,23 @@ class PetitionApplicationUnderReviewController extends Controller
             $stage = 2;
             $status = 'Under Review';
             $application_type = "PETITION";
-            $resubmit = 'RETURN';
+            $resubmit = false ;
 
          
-            $applications = Application::where('current_stage', $stage)->where('status', $status)->where('type', $application_type)
+            $applications = Application::where('current_stage', $stage)->where('resubmission', true)->where('type', $application_type)
             ->orderBy('created_at', 'desc')->paginate(20);
             $applications_count = Application::where('current_stage', $stage)->where('type', $application_type)
-            ->orderBy('created_at', 'desc')->where('status', $status)->count();
-             $approved_count = Application::where('current_stage', 3)->where('type', $application_type)
+            ->orderBy('created_at', 'desc')->where('resubmission', true)->count();
+             $approved_count = Application::where('current_stage', 3)->where('resubmission', true)->where('type', $application_type)
             ->orderBy('created_at', 'desc')->count();
-             $approved_applications = Application::where('current_stage', 3)->where('type', $application_type)
+             $approved_applications = Application::where('current_stage', 3)->where('resubmission', true)->where('type', $application_type)
             ->orderBy('created_at', 'desc')->get();
 
             $resubmit_applications =  Application::where('current_stage', $stage)->where('type', $application_type)
-            ->where('status', $resubmit)->orderBy('created_at', 'desc')->paginate(20);
+            ->where('resubmission', $resubmit)->orderBy('created_at', 'desc')->paginate(20);
 
              $resubmit_applications_count =  Application::where('current_stage', $stage)->where('type', $application_type)
-            ->where('status', $resubmit)->orderBy('created_at', 'desc')->count();
+            ->where('resubmission', $resubmit)->orderBy('created_at', 'desc')->count();
 
             return view('management.petition_application.rhc.index', [
                 'profile' => $profile,
@@ -128,7 +125,6 @@ class PetitionApplicationUnderReviewController extends Controller
         {
             
                 $stage = Application::findOrFail($id);
-                // dd($stage->id);
                 $uuid = Str::uuid();
                 $this->validate($request, [
                 'status' => 'required',
@@ -141,7 +137,8 @@ class PetitionApplicationUnderReviewController extends Controller
                 if ($stage->status == "RETURN") 
                 {
                     $cj = DB::table('applications')
-                     ->where('id', $id)->update([ 'current_stage' => 1]);
+                     ->where('id', $id)->update([ 'current_stage' => 1,'status' => "Under Review"
+                     ,'resubmission' => false]);
 
                     $comment = new ApplicationApproval();
                     $comment->comment = $request->input('comment');
@@ -160,7 +157,7 @@ class PetitionApplicationUnderReviewController extends Controller
                 if ($stage->status == "ACCEPT") 
                 {
                    $profile_picture = DB::table('applications')
-                   ->where('id', $id)->update(['status' => "Under Review", 'current_stage' => 2 ]);
+                   ->where('id', $id)->update(['status' => "Under Review", 'current_stage' => 2,'resubmission' => true ]);
                     $petition = DB::table('petitions')
                        ->where('application_id', $id)
                         ->where('petition_no' , null) ->update(['petition_no' => $nextpetionNumber]);
@@ -195,7 +192,7 @@ class PetitionApplicationUnderReviewController extends Controller
                 if ($stage->status == "RETURN") 
                 {
                     $cj = DB::table('applications')
-                     ->where('id', $id)->update([ 'current_stage' => 1, 'status'=>'RETURN']);
+                     ->where('id', $id)->update([ 'current_stage' => 1, 'status' => "Under Review",'resubmission' => false]);
         
                     $comment = new ApplicationApproval();
                     $comment->comment = $request->input('comment');
@@ -213,7 +210,7 @@ class PetitionApplicationUnderReviewController extends Controller
                 if ($stage->status == "ACCEPT") 
                 {
                    $profile_picture = DB::table('applications')
-                   ->where('id', $id)->update(['status' => "Under Review", 'current_stage' => 3 ]);
+                   ->where('id', $id)->update(['status' => "Under Review", 'current_stage' => 3, 'resubmission' => true ]);
                    
                 }
 
@@ -411,7 +408,7 @@ class PetitionApplicationUnderReviewController extends Controller
                         if ($stage->status == "RETURN") 
                         {
                           $cj = DB::table('applications')
-                             ->where('id', $id)->update(['status' => "RETURN", 'current_stage' => 3]);
+                             ->where('id', $id)->update(['status' => "Under Review", 'current_stage' => 3,'resubmission' => false]);
                           $comment = new ApplicationApproval();
                           $comment->comment = $request->input('comment');
                           $comment->active = true;
@@ -428,13 +425,12 @@ class PetitionApplicationUnderReviewController extends Controller
     }
 
 
-    
-
      public function edit_cle(Request $request, $id)
    {
 
       if (Auth::check()) {
         $stage = Application::findOrFail($id);
+        // dd($stage);
         $session_id = PetitionSession::where('active', true)->first()->id;
         $uuid = Str::uuid();
         $this->validate($request, [
@@ -442,23 +438,25 @@ class PetitionApplicationUnderReviewController extends Controller
         ]);
         $stage->status = $request->input('status');
         $stage->save();
-
-            
             if ($stage->status == "ACCEPT") {
                 //Update profile picture values
-                $profile_picture = DB::table('applications')
-                 ->where('id', $id)
-                    ->update(['status' => "Under Review",
-                        'current_stage' => 3]);
-
+                
                         $date = date('Y-m-d');
-                                 $user_id = Auth::user()->id;
-                                 $cleMemberId = CleMember::where('user_id', $user_id)->first()->id;
-                                //   $cleMemberId = 1;
+                        $user_id = Auth::user()->id;
+                        $cleMember = CleMember::where('user_id', $user_id)->first();
+                        if(!$cleMember)  {
+                            $profile_picture = DB::table('applications')->where('id', $id)
+                                  ->update(['status' => "Under Review",'resubmission' => true,'current_stage' => 3]);
+                          return Redirect::to("petition/cle-inspection")->with('warning', ' You are not a CLE member.');
+
+                        }else{
+                            $profile_picture = DB::table('applications')->where('id', $id)
+                                  ->update(['status' => "Under Review",'resubmission' => true,'current_stage' => 4]);
                             if (Coram::where('workday', $date)->exists()) {
                                     // Data exists in 'corams' table, insert into 'coram_cle_members' table
                                  $coram = Coram::where('workday', $date)->first();
                                  // Update CoramCleMember table
+                                 $cleMemberId = CleMember::where('user_id', $user_id)->first()->id;
                                    $coramCleMember = CoramCleMember::where('coram_id', $coram->id)
                                    ->where('cle_member_id', $cleMemberId)
                                    ->first();
@@ -491,12 +489,19 @@ class PetitionApplicationUnderReviewController extends Controller
                                       $coramCleMember->member_id = 1;
                                       $coramCleMember->save();
                                 }
-                               
-
+                        }   
             }
 
             if ($stage->status == "RETURN") {
-                 $comment = new ApplicationApproval();
+              $user_id = Auth::user()->id;
+              $cleMember = CleMember::where('user_id', $user_id)->first();
+              if(!$cleMember){
+               $profile_picture = DB::table('applications')->where('id', $id)->update(['status' => "Under Review",
+             'resubmission' => true,
+            'current_stage' => 3]);
+             return Redirect::to("petition/cle-inspection")->with('warning', ' You are not a CLE member.');
+              }else{
+              $comment = new ApplicationApproval();
               $comment->comment = $request->input('comment');
               $comment->active = true;
               $comment->decision = "RETURN";
@@ -505,12 +510,13 @@ class PetitionApplicationUnderReviewController extends Controller
               $comment->application_id = $stage->id;
               $comment->user_id = Auth()->user()->id;
               $comment->save();
-             $profile_picture = DB::table('applications')->where('id', $id)->update(['status' => "RETURN",
+             $profile_picture = DB::table('applications')->where('id', $id)->update(['status' => "Under Review",
+             'resubmission' => false,
             'current_stage' => 2]);
+              }
                   }
 
                 return Redirect::to("petition/cle-inspection")->with('success', ' Application edited successfully');
-
 
          }
          return Redirect::to("auth/login")->withErrors('You do not have access!');
@@ -558,11 +564,11 @@ class PetitionApplicationUnderReviewController extends Controller
             $stage = 3;
             $application_type = "PETITION";
              $status = "Under Review";
-             $resubmit = 'RETURN';
+             $resubmit = false;
 
-            $applications = Application::where('current_stage', $stage)->where('type', $application_type)->where('status', $status)
+            $applications = Application::where('current_stage', $stage)->where('type', $application_type)->where('resubmission', true)
             ->orderBy('created_at', 'desc')->paginate(20);
-            $application_count = Application::where('current_stage', $stage)->where('status', $status)->where('type', $application_type)
+            $application_count = Application::where('current_stage', $stage)->where('resubmission', true)->where('type', $application_type)
             ->orderBy('created_at', 'desc')->count();
 
              $approved_count = Application::where('current_stage', 4)->where('status', 'Under Review')
@@ -570,11 +576,11 @@ class PetitionApplicationUnderReviewController extends Controller
              $approved_applications = Application::where('current_stage', 4)->where('status', 'Under Review')
             ->orderBy('created_at', 'desc')->get();
 
-            $resubmit_applications =  Application::where('current_stage', $stage)->where('type', $application_type)
-            ->where('status', $resubmit)->orderBy('created_at', 'desc')->paginate(20);
+            $resubmit_applications =  Application::where('current_stage', 4)->where('type', $application_type)
+            ->where('resubmission', $resubmit)->orderBy('created_at', 'desc')->paginate(20);
 
-             $resubmit_applications_count =  Application::where('current_stage', $stage)->where('type', $application_type)
-            ->where('status', $resubmit)->orderBy('created_at', 'desc')->count();
+             $resubmit_applications_count =  Application::where('current_stage',4)->where('type', $application_type)
+            ->where('resubmission', $resubmit)->orderBy('created_at', 'desc')->count();
 
             return view('management.petition_application.cle.index', [
                 'profile' => $profile,
@@ -610,7 +616,12 @@ class PetitionApplicationUnderReviewController extends Controller
                 $profile_id = Application::where('uid', $id)->first()->profile_id;
             //   dd($advocate);
 
-
+                  if(Petition::where('profile_id', $profile_id)->exists()){
+                    $petitions = Petition::where('profile_id', $profile_id)->get();
+                    
+                }else{
+                    $petitions = "No data";
+                }
                 //check membership
                 if(FirmMembership::where('profile_id', $profile_id)->exists()){
                     $since = FirmMembership::where('profile_id', $profile_id)->first()->since;
@@ -681,17 +692,25 @@ class PetitionApplicationUnderReviewController extends Controller
                 }else{
                     $applications = "No data";
                 }
-
-                $docus = DB::table('applications')
-                ->Join('documents', 'documents.application_id', '=', 'applications.id')
-                ->select('applications.*', 'documents.*')->where('applications.id', $application_id)
-                 ->get();
-
+                   $docus = DB::table('applications')
+                         ->join('documents', 'documents.application_id', '=', 'applications.id')
+                         ->select('applications.*', 'documents.*')
+                         ->where('applications.id', $application_id)
+                         ->skip(1) // Skip the first row
+                         ->get();
+ 
+                // $docus = DB::table('applications')
+                // ->Join('documents', 'documents.application_id', '=', 'applications.id')
+                // ->select('applications.*', 'documents.*')->where('applications.id', $application_id)
+                //  ->get();
+                $petition = Petition::where('profile_id', $profile_id)->first();
     //  dd($docus);
 
                 return view('management.petition_application.under_review.view', [
                     'profile' => $profile,
                     'docus' => $docus,
+                    'petitions' => $petitions,
+                    'petition' => $petition,
                     'advocate' => $advocate,
                     'cur_year' => $cur_year,
                     'firms' => $firms,
@@ -805,6 +824,7 @@ public function view_cj(Request $request, $id)
                 $docus = DB::table('applications')
                 ->Join('documents', 'documents.application_id', '=', 'applications.id')
                 ->select('applications.*', 'documents.*')->where('applications.id', $application_id)
+                ->skip(1) 
                  ->get();
                 $petition = Petition::where('profile_id', $profile_id)->first();
 
@@ -917,13 +937,22 @@ public function view_rhc(Request $request, $id)
                 $docus = DB::table('applications')
                 ->Join('documents', 'documents.application_id', '=', 'applications.id')
                 ->select('applications.*', 'documents.*')->where('applications.id', $application_id)
+                ->skip(1) 
                  ->get();
                 $petition = Petition::where('profile_id', $profile_id)->first();
+                 if(Petition::where('profile_id', $profile_id)->exists()){
+                    $petitions = Petition::where('profile_id', $profile_id)->get();
+                    
+                }else{
+                    $petitions = "No data";
+                }
                 
     //  dd($applications);
 
                 return view('management.petition_application.rhc.view', [
                     'docus' => $docus,
+                    'petitions' => $petitions,
+                    'petition'=> $petition,
                     'profile' => $profile,
                     'advocate' => $advocate,
                     'cur_year' => $cur_year,
@@ -1029,11 +1058,20 @@ public function view_cle(Request $request, $id)
                 $docus = DB::table('applications')
                 ->Join('documents', 'documents.application_id', '=', 'applications.id')
                 ->select('applications.*', 'documents.*')->where('applications.id', $application_id)
+                ->skip(1) 
                  ->get();
                 $petition = Petition::where('profile_id', $profile_id)->first();
+                 if(Petition::where('profile_id', $profile_id)->exists()){
+                    $petitions = Petition::where('profile_id', $profile_id)->get();
+                    
+                }else{
+                    $petitions = "No data";
+                }
 
                 return view('management.petition_application.cle.view', [
                     'profile' => $profile,
+                    'petition' => $petition,
+                    'petitions' => $petitions,
                     'docus' => $docus,
                     'advocate' => $advocate,
                     'cur_year' => $cur_year,

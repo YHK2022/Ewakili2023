@@ -75,7 +75,7 @@
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" id="pills-timeline-tab" data-toggle="pill" href="#practising"
-                                    role="tab" aria-controls="pills-timeline" aria-selected="true">Resubmission Applications <span
+                                    role="tab" aria-controls="pills-timeline" aria-selected="true">Returned Applications <span
                                         class="badge bg-warning" style="color: white">
                                         {{ $resubmit_applications_count }}
                                     </span></a>
@@ -123,7 +123,7 @@
                                             <td id="table_id">{{ $application->type }}</td>
                                             <td id="table_id"> FRONT DESK </td>
                                             <td id="table_id">{{ $application->status }}</td>
-                                            <td id="table_id">{{ $application->submission_at }}</td>
+                                            <td id="table_id"> {{ date('F d, Y', strtotime($application->submission_at)) }}</td>
                                             <td id="table_id">
                                                 <div class="table-actions">
                                                         <div class="table-actions" style="justify-content: center;align-items: center;  display: flex;">

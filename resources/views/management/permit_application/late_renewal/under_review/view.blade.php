@@ -2,7 +2,7 @@
 
 @section('title')
     @parent
-    | Roll of Petition
+    | Application For Renewal Out Time
 @stop
 
 @section('content')
@@ -14,8 +14,8 @@
                         <div class="page-header-title">
                             <i class="ik ik-users bg-red"></i>
                             <div class="d-inline">
-                                <h5>Roll of Petition</h5>
-                                <span>Petition Profile</span>
+                                <h5>Application For Renewal Out Time</h5>
+                                <span>Application Profile</span>
                             </div>
                         </div>
                     </div>
@@ -25,7 +25,7 @@
                                 <li class="breadcrumb-item">
                                     <a href="{{ url('auth/dashboard') }}"><i class="ik ik-home"></i></a>
                                 </li>
-                                <li class="breadcrumb-item active" aria-current="page">Roll of Petition</li>
+                                <li class="breadcrumb-item active" aria-current="page">Application View</li>
                                 <li class="breadcrumb-item">
                                     <button title="Go Bck" style="border: none" onclick="goBack()"><i
                                             class="ik ik-chevrons-left"></i></button>
@@ -546,11 +546,64 @@
                                       @endforeach
                 </div>
             </div>
+
+
+@if ($docus)
+    <div class="col-12">
+        <p class="lead"><i class="ik ik-paperclip"></i> Attachments <a style="color:red;"> [ Edit ]</a></p>
+        <hr />
+        <div class="table-responsive">
+            <table class="table table-borderless" style="font-size: 15px;">
+                @foreach ($docus as $key => $attachments)
+                    <tr>
+                        <th style="width: 20%; text-align: right;">
+                            {{ date('F d, Y', strtotime($attachments->upload_date)) }}:</th>
+                        <td>
+                            <a style="color: blue; text-decoration: none;" data-toggle="modal"
+                                data-target="#document{{ $attachments->id }}">
+                                <i class="ik ik-paperclip"></i>
+                                {{ $attachments->name }}
+                            </a>
+                        </td>
+                    </tr>
+                @endforeach
+            </table>
+        </div>
+    </div>
+@else
+    <div class="col-12">
+        <p class="lead"><i class="ik ik-paperclip"></i> Attachments <a
+                style="color:red;" href="{{ url('petition/attachments') }}"> [ Edit ]</a></p>
+        <hr />
+        <p><i class="ik ik-alert-triangle" style="color:red;"></i> No attachment(s) to display !</p>
+    </div>
+@endif
+
+<!-- View pdf modal-->
+@foreach ($docus as $attachments)
+    <div class="modal fade" id="document{{ $attachments->id }}" tabindex="-1" role="dialog"
+        aria-labelledby="demoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="demoModalLabel">{{ $attachments->name }}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <iframe src="{{ asset('public/images/files/' . $attachments->file) }}" width="100%" height="600"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+@endforeach
+
             <div class="row">
                 <div class="col-lg-8 col-md-7" role="document">
                     <div class="modal-content">
                         <form class="forms-sample" method="POST"
-                            action="{{ url('petition/under-review/edit', $application->id) }}">
+                            action="{{ url('permit/late-renewal/under-review/edit', $application->id) }}">
                             {{ csrf_field() }}
 
                             <div class="modal-body">

@@ -52,7 +52,10 @@ class AuthController extends Controller
     {
         return view('auth.advocate-register');
     }
-
+    public function TemporaryadvocateRegistration()
+    {
+        return view('auth.temporary-advocate-register');
+    }
      public function advocateRegister()
     {
         return view('auth.register');
@@ -160,7 +163,7 @@ class AuthController extends Controller
 
             $petitioner = Auth::user()->petitioner;
             $advocate = Auth::user()->is_advocate;
-            // dd($advocate , $petitioner);
+            $tempAdvocate = Auth::user()->temporary_advocate;
 
             if($petitioner > 0){
                 if($advocate > 0){
@@ -168,7 +171,10 @@ class AuthController extends Controller
                 }else{
                     return redirect()->intended('auth/petitioner-profile');
                 }
-            }else{
+            } elseif ($tempAdvocate > 0) {
+                    return redirect()->intended('auth/temporary-admission-profile');
+            }
+            else{
               return redirect()->intended('auth/dashboard');
             }
           }else{
@@ -199,7 +205,21 @@ class AuthController extends Controller
         return Redirect::to("login")->with('success','We have sent you an activation link, please check your email.');
     }
 
+     public function TemporaryAdvocatePostRegistration(Request $request)
+    {
+        request()->validate([
+        'username' => 'required',
+        'email' => 'required|email|unique:users',
+        'phone_number' => 'required',
+        'password' => 'required|min:6',
+        ]);
 
+        $user = $request->all();
+        $user['temporary_advocate'] = 1;
+        $check = $this->create($user);
+
+        return Redirect::to("login")->with('success','We have sent you an activation link, please check your email.');
+    }
     
     /**
      * view dashboard

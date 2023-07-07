@@ -2,7 +2,7 @@
 
 @section('title')
     @parent
-    | Application For Change Of Name
+    | Application For Name Change
 @stop
 
 @section('content')
@@ -14,7 +14,7 @@
                         <div class="page-header-title">
                             <i class="ik ik-users bg-red"></i>
                             <div class="d-inline">
-                                <h5>Application For Change Of Name</h5>
+                                <h5>Application For Name Change</h5>
                                 <span>Application Profile</span>
                             </div>
                         </div>

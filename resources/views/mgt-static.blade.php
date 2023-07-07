@@ -35,7 +35,7 @@
         <link href="{{ asset('app-css-js/plug/css/chosen/bootstrap-chosen.css') }}" rel="stylesheet">
         {{-- <link rel="stylesheet" href="css/chosen/bootstrap-chosen.css"> --}}
 
-
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
     <link href="{{ asset('app-css-js/dist/css/custom.css') }}" rel="stylesheet">
     <link href="{{ asset('app-css-js/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}" rel="stylesheet">
 

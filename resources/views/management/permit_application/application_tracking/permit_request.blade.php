@@ -86,7 +86,19 @@
                                             <td id="table_id">{{ ++$key }}</td>
                                             <td id="table_id">{{ $application->profile_detail->fullname }}</td>
                                             <td id="table_id">{{ $application->type }}</td>
-                                            <td id="table_id"> RHC REVIEW </td>
+                                             <td id="table_id"> 
+                                               @if($application->current_stage == 1)
+                                                     <span>Front Desk</span>
+                                               @elseif($application->current_stage == 2)
+                                                     <span>RHC Review</span>
+                                               @elseif($application->current_stage == 3)
+                                                     <span>CLE Review</span>
+                                               @elseif($application->current_stage == 4)
+                                                       <span>CJ Review</span>
+                                               @elseif($application->current_stage == 5)
+                                                       <span>JK Review</span>
+                                               @endif
+                                            </td>
                                             <td id="table_id">{{ $application->status }}</td>
                                             <td id="table_id"> {{ date('F d, Y', strtotime($application->submission_at)) }}</td>
                                             <td id="table_id">

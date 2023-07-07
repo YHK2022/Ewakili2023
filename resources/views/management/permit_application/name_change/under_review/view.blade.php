@@ -549,100 +549,55 @@
 
 
              @if ($docus)
-                                                    <div class="col-12">
-                                                        <p class="lead"><i class="ik ik-paperclip"></i> Attachments <a
-                                                                style="color:red;"> [ Edit ]</a></p>
-                                                        <hr />
-                                                        <div class="table-responsive">
-                                                            <table class="table table-borderless"
-                                                                style="font: size 20px;">
-                                                                @foreach ($docus as $key => $attachments)
-                                                                    <tr>
-                                                                        <th style="width:20%;text-align:right;">
-                                                                            {{ $attachments->upload_date }}:</th>
-                                                                        <td>
-                                                                            {{-- <a style="color:blue;text-decoration:none;"
-                                                                                href="#document{{ $attachments->id }}"
-                                                                                title="{{ $attachments->name }}"
-                                                                                data-toggle="modal"
-                                                                                data-id="{{ $attachments->id }}"
-                                                                                data-name="{{ $attachments->name }}"
-                                                                                data-file="{{ $attachments->file }}"
-                                                                                data-target="#document{{ $attachments->id }}"
-                                                                                id="caseDocumentView"> --}}
-                                                                                {{-- {{ $attachments->name }} --}}
-                                                                                {{-- {{ $attachments->name }} --}}
-                                                                            
-                                                                            
-                                                                            <a style="color:blue;text-decoration:none;"  data-toggle="collapse" href="#collapseExample{{$attachments->id}}" 
-                                                                            role="button" aria-expanded="false" aria-controls="collapseExample">
-                                                                               {{ $attachments->name }}
-                                                                             </a>
-                                                                            <div class="collapse" id="collapseExample{{$attachments->id}}">
-                                                                                 <div class="card card-body">
-                                                                                      {{-- <embed
-                                                                                        src="{{ url('public/images/files/' . $attachments->file) }}#toolbar=0"
-                                                                                        type="application/pdf"
-                                                                                        width="100%" height="500px" /> --}}
+    <div class="col-12">
+        <p class="lead"><i class="ik ik-paperclip"></i> Attachments <a style="color:red;"> [ Edit ]</a></p>
+        <hr />
+        <div class="table-responsive">
+            <table class="table table-borderless" style="font-size: 15px;">
+                @foreach ($docus as $key => $attachments)
+                    <tr>
+                        <th style="width: 20%; text-align: right;">
+                            {{ date('F d, Y', strtotime($attachments->upload_date)) }}:</th>
+                        <td>
+                            <a style="color: blue; text-decoration: none;" data-toggle="modal"
+                                data-target="#document{{ $attachments->id }}">
+                                <i class="ik ik-paperclip"></i>
+                                {{ $attachments->name }}
+                            </a>
+                        </td>
+                    </tr>
+                @endforeach
+            </table>
+        </div>
+    </div>
+@else
+    <div class="col-12">
+        <p class="lead"><i class="ik ik-paperclip"></i> Attachments <a
+                style="color:red;" href="{{ url('petition/attachments') }}"> [ Edit ]</a></p>
+        <hr />
+        <p><i class="ik ik-alert-triangle" style="color:red;"></i> No attachment(s) to display !</p>
+    </div>
+@endif
 
-                                                                                             <iframe src="{{ asset('public/images/files/' . $attachments->file) }}" width="100%" 
-                                                                                        height="600"></iframe>
-
-                                                                               </div>
-                                                                           </div>
-                                                                        </td>
-                                                                    </tr>
-
-                                                                    <!-- View pdf modal-->
-                                                                    <div class="modal fade"
-                                                                        id="document{{ $attachments->id }}"
-                                                                        tabindex="-1" role="dialog"
-                                                                        aria-labelledby="demoModalLabel"
-                                                                        aria-hidden="true">
-                                                                        <div class="modal-dialog modal-lg"
-                                                                            role="document">
-                                                                            <div class="modal-content">
-                                                                                <div class="modal-header">
-                                                                                    <h5 class="modal-title"
-                                                                                        id="demoModalLabel">
-                                                                                        {{ $attachments->name }}</h5>
-                                                                                    <button type="button" class="close"
-                                                                                        data-dismiss="modal"
-                                                                                        aria-label="Close"><span
-                                                                                            aria-hidden="true">&times;</span></button>
-                                                                                </div>
-                                                                                <div class="modal-body">
-                                                                                    {{-- <embed
-                                                                                        src="{{ url('public/images/files/' . $attachments->file) }}#toolbar=0"
-                                                                                        type="application/pdf"
-                                                                                        width="100%" height="500px" /> --}}
-
-                                                                                        <iframe src="{{ asset('public/images/files/' . $attachments->file) }}" width="100%" 
-                                                                                        height="600"></iframe>
-                                                                                </div>
-
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                @endforeach
-                                                            </table>
-                                                        </div>
-                                                    </div>
-                                                @else
-                                                    <div class="col-12">
-                                                        <p class="lead"><i class="ik ik-paperclip"></i> Attachments <a
-                                                                style="color:red;" href="{{ url('petition/attachments') }}"> [ Edit ]</a></p>
-                                                        <hr />
-                                                        <p><i class="ik ik-alert-triangle" style="color:red;"></i> No
-                                                            attachment(s) to display !</p>
-                                                    </div>
-                                                @endif
-
-
-
-
-
-
+<!-- View pdf modal-->
+@foreach ($docus as $attachments)
+    <div class="modal fade" id="document{{ $attachments->id }}" tabindex="-1" role="dialog"
+        aria-labelledby="demoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="demoModalLabel">{{ $attachments->name }}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <iframe src="{{ asset('public/images/files/' . $attachments->file) }}" width="100%" height="600"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+@endforeach
             <div class="row">
                 <div class="col-lg-8 col-md-7" role="document">
                     <div class="modal-content">

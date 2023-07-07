@@ -37,20 +37,20 @@ class PermitController extends Controller
             $stage = 1;
             $application_type = "PERMIT NON PRACTISING";
             $status = "Under Review";
-            $resubmit = "RETURN";
+            $resubmit = false;
             $applications = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $status)
+                ->where('type', $application_type)->where('resubmission', true)
                 ->orderBy('created_at', 'desc')->paginate(20);
             $applications_count = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $status)
+                ->where('type', $application_type)->where('resubmission', true)
                 ->orderBy('created_at', 'desc')->count();
 
              $submit_applications = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $resubmit)
+                ->where('type', $application_type)->where('resubmission', $resubmit)
                 ->orderBy('created_at', 'desc')->paginate(20);
             
              $submit_applications_count = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $resubmit)
+                ->where('type', $application_type)->where('resubmission', $resubmit)
                 ->orderBy('created_at', 'desc')->count();   
             $approved_applications = Application::where('current_stage', 2)
                 ->where('type', $application_type)->where('status', $status)
@@ -82,21 +82,21 @@ class PermitController extends Controller
             $stage = 2;
             $application_type = "PERMIT NON PRACTISING";
             $status = "Under Review";
-            $resubmit = 'RETURN';
+            $resubmit = false;
 
             $applications = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $status)
+                ->where('type', $application_type)->where('resubmission', true)
                 ->orderBy('created_at', 'desc')->paginate(20);
             $applications_count = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $status)
+                ->where('type', $application_type)->where('resubmission', true)
                 ->orderBy('created_at', 'desc')->count();
 
              $submit_applications = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $resubmit)
+                ->where('type', $application_type)->where('resubmission', $resubmit)
                 ->orderBy('created_at', 'desc')->paginate(20);
             
              $submit_applications_count = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $resubmit)
+                ->where('type', $application_type)->where('resubmission', $resubmit)
                 ->orderBy('created_at', 'desc')->count(); 
 
              $approved_applications = Application::where('current_stage', 4)
@@ -129,20 +129,20 @@ class PermitController extends Controller
             $stage = 4;
             $application_type = "PERMIT NON PRACTISING";
             $status = "Under Review";
-            $resubmit = 'RETURN';
+            $resubmit = false;
            $applications = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $status)
+                ->where('type', $application_type)->where('resubmission', true)
                 ->orderBy('created_at', 'desc')->paginate(20);
             $applications_count = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $status)
+                ->where('type', $application_type)->where('resubmission', true)
                 ->orderBy('created_at', 'desc')->count();
 
              $submit_applications = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $resubmit)
+                ->where('type', $application_type)->where('resubmission', $resubmit)
                 ->orderBy('created_at', 'desc')->paginate(20);
             
              $submit_applications_count = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $resubmit)
+                ->where('type', $application_type)->where('resubmission', $resubmit)
                 ->orderBy('created_at', 'desc')->count(); 
              $approved_applications = Application::where('current_stage', 2)
                 ->where('type', $application_type)->where('status', $status)
@@ -180,7 +180,7 @@ class PermitController extends Controller
                 $cj = DB::table('applications')
                     ->where('id', $id)
                     ->update([
-                        'current_stage' => 1]);
+                        'current_stage' => 1, 'resubmission' => false]);
 
                 $comment = new ApplicationApproval();
                 $comment->comment = $request->input('comment');
@@ -197,7 +197,7 @@ class PermitController extends Controller
                 //Update profile picture values
                 $profile_picture = DB::table('applications')
                     ->where('id', $id)
-                    ->update(['status' => "Under Review",
+                    ->update(['status' => "Under Review",'resubmission' => true,
                         'current_stage' => 2]);
             }
 
@@ -252,7 +252,7 @@ class PermitController extends Controller
                 if ($stage->status == "RETURN") {
                     $application = DB::table('applications')
                         ->where('id', $id)
-                        ->update(['status' => "Under Review",
+                        ->update(['status' => "Under Review", 'resubmission' => false,
                             'current_stage' => 2]);
 
                     $comment = new ApplicationApproval();
@@ -304,7 +304,7 @@ class PermitController extends Controller
                 //Update profile picture values
                 $profile_picture = DB::table('applications')
                     ->where('id', $id)
-                    ->update(['status' => "Under Review",
+                    ->update(['status' => "Under Review", 'resubmission' => false,
                         'current_stage' => 1]);
             }
 
@@ -312,7 +312,7 @@ class PermitController extends Controller
                 //Update profile picture values
                 $profile_picture = DB::table('applications')
                     ->where('id', $id)
-                    ->update(['status' => "Under Review",
+                    ->update(['status' => "Under Review",'resubmission' => true,
                         'current_stage' => 4]);
             }
 
@@ -396,9 +396,9 @@ class PermitController extends Controller
                 $application_type = "PERMIT NON PRACTISING";
                 $status = "Under Review";
                 $applications = Application::where('profile_id', $profile_id)->where('type', $application_type)
-                    ->where('status', $status)->get();
+                    ->where('status', $status)->orderBy('id', 'desc')->get();
                 $application_id = Application::where('profile_id', $profile_id)->where('type', $application_type)
-                    ->where('status', $status)->first()->id;
+                    ->where('status', $status)->orderBy('id', 'desc')->first()->id;
 
             } else {
                 $applications = "No data";
@@ -506,9 +506,9 @@ class PermitController extends Controller
                 $application_type = "PERMIT NON PRACTISING";
                 $status = "Under Review";
                 $applications = Application::where('profile_id', $profile_id)->where('type', $application_type)
-                    ->where('status', $status)->get();
+                    ->where('status', $status)->orderBy('id', 'desc')->get();
                 $application_id = Application::where('profile_id', $profile_id)->where('type', $application_type)
-                    ->where('status', $status)->first()->id;
+                    ->where('status', $status)->orderBy('id', 'desc')->first()->id;
 
             } else {
                 $applications = "No data";
@@ -610,10 +610,10 @@ class PermitController extends Controller
             if (Application::where('profile_id', $profile_id)->exists()) {
                 $application_type = "PERMIT NON PRACTISING";
                 $status = "Under Review";
-                $applications = Application::where('profile_id', $profile_id)->where('type', $application_type)
-                    ->where('status', $status)->get();
+               $applications = Application::where('profile_id', $profile_id)->where('type', $application_type)
+                    ->where('status', $status)->orderBy('id', 'desc')->get();
                 $application_id = Application::where('profile_id', $profile_id)->where('type', $application_type)
-                    ->where('status', $status)->first()->id;
+                    ->where('status', $status)->orderBy('id', 'desc')->first()->id;
             } else {
                 $applications = "No data";
             }
@@ -661,21 +661,21 @@ class PermitController extends Controller
             $stage = 1;
             $application_type = "PERMIT SUSPENDED";
             $status = "Under Review";
-            $resubmit = 'RETURN';
+            $resubmit = false;
 
             $applications = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $status)
+                ->where('type', $application_type)->where('resubmission', true)
                 ->orderBy('created_at', 'desc')->paginate(20);
             $applications_count = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $status)
+                ->where('type', $application_type)->where('resubmission', true)
                 ->orderBy('created_at', 'desc')->count();
 
              $submit_applications = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $resubmit)
+                ->where('type', $application_type)->where('resubmission', $resubmit)
                 ->orderBy('created_at', 'desc')->paginate(20);
             
              $submit_applications_count = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $resubmit)
+                ->where('type', $application_type)->where('resubmission', $resubmit)
                 ->orderBy('created_at', 'desc')->count(); 
             $approved_applications = Application::where('current_stage', 2)
                 ->where('type', $application_type)->where('status', $status)
@@ -706,21 +706,21 @@ class PermitController extends Controller
             $stage = 2;
             $application_type = "PERMIT SUSPENDED";
             $status = "Under Review";
-            $resubmit = 'RETURN';
+            $resubmit = false;
 
             $applications = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $status)
+                ->where('type', $application_type)->where('resubmission', true)
                 ->orderBy('created_at', 'desc')->paginate(20);
             $applications_count = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $status)
+                ->where('type', $application_type)->where('resubmission', true)
                 ->orderBy('created_at', 'desc')->count();
 
              $submit_applications = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $resubmit)
+                ->where('type', $application_type)->where('resubmission', $resubmit)
                 ->orderBy('created_at', 'desc')->paginate(20);
             
              $submit_applications_count = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $resubmit)
+                ->where('type', $application_type)->where('resubmission', $resubmit)
                 ->orderBy('created_at', 'desc')->count(); 
             $approved_applications = Application::where('current_stage', 4)
                 ->where('type', $application_type)->where('status', $status)
@@ -751,21 +751,21 @@ class PermitController extends Controller
             $stage = 4;
             $application_type = "PERMIT SUSPENDED";
             $status = "Under Review";
-            $resubmit = 'RETURN';
+            $resubmit = false;
 
             $applications = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $status)
+                ->where('type', $application_type)->where('resubmission', true)
                 ->orderBy('created_at', 'desc')->paginate(20);
             $applications_count = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $status)
+                ->where('type', $application_type)->where('resubmission', true)
                 ->orderBy('created_at', 'desc')->count();
 
              $submit_applications = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $resubmit)
+                ->where('type', $application_type)->where('resubmission', $resubmit)
                 ->orderBy('created_at', 'desc')->paginate(20);
             
              $submit_applications_count = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $resubmit)
+                ->where('type', $application_type)->where('resubmission', $resubmit)
                 ->orderBy('created_at', 'desc')->count(); 
             $approved_applications = Application::where('current_stage', 2)
                 ->where('type', $application_type)->where('status', $status)
@@ -859,10 +859,10 @@ class PermitController extends Controller
                 // $applications = Application::where('profile_id', $profile_id)->get();
                 $application_type = "PERMIT SUSPENDED";
                 $status = "Under Review";
-                $applications = Application::where('profile_id', $profile_id)->where('type', $application_type)
-                    ->where('status', $status)->get();
+               $applications = Application::where('profile_id', $profile_id)->where('type', $application_type)
+                    ->where('status', $status)->orderBy('id', 'desc')->get();
                 $application_id = Application::where('profile_id', $profile_id)->where('type', $application_type)
-                    ->where('status', $status)->first()->id;
+                    ->where('status', $status)->orderBy('id', 'desc')->first()->id;
 
             } else {
                 $applications = "No data";
@@ -970,10 +970,9 @@ class PermitController extends Controller
                 $application_type = "PERMIT SUSPENDED";
                 $status = "Under Review";
                 $applications = Application::where('profile_id', $profile_id)->where('type', $application_type)
-                    ->where('status', $status)->get();
+                    ->where('status', $status)->orderBy('id', 'desc')->get();
                 $application_id = Application::where('profile_id', $profile_id)->where('type', $application_type)
-                    ->where('status', $status)->first()->id;
-
+                    ->where('status', $status)->orderBy('id', 'desc')->first()->id;
             } else {
                 $applications = "No data";
             }
@@ -1079,9 +1078,9 @@ class PermitController extends Controller
                 $application_type = "PERMIT SUSPENDED";
                 $status = "Under Review";
                 $applications = Application::where('profile_id', $profile_id)->where('type', $application_type)
-                    ->where('status', $status)->get();
+                    ->where('status', $status)->orderBy('id', 'desc')->get();
                 $application_id = Application::where('profile_id', $profile_id)->where('type', $application_type)
-                    ->where('status', $status)->first()->id;
+                    ->where('status', $status)->orderBy('id', 'desc')->first()->id;
 
             } else {
                 $applications = "No data";
@@ -1132,7 +1131,7 @@ class PermitController extends Controller
                 $cj = DB::table('applications')
                     ->where('id', $id)
                     ->update([
-                        'current_stage' => 1]);
+                        'current_stage' => 1,'resubmission' => false]);
 
                 $comment = new ApplicationApproval();
                 $comment->comment = $request->input('comment');
@@ -1149,7 +1148,7 @@ class PermitController extends Controller
                 //Update profile picture values
                 $profile_picture = DB::table('applications')
                     ->where('id', $id)
-                    ->update(['status' => "Under Review",
+                    ->update(['status' => "Under Review",'resubmission' => true,
                         'current_stage' => 2]);
             }
 
@@ -1205,7 +1204,7 @@ class PermitController extends Controller
         if ($stage->status == "RETURN") {
             $cj = DB::table('applications')
                 ->where('id', $id)
-                ->update(['status' => "Under Review",
+                ->update(['status' => "Under Review",'resubmission' => false,
                     'current_stage' => 2]);
 
             $comment = new ApplicationApproval();
@@ -1265,7 +1264,7 @@ class PermitController extends Controller
                 //Update profile picture values
                 $profile_picture = DB::table('applications')
                     ->where('id', $id)
-                    ->update(['status' => "Under Review",
+                    ->update(['status' => "Under Review",'resubmission' => true,
                         'current_stage' => 4]);
             }
 
@@ -1288,20 +1287,20 @@ class PermitController extends Controller
             $stage = 1;
             $application_type = "PERMIT RESUME PRACTISING";
             $status = "Under Review";
-            $resubmit = 'RETURN';
+            $resubmit = false;
             $applications = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $status)
+                ->where('type', $application_type)->where('resubmission', true)
                 ->orderBy('created_at', 'desc')->paginate(20);
             $applications_count = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $status)
+                ->where('type', $application_type)->where('resubmission', true)
                 ->orderBy('created_at', 'desc')->count();
 
              $submit_applications = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $resubmit)
+                ->where('type', $application_type)->where('resubmission', $resubmit)
                 ->orderBy('created_at', 'desc')->paginate(20);
             
              $submit_applications_count = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $resubmit)
+                ->where('type', $application_type)->where('resubmission', $resubmit)
                 ->orderBy('created_at', 'desc')->count(); 
             $approved_applications = Application::where('current_stage', 2)
                 ->where('type', $application_type)->where('status', $status)
@@ -1332,21 +1331,20 @@ class PermitController extends Controller
             $stage = 2;
             $application_type = "PERMIT RESUME PRACTISING";
             $status = "Under Review";
-
-           $resubmit = 'RETURN';
+            $resubmit = false;
             $applications = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $status)
+                ->where('type', $application_type)->where('resubmission', true)
                 ->orderBy('created_at', 'desc')->paginate(20);
             $applications_count = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $status)
+                ->where('type', $application_type)->where('resubmission', true)
                 ->orderBy('created_at', 'desc')->count();
 
              $submit_applications = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $resubmit)
+                ->where('type', $application_type)->where('resubmission', $resubmit)
                 ->orderBy('created_at', 'desc')->paginate(20);
             
              $submit_applications_count = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $resubmit)
+                ->where('type', $application_type)->where('resubmission', $resubmit)
                 ->orderBy('created_at', 'desc')->count(); 
             $approved_applications = Application::where('current_stage', 4)
                 ->where('type', $application_type)->where('status', $status)
@@ -1378,20 +1376,20 @@ class PermitController extends Controller
             $application_type = "PERMIT RESUME PRACTISING";
             $status = "Under Review";
 
-            $resubmit = 'RETURN';
+            $resubmit = true;
             $applications = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $status)
+                ->where('type', $application_type)->where('resubmission', true)
                 ->orderBy('created_at', 'desc')->paginate(20);
             $applications_count = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $status)
+                ->where('type', $application_type)->where('resubmission', true)
                 ->orderBy('created_at', 'desc')->count();
 
              $submit_applications = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $resubmit)
+                ->where('type', $application_type)->where('resubmission', $resubmit)
                 ->orderBy('created_at', 'desc')->paginate(20);
             
              $submit_applications_count = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $resubmit)
+                ->where('type', $application_type)->where('resubmission', $resubmit)
                 ->orderBy('created_at', 'desc')->count(); 
 
              $approved_applications = Application::where('current_stage', 4)
@@ -1488,9 +1486,9 @@ class PermitController extends Controller
                 $application_type = "PERMIT RESUME PRACTISING";
                 $status = "Under Review";
                 $applications = Application::where('profile_id', $profile_id)->where('type', $application_type)
-                    ->where('status', $status)->get();
+                    ->where('status', $status)->orderBy('id', 'desc')->get();
                 $application_id = Application::where('profile_id', $profile_id)->where('type', $application_type)
-                    ->where('status', $status)->first()->id;
+                    ->where('status', $status)->orderBy('id', 'desc')->first()->id;
 
             } else {
                 $applications = "No data";
@@ -1598,9 +1596,9 @@ class PermitController extends Controller
                 $application_type = "PERMIT RESUME PRACTISING";
                 $status = "Under Review";
                 $applications = Application::where('profile_id', $profile_id)->where('type', $application_type)
-                    ->where('status', $status)->get();
+                    ->where('status', $status)->orderBy('id', 'desc')->get();
                 $application_id = Application::where('profile_id', $profile_id)->where('type', $application_type)
-                    ->where('status', $status)->first()->id;
+                    ->where('status', $status)->orderBy('id', 'desc')->first()->id;
 
             } else {
                 $applications = "No data";
@@ -1707,9 +1705,9 @@ class PermitController extends Controller
                 $application_type = "PERMIT RESUME PRACTISING";
                 $status = "Under Review";
                 $applications = Application::where('profile_id', $profile_id)->where('type', $application_type)
-                    ->where('status', $status)->get();
+                    ->where('status', $status)->orderBy('id', 'desc')->get();
                 $application_id = Application::where('profile_id', $profile_id)->where('type', $application_type)
-                    ->where('status', $status)->first()->id;
+                    ->where('status', $status)->orderBy('id', 'desc')->first()->id;
 
             } else {
                 $applications = "No data";
@@ -1749,7 +1747,6 @@ class PermitController extends Controller
         if (Auth::check()) {
 
             $stage = Application::findOrFail($id);
-            // dd($stage->id);
             $uuid = Str::uuid();
             $this->validate($request, [
                 'status' => 'required',
@@ -1760,7 +1757,7 @@ class PermitController extends Controller
                 $cj = DB::table('applications')
                     ->where('id', $id)
                     ->update([
-                        'current_stage' => 1]);
+                        'current_stage' => 1, 'resubmission' => false]);
 
                 $comment = new ApplicationApproval();
                 $comment->comment = $request->input('comment');
@@ -1777,7 +1774,7 @@ class PermitController extends Controller
                 //Update profile picture values
                 $profile_picture = DB::table('applications')
                     ->where('id', $id)
-                    ->update(['status' => "Under Review",
+                    ->update(['status' => "Under Review",'resubmission' => true,
                         'current_stage' => 2]);
             }
 
@@ -1832,7 +1829,7 @@ class PermitController extends Controller
                 if ($stage->status == "RETURN") {
                     $application = DB::table('applications')
                         ->where('id', $id)
-                        ->update(['status' => "Under Review",
+                        ->update(['status' => "Under Review",'resubmission' => false,
                             'current_stage' => 2]);
 
                     $comment = new ApplicationApproval();
@@ -1890,7 +1887,7 @@ class PermitController extends Controller
                 //Update profile picture values
                 $profile_picture = DB::table('applications')
                     ->where('id', $id)
-                    ->update(['status' => "Under Review",
+                    ->update(['status' => "Under Review",'resubmission' => true,
                         'current_stage' => 4]);
             }
 
@@ -1910,20 +1907,20 @@ class PermitController extends Controller
             $stage = 1;
             $application_type = "PERMIT RENEWAL";
             $status = "Under Review";
-            $resubmit = 'RETURN';
+            $resubmit = false;
             $applications = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $status)
+                ->where('type', $application_type)->where('resubmission', true)
                 ->orderBy('created_at', 'desc')->paginate(20);
             $applications_count = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $status)
+                ->where('type', $application_type)->where('resubmission', true)
                 ->orderBy('created_at', 'desc')->count();
 
              $submit_applications = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $resubmit)
+                ->where('type', $application_type)->where('resubmission', $resubmit)
                 ->orderBy('created_at', 'desc')->paginate(20);
             
              $submit_applications_count = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $resubmit)
+                ->where('type', $application_type)->where('resubmission', $resubmit)
                 ->orderBy('created_at', 'desc')->count(); 
              $approved_applications = Application::where('current_stage', 2)
                 ->where('type', $application_type)->where('status', $status)
@@ -1944,6 +1941,160 @@ class PermitController extends Controller
         }
         return Redirect::to("auth/login")->withErrors('You do not have access!');
     }
+
+     public function edit_renewal_front(Request $request, $id)
+    {
+
+        if (Auth::check()) {
+            $stage = Application::findOrFail($id);
+            // dd($stage->id);
+            $uuid = Str::uuid();
+            $this->validate($request, [
+                'status' => 'required',
+            ]);
+            $stage->status = $request->input('status');
+            $stage->save();
+            if ($stage->status == "RETURN") {
+                $cj = DB::table('applications')
+                    ->where('id', $id)
+                    ->update([
+                        'current_stage' => 1, 'resubmission' => false]);
+
+                $comment = new ApplicationApproval();
+                $comment->comment = $request->input('comment');
+                $comment->active = true;
+                $comment->decision = "RETURN";
+                $comment->action_user_type_id = 2;
+                $comment->uid = $uuid;
+                $comment->application_id = $stage->id;
+                $comment->user_id = Auth()->user()->id;
+                $comment->save();
+            }
+
+            if ($stage->status == "ACCEPT") {
+                //Update profile picture values
+                $profile_picture = DB::table('applications')
+                    ->where('id', $id)
+                    ->update(['status' => "Under Review",'resubmission' => true,
+                        'current_stage' => 2]);
+            }
+
+            return Redirect::to("permit/late-renewal/under-review")
+                ->with('success', ' Application edited successfully');
+
+        }
+        return Redirect::to("auth/login")->withErrors('You do not have access!');
+    }
+     public function edit_renewal_cj(Request $request, $id)
+    {
+
+        if (Auth::check()) {
+
+            try {
+
+                $stage = Application::findOrFail($id);
+                dd($stage);
+                $profile_id = Application::find($id)->profile_id;
+                $previous_status = Advocate::where('profile_id', $profile_id)->first()->status;
+
+                $uuid = Str::uuid();
+
+                $this->validate($request, [
+                    'status' => 'required',
+                ]);
+
+                $stage->status = $request->input('status');
+                $stage->save();
+
+                if ($stage->status == "ACCEPT") {
+                    $currDate = Carbon::now()->format('Y-m-d');
+                    $profile_id = Application::find($id)->profile_id;
+                    $billdate = date('Y-m-d H:i:s');
+                    $expireDate = date('Y-m-d\TH:i:s', strtotime('+10 days'));
+                    $date_time = new DateTime($billdate);
+                    $due_Date = $date_time->format('Y-m-d\TH:i:s');
+                    $bill_id = 'JUD16'.mt_rand(1000000000000 , 9999999999999);
+                        while (Bill::where('bill_id', $bill_id)->exists()) {
+                                      $bill_id = 'JUD16' . mt_rand(10000000000, 99999999999);
+                                        }
+                    $admissions = DB::table('advocates')->whereIn('roll_no', $selectedUsers)->select('admission', 'profile_id', 'status', 'roll_no')->get();
+                    dd($admissions);
+                    
+
+                }
+
+                if ($stage->status == "RETURN") {
+                    $application = DB::table('applications')
+                        ->where('id', $id)
+                        ->update(['status' => "Under Review",'resubmission' => false,
+                            'current_stage' => 2]);
+
+                    $comment = new ApplicationApproval();
+                    $comment->comment = $request->input('comment');
+                    $comment->active = true;
+                    $comment->decision = "RETURN";
+                    $comment->action_user_type_id = 6;
+                    $comment->uid = $uuid;
+                    $comment->application_id = $stage->id;
+                    $comment->user_id = Auth()->user()->id;
+                    $comment->save();
+                }
+
+                return Redirect::to("permit/late-renewal/cj")
+                    ->with('success', ' Application edited successfully');
+
+            } catch (\Throwable $th) {
+
+                return back()->with('warning', 'Stage not edited');
+            }
+
+        }
+        return Redirect::to("auth/login")->withErrors('You do not have access!');
+    }
+
+    public function edit_renewal_rhc(Request $request, $id)
+    {
+
+        if (Auth::check()) {
+            $stage = Application::findOrFail($id);
+            $uuid = Str::uuid();
+            $this->validate($request, [
+                'status' => 'required',
+            ]);
+            $stage->status = $request->input('status');
+            $stage->save();
+
+            if ($stage->status == "RETURN") {
+                $comment = new ApplicationApproval();
+                $comment->comment = $request->input('comment');
+                $comment->decision = "RETURN";
+                $comment->active = true;
+                $comment->uid = $uuid;
+                $comment->action_user_type_id = 3;
+                $comment->application_id = $stage->id;
+                $comment->user_id = Auth()->user()->id;
+                $comment->save();
+
+                //Update profile picture values
+                $profile_picture = DB::table('applications')
+                    ->where('id', $id)
+                    ->update(['status' => "Under Review",'resubmission' => false,
+                        'current_stage' => 1]);
+            }
+
+            if ($stage->status == "ACCEPT") {
+                //Update profile picture values
+                $profile_picture = DB::table('applications')
+                    ->where('id', $id)
+                    ->update(['status' => "Under Review",'resubmission' => true,
+                        'current_stage' => 4]);
+            }
+
+            return Redirect::to("permit/late-renewal/rhc")
+                ->with('success', ' Application edited successfully');
+        }
+        return Redirect::to("auth/login")->withErrors('You do not have access!');
+    }
     public function get_renewal_rhc()
     {
 
@@ -1951,28 +2102,28 @@ class PermitController extends Controller
             $user_id = Auth::user()->id;
             $profile = Profile::where('user_id', $user_id)->first();
 
-            $stage = 1;
+            $stage = 2;
             $application_type = "PERMIT RENEWAL";
             $status = "Under Review";
-            $resubmit = 'RETURN';
+            $resubmit = false;
             $applications = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $status)
+                ->where('type', $application_type)->where('resubmission', true)
                 ->orderBy('created_at', 'desc')->paginate(20);
             $applications_count = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $status)
+                ->where('type', $application_type)->where('resubmission', true)
                 ->orderBy('created_at', 'desc')->count();
 
              $submit_applications = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $resubmit)
+                ->where('type', $application_type)->where('resubmission', $resubmit)
                 ->orderBy('created_at', 'desc')->paginate(20);
             
              $submit_applications_count = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $resubmit)
+                ->where('type', $application_type)->where('resubmission', $resubmit)
                 ->orderBy('created_at', 'desc')->count(); 
-            $approved_applications = Application::where('current_stage', 2)
+            $approved_applications = Application::where('current_stage', 4)
                 ->where('type', $application_type)->where('status', $status)
                 ->orderBy('created_at', 'desc')->paginate(20);
-            $approved_applications_count = Application::where('current_stage', 2)
+            $approved_applications_count = Application::where('current_stage', 4)
                 ->where('type', $application_type)->where('status', $status)
                 ->orderBy('created_at', 'desc')->count();     
             return view('management.permit_application.late_renewal.rhc.index', [
@@ -1995,23 +2146,23 @@ class PermitController extends Controller
             $user_id = Auth::user()->id;
             $profile = Profile::where('user_id', $user_id)->first();
 
-            $stage = 1;
+            $stage = 4;
             $application_type = "PERMIT RENEWAL";
             $status = "Under Review";
-            $resubmit = 'RETURN';
+            $resubmit = false;
             $applications = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $status)
+                ->where('type', $application_type)->where('resubmission', true)
                 ->orderBy('created_at', 'desc')->paginate(20);
             $applications_count = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $status)
+                ->where('type', $application_type)->where('resubmission', true)
                 ->orderBy('created_at', 'desc')->count();
 
              $submit_applications = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $resubmit)
+                ->where('type', $application_type)->where('resubmission', $resubmit)
                 ->orderBy('created_at', 'desc')->paginate(20);
             
              $submit_applications_count = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $resubmit)
+                ->where('type', $application_type)->where('resubmission', $resubmit)
                 ->orderBy('created_at', 'desc')->count(); 
             $approved_applications = Application::where('current_stage', 2)
                 ->where('type', $application_type)->where('status', $status)
@@ -2032,6 +2183,338 @@ class PermitController extends Controller
         return Redirect::to("auth/login")->withErrors('You do not have access!');
     }
 
+
+      public function view_renewal_profile(Request $request, $id)
+    {
+
+        if (Auth::check()) {
+
+            $user_id = Auth::user()->id;
+
+            $profile = Profile::where('uid', $id)->first();
+
+            $cur_year = date('Y');
+            $approval_ids = Application::where('uid', $id)->first()->id;
+            $approvals = ApplicationApproval::where('application_id', $approval_ids)->get();
+            //   dd($approvals);
+            $advocate = Application::where('uid', $id)->first();
+            // dd($advocate);
+
+            $profile_id = Application::where('uid', $id)->first()->profile_id;
+            //   dd($advocate);
+
+            //check membership
+            if (FirmMembership::where('profile_id', $profile_id)->exists()) {
+                $since = FirmMembership::where('profile_id', $profile_id)->first()->since;
+                $firm_id = FirmMembership::where('profile_id', $profile_id)->first()->firm_id;
+                $firm_branch_id = FirmMembership::where('profile_id', $profile_id)->first()->firm_branch_id;
+            } else {
+                $since = "No data";
+                $firm_id = 0;
+                $firm_branch_id = 0;
+            }
+
+            //check firm
+            if (Firm::where('id', $firm_id)->exists()) {
+                $firms = Firm::where('id', $firm_id)->get();
+            } else {
+                $firms = "No data";
+            }
+
+            //check personal info
+            $personal_infos = Profile::where('id', $profile_id)->get();
+
+            //check contact
+            if (ProfileContact::where('profile_id', $profile_id)->exists()) {
+                $contacts = ProfileContact::where('profile_id', $profile_id)->get();
+            } else {
+                $contacts = "No data";
+            }
+
+            //check firm address / branch
+            if (FirmAddress::where('id', $firm_branch_id)->exists()) {
+                $firm_addresses = FirmAddress::where('id', $firm_branch_id)->get();
+            } else {
+                $firm_addresses = "No data";
+            }
+
+            //check education
+            if (PetitionEducation::where('profile_id', $profile_id)->exists()) {
+                $educations = PetitionEducation::where('profile_id', $profile_id)->get();
+            } else {
+                $educations = "No data";
+            }
+
+            //check experience
+            if (WorkExperience::where('profile_id', $profile_id)->exists()) {
+                $experiences = WorkExperience::where('profile_id', $profile_id)->get();
+            } else {
+                $experiences = "No data";
+            }
+
+            //check applications
+            if (Application::where('profile_id', $profile_id)->exists()) {
+                // $applications = Application::where('profile_id', $profile_id)->get();
+                $application_type = "PERMIT RENEWAL";
+                $status = "Under Review";
+              
+                $applications = Application::where('profile_id', $profile_id)->where('type', $application_type)
+                    ->where('status', $status)->orderBy('id', 'desc')->get();
+                $application_id = Application::where('profile_id', $profile_id)->where('type', $application_type)
+                    ->where('status', $status)->orderBy('id', 'desc')->first()->id;
+
+            } else {
+                $applications = "No data";
+            }
+            // dd($application_id);
+            $docus = DB::table('applications')
+                ->leftJoin('documents', 'documents.application_id', '=', 'applications.id')
+                ->select('applications.*', 'documents.*')
+                ->where('applications.id', $application_id)
+                ->get();
+            // dd($docus);
+            return view('management.permit_application.late_renewal.under_review.view', [
+                'profile' => $profile,
+                'docus' => $docus,
+                'advocate' => $advocate,
+                'cur_year' => $cur_year,
+                'firms' => $firms,
+                'firm_id' => $firm_id,
+                'since' => $since,
+                'approvals' => $approvals,
+                'personal_infos' => $personal_infos,
+                'contacts' => $contacts,
+                'firm_addresses' => $firm_addresses,
+                'educations' => $educations,
+                'experiences' => $experiences,
+                'firm_branch_id' => $firm_branch_id,
+                'applications' => $applications,
+            ]);
+
+        }
+        return \Illuminate\Support\Facades\Redirect::to("auth/login")->withErrors('You do not have access!');
+    }
+
+    public function view_renewal_rhc(Request $request, $id)
+    {
+
+        if (Auth::check()) {
+
+            $user_id = Auth::user()->id;
+
+            $profile = Profile::where('uid', $id)->first();
+
+            $cur_year = date('Y');
+            $approval_ids = Application::where('uid', $id)->first()->id;
+            $approvals = ApplicationApproval::where('application_id', $approval_ids)->get();
+            //   dd($approvals);
+            $advocate = Application::where('uid', $id)->first();
+            // dd($advocate);
+
+            $profile_id = Application::where('uid', $id)->first()->profile_id;
+            //   dd($advocate);
+
+            //check membership
+            if (FirmMembership::where('profile_id', $profile_id)->exists()) {
+                $since = FirmMembership::where('profile_id', $profile_id)->first()->since;
+                $firm_id = FirmMembership::where('profile_id', $profile_id)->first()->firm_id;
+                $firm_branch_id = FirmMembership::where('profile_id', $profile_id)->first()->firm_branch_id;
+            } else {
+                $since = "No data";
+                $firm_id = 0;
+                $firm_branch_id = 0;
+            }
+
+            //check firm
+            if (Firm::where('id', $firm_id)->exists()) {
+                $firms = Firm::where('id', $firm_id)->get();
+            } else {
+                $firms = "No data";
+            }
+
+            //check personal info
+            $personal_infos = Profile::where('id', $profile_id)->get();
+
+            //check contact
+            if (ProfileContact::where('profile_id', $profile_id)->exists()) {
+                $contacts = ProfileContact::where('profile_id', $profile_id)->get();
+            } else {
+                $contacts = "No data";
+            }
+
+            //check firm address / branch
+            if (FirmAddress::where('id', $firm_branch_id)->exists()) {
+                $firm_addresses = FirmAddress::where('id', $firm_branch_id)->get();
+            } else {
+                $firm_addresses = "No data";
+            }
+
+            //check education
+            if (PetitionEducation::where('profile_id', $profile_id)->exists()) {
+                $educations = PetitionEducation::where('profile_id', $profile_id)->get();
+            } else {
+                $educations = "No data";
+            }
+
+            //check experience
+            if (WorkExperience::where('profile_id', $profile_id)->exists()) {
+                $experiences = WorkExperience::where('profile_id', $profile_id)->get();
+            } else {
+                $experiences = "No data";
+            }
+
+            //check applications
+            if (Application::where('profile_id', $profile_id)->exists()) {
+                // $applications = Application::where('profile_id', $profile_id)->get();
+                $application_type = "PERMIT RENEWAL";
+                $status = "Under Review";
+                $applications = Application::where('profile_id', $profile_id)->where('type', $application_type)
+                    ->where('status', $status)->orderBy('id', 'desc')->get();
+                $application_id = Application::where('profile_id', $profile_id)->where('type', $application_type)
+                    ->where('status', $status)->orderBy('id', 'desc')->first()->id;
+
+            } else {
+                $applications = "No data";
+            }
+            // dd($application_id);
+            $docus = DB::table('applications')
+                ->leftJoin('documents', 'documents.application_id', '=', 'applications.id')
+                ->select('applications.*', 'documents.*')
+                ->where('applications.id', $application_id)
+                ->get();
+            // dd($docus);
+            return view('management.permit_application.late_renewal.rhc.view', [
+                'profile' => $profile,
+                'docus' => $docus,
+                'advocate' => $advocate,
+                'cur_year' => $cur_year,
+                'firms' => $firms,
+                'firm_id' => $firm_id,
+                'since' => $since,
+                'approvals' => $approvals,
+                'personal_infos' => $personal_infos,
+                'contacts' => $contacts,
+                'firm_addresses' => $firm_addresses,
+                'educations' => $educations,
+                'experiences' => $experiences,
+                'firm_branch_id' => $firm_branch_id,
+                'applications' => $applications,
+            ]);
+
+        }
+        return \Illuminate\Support\Facades\Redirect::to("auth/login")->withErrors('You do not have access!');
+    }
+    public function view_renewal_cj(Request $request, $id)
+    {
+
+        if (Auth::check()) {
+
+            $user_id = Auth::user()->id;
+
+            $profile = Profile::where('uid', $id)->first();
+
+            $cur_year = date('Y');
+            $approval_ids = Application::where('uid', $id)->first()->id;
+            $approvals = ApplicationApproval::where('application_id', $approval_ids)->get();
+            //   dd($approvals);
+            $advocate = Application::where('uid', $id)->first();
+            // dd($advocate);
+
+            $profile_id = Application::where('uid', $id)->first()->profile_id;
+            //   dd($advocate);
+
+            //check membership
+            if (FirmMembership::where('profile_id', $profile_id)->exists()) {
+                $since = FirmMembership::where('profile_id', $profile_id)->first()->since;
+                $firm_id = FirmMembership::where('profile_id', $profile_id)->first()->firm_id;
+                $firm_branch_id = FirmMembership::where('profile_id', $profile_id)->first()->firm_branch_id;
+            } else {
+                $since = "No data";
+                $firm_id = 0;
+                $firm_branch_id = 0;
+            }
+
+            //check firm
+            if (Firm::where('id', $firm_id)->exists()) {
+                $firms = Firm::where('id', $firm_id)->get();
+            } else {
+                $firms = "No data";
+            }
+
+            //check personal info
+            $personal_infos = Profile::where('id', $profile_id)->get();
+
+            //check contact
+            if (ProfileContact::where('profile_id', $profile_id)->exists()) {
+                $contacts = ProfileContact::where('profile_id', $profile_id)->get();
+            } else {
+                $contacts = "No data";
+            }
+
+            //check firm address / branch
+            if (FirmAddress::where('id', $firm_branch_id)->exists()) {
+                $firm_addresses = FirmAddress::where('id', $firm_branch_id)->get();
+            } else {
+                $firm_addresses = "No data";
+            }
+
+            //check education
+            if (PetitionEducation::where('profile_id', $profile_id)->exists()) {
+                $educations = PetitionEducation::where('profile_id', $profile_id)->get();
+            } else {
+                $educations = "No data";
+            }
+
+            //check experience
+            if (WorkExperience::where('profile_id', $profile_id)->exists()) {
+                $experiences = WorkExperience::where('profile_id', $profile_id)->get();
+            } else {
+                $experiences = "No data";
+            }
+
+            //check applications
+            if (Application::where('profile_id', $profile_id)->exists()) {
+                // $applications = Application::where('profile_id', $profile_id)->get();
+                $application_type = "PERMIT RENEWAL";
+                $status = "Under Review";
+                $applications = Application::where('profile_id', $profile_id)->where('type', $application_type)
+                    ->where('status', $status)->orderBy('id', 'desc')->get();
+                $application_id = Application::where('profile_id', $profile_id)->where('type', $application_type)
+                    ->where('status', $status)->orderBy('id', 'desc')->first()->id;
+             
+
+            } else {
+                $applications = "No data";
+            }
+            // dd($application_id);
+            $docus = DB::table('applications')
+                ->leftJoin('documents', 'documents.application_id', '=', 'applications.id')
+                ->select('applications.*', 'documents.*')
+                ->where('applications.id', $application_id)
+                ->get();
+            // dd($docus);
+            return view('management.permit_application.late_renewal.cj.view', [
+                'profile' => $profile,
+                'docus' => $docus,
+                'advocate' => $advocate,
+                'cur_year' => $cur_year,
+                'firms' => $firms,
+                'firm_id' => $firm_id,
+                'since' => $since,
+                'approvals' => $approvals,
+                'personal_infos' => $personal_infos,
+                'contacts' => $contacts,
+                'firm_addresses' => $firm_addresses,
+                'educations' => $educations,
+                'experiences' => $experiences,
+                'firm_branch_id' => $firm_branch_id,
+                'applications' => $applications,
+            ]);
+
+        }
+        return \Illuminate\Support\Facades\Redirect::to("auth/login")->withErrors('You do not have access!');
+    }
+
     //retire practising application
     public function get_retire_index()
     {
@@ -2043,21 +2526,21 @@ class PermitController extends Controller
             $stage = 1;
             $application_type = "PERMIT RETIRE PRACTISING";
             $status = "Under Review";
-            $resubmit = 'RETURN';
+            $resubmit = false;
 
             $applications = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $status)
+                ->where('type', $application_type)->where('resubmission', true)
                 ->orderBy('created_at', 'desc')->paginate(20);
             $applications_count = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $status)
+                ->where('type', $application_type)->where('resubmission', true)
                 ->orderBy('created_at', 'desc')->count();
 
              $submit_applications = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $resubmit)
+                ->where('type', $application_type)->where('resubmission', $resubmit)
                 ->orderBy('created_at', 'desc')->paginate(20);
             
              $submit_applications_count = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $resubmit)
+                ->where('type', $application_type)->where('resubmission', $resubmit)
                 ->orderBy('created_at', 'desc')->count(); 
              $approved_applications = Application::where('current_stage', 2)
                 ->where('type', $application_type)->where('status', $status)
@@ -2089,20 +2572,20 @@ class PermitController extends Controller
             $stage = 2;
             $application_type = "PERMIT RETIRE PRACTISING";
             $status = "Under Review";
-            $resubmit = 'RETURN';
+            $resubmit = false;
             $applications = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $status)
+                ->where('type', $application_type)->where('resubmission', true)
                 ->orderBy('created_at', 'desc')->paginate(20);
             $applications_count = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $status)
+                ->where('type', $application_type)->where('resubmission', true)
                 ->orderBy('created_at', 'desc')->count();
 
              $submit_applications = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $resubmit)
+                ->where('type', $application_type)->where('resubmission', $resubmit)
                 ->orderBy('created_at', 'desc')->paginate(20);
             
              $submit_applications_count = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $resubmit)
+                ->where('type', $application_type)->where('resubmission', $resubmit)
                 ->orderBy('created_at', 'desc')->count(); 
              $approved_applications = Application::where('current_stage', 4)
                 ->where('type', $application_type)->where('status', $status)
@@ -2134,20 +2617,20 @@ class PermitController extends Controller
             $stage = 4;
             $application_type = "PERMIT RETIRE PRACTISING";
             $status = "Under Review";
-            $resubmit = 'RETURN';
+            $resubmit = false;
            $applications = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $status)
+                ->where('type', $application_type)->where('resubmission', true)
                 ->orderBy('created_at', 'desc')->paginate(20);
             $applications_count = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $status)
+                ->where('type', $application_type)->where('resubmission', true)
                 ->orderBy('created_at', 'desc')->count();
 
              $submit_applications = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $resubmit)
+                ->where('type', $application_type)->where('resubmission', $resubmit)
                 ->orderBy('created_at', 'desc')->paginate(20);
             
              $submit_applications_count = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $resubmit)
+                ->where('type', $application_type)->where('resubmission', $resubmit)
                 ->orderBy('created_at', 'desc')->count(); 
              $approved_applications = Application::where('current_stage', 2)
                 ->where('type', $application_type)->where('status', $status)
@@ -2243,9 +2726,9 @@ class PermitController extends Controller
                 $application_type = "PERMIT RETIRE PRACTISING";
                 $status = "Under Review";
                 $applications = Application::where('profile_id', $profile_id)->where('type', $application_type)
-                    ->where('status', $status)->get();
+                    ->where('status', $status)->orderBy('id', 'desc')->get();
                 $application_id = Application::where('profile_id', $profile_id)->where('type', $application_type)
-                    ->where('status', $status)->first()->id;
+                    ->where('status', $status)->orderBy('id', 'desc')->first()->id;
 
             } else {
                 $applications = "No data";
@@ -2353,9 +2836,9 @@ class PermitController extends Controller
                 $application_type = "PERMIT RETIRE PRACTISING";
                 $status = "Under Review";
                 $applications = Application::where('profile_id', $profile_id)->where('type', $application_type)
-                    ->where('status', $status)->get();
+                    ->where('status', $status)->orderBy('id', 'desc')->get();
                 $application_id = Application::where('profile_id', $profile_id)->where('type', $application_type)
-                    ->where('status', $status)->first()->id;
+                    ->where('status', $status)->orderBy('id', 'desc')->first()->id;
 
             } else {
                 $applications = "No data";
@@ -2462,9 +2945,9 @@ class PermitController extends Controller
                 $application_type = "PERMIT RETIRE PRACTISING";
                 $status = "Under Review";
                 $applications = Application::where('profile_id', $profile_id)->where('type', $application_type)
-                    ->where('status', $status)->get();
+                    ->where('status', $status)->orderBy('id', 'desc')->get();
                 $application_id = Application::where('profile_id', $profile_id)->where('type', $application_type)
-                    ->where('status', $status)->first()->id;
+                    ->where('status', $status)->orderBy('id', 'desc')->first()->id;
 
             } else {
                 $applications = "No data";
@@ -2516,7 +2999,7 @@ class PermitController extends Controller
                 $cj = DB::table('applications')
                     ->where('id', $id)
                     ->update([
-                        'current_stage' => 1]);
+                        'current_stage' => 1, 'resubmission' => false]);
                 $comment = new ApplicationApproval();
                 $comment->comment = $request->input('comment');
                 $comment->active = true;
@@ -2532,7 +3015,7 @@ class PermitController extends Controller
                 //Update profile picture values
                 $profile_picture = DB::table('applications')
                     ->where('id', $id)
-                    ->update(['status' => "Under Review",
+                    ->update(['status' => "Under Review",'resubmission' => true,
                         'current_stage' => 2]);
             }
 
@@ -2585,7 +3068,7 @@ class PermitController extends Controller
                 if ($stage->status == "RETURN") {
                     $cj = DB::table('applications')
                         ->where('id', $id)
-                        ->update(['status' => "Under Review",
+                        ->update(['status' => "Under Review",'resubmission' => false,
                             'current_stage' => 2]);
                     $comment = new ApplicationApproval();
                     $comment->comment = $request->input('comment');
@@ -2625,7 +3108,7 @@ class PermitController extends Controller
                 //Update profile picture values
                 $profile_picture = DB::table('applications')
                     ->where('id', $id)
-                    ->update(['status' => "Under Review",
+                    ->update(['status' => "Under Review",'resubmission' => true,
                         'current_stage' => 4]);
             }
 
@@ -2665,21 +3148,21 @@ class PermitController extends Controller
             $stage = 1;
             $application_type = "PERMIT NON PROFIT";
             $status = "Under Review";
-            $resubmit = 'RETURN';
+            $resubmit = false;
 
              $applications = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $status)
+                ->where('type', $application_type)->where('resubmission', true)
                 ->orderBy('created_at', 'desc')->paginate(20);
             $applications_count = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $status)
+                ->where('type', $application_type)->where('resubmission', true)
                 ->orderBy('created_at', 'desc')->count();
 
              $submit_applications = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $resubmit)
+                ->where('type', $application_type)->where('resubmission', $resubmit)
                 ->orderBy('created_at', 'desc')->paginate(20);
             
              $submit_applications_count = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $resubmit)
+                ->where('type', $application_type)->where('resubmission', $resubmit)
                 ->orderBy('created_at', 'desc')->count(); 
             $approved_applications = Application::where('current_stage', 2)
                 ->where('type', $application_type)->where('status', $status)
@@ -2710,20 +3193,20 @@ class PermitController extends Controller
             $stage = 2;
             $application_type = "PERMIT NON PROFIT";
             $status = "Under Review";
-            $resubmit = 'RETURN';
+            $resubmit = false;
             $applications = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $status)
+                ->where('type', $application_type)->where('resubmission', true)
                 ->orderBy('created_at', 'desc')->paginate(20);
             $applications_count = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $status)
+                ->where('type', $application_type)->where('resubmission', true)
                 ->orderBy('created_at', 'desc')->count();
 
              $submit_applications = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $resubmit)
+                ->where('type', $application_type)->where('resubmission', $resubmit)
                 ->orderBy('created_at', 'desc')->paginate(20);
             
              $submit_applications_count = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $resubmit)
+                ->where('type', $application_type)->where('resubmission', $resubmit)
                 ->orderBy('created_at', 'desc')->count(); 
             $approved_applications = Application::where('current_stage', 4)
                 ->where('type', $application_type)->where('status', $status)
@@ -2755,20 +3238,20 @@ class PermitController extends Controller
             $stage = 4;
             $application_type = "PERMIT NON PROFIT";
             $status = "Under Review";
-            $resubmit = 'RETURN';
+            $resubmit = false;
            $applications = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $status)
+                ->where('type', $application_type)->where('resubmission', true)
                 ->orderBy('created_at', 'desc')->paginate(20);
             $applications_count = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $status)
+                ->where('type', $application_type)->where('resubmission', true)
                 ->orderBy('created_at', 'desc')->count();
 
              $submit_applications = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $resubmit)
+                ->where('type', $application_type)->where('resubmission', $resubmit)
                 ->orderBy('created_at', 'desc')->paginate(20);
             
              $submit_applications_count = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $resubmit)
+                ->where('type', $application_type)->where('resubmission', $resubmit)
                 ->orderBy('created_at', 'desc')->count(); 
             $approved_applications = Application::where('current_stage', 2)
                 ->where('type', $application_type)->where('status', $status)
@@ -2864,9 +3347,9 @@ class PermitController extends Controller
                 $application_type = "PERMIT NON PROFIT";
                 $status = "Under Review";
                 $applications = Application::where('profile_id', $profile_id)->where('type', $application_type)
-                    ->where('status', $status)->get();
+                    ->where('status', $status)->orderBy('id', 'desc')->get();
                 $application_id = Application::where('profile_id', $profile_id)->where('type', $application_type)
-                    ->where('status', $status)->first()->id;
+                    ->where('status', $status)->orderBy('id', 'desc')->first()->id;
 
             } else {
                 $applications = "No data";
@@ -2974,9 +3457,9 @@ class PermitController extends Controller
                 $application_type = "PERMIT NON PROFIT";
                 $status = "Under Review";
                 $applications = Application::where('profile_id', $profile_id)->where('type', $application_type)
-                    ->where('status', $status)->get();
+                    ->where('status', $status)->orderBy('id', 'desc')->get();
                 $application_id = Application::where('profile_id', $profile_id)->where('type', $application_type)
-                    ->where('status', $status)->first()->id;
+                    ->where('status', $status)->orderBy('id', 'desc')->first()->id;
 
             } else {
                 $applications = "No data";
@@ -3083,9 +3566,9 @@ class PermitController extends Controller
                 $application_type = "PERMIT NON PROFIT";
                 $status = "Under Review";
                 $applications = Application::where('profile_id', $profile_id)->where('type', $application_type)
-                    ->get();
-                $application_id = Application::where('profile_id', $profile_id)
-                    ->where('type', $application_type)->first()->id;
+                    ->where('status', $status)->orderBy('id', 'desc')->get();
+                $application_id = Application::where('profile_id', $profile_id)->where('type', $application_type)
+                    ->where('status', $status)->orderBy('id', 'desc')->first()->id;
 
             } else {
                 $applications = "No data";
@@ -3138,7 +3621,7 @@ class PermitController extends Controller
                 $cj = DB::table('applications')
                     ->where('id', $id)
                     ->update([
-                        'current_stage' => 1]);
+                        'current_stage' => 1,'resubmission' => false]);
                 $comment = new ApplicationApproval();
                 $comment->comment = $request->input('comment');
                 $comment->active = true;
@@ -3154,7 +3637,7 @@ class PermitController extends Controller
                 //Update profile picture values
                 $profile_picture = DB::table('applications')
                     ->where('id', $id)
-                    ->update(['status' => "Under Review",
+                    ->update(['status' => "Under Review",'resubmission' => true,
                         'current_stage' => 2]);
             }
             // return view('management.permit_application.non_profit.under_review.index');
@@ -3211,7 +3694,7 @@ class PermitController extends Controller
                 if ($stage->status == "RETURN") {
                     $cj = DB::table('applications')
                         ->where('id', $id)
-                        ->update(['status' => "Under Review",
+                        ->update(['status' => "Under Review",'resubmission' => false,
                             'current_stage' => 2]);
 
                     $comment = new ApplicationApproval();
@@ -3250,13 +3733,13 @@ class PermitController extends Controller
                 //Update profile picture values
                 $profile_picture = DB::table('applications')
                     ->where('id', $id)
-                    ->update(['status' => "Under Review",
+                    ->update(['status' => "Under Review",'resubmission' => true,
                         'current_stage' => 4]);
             }
             if ($stage->status == "RETURN") {
                 $rhc = DB::table('applications')
                     ->where('id', $id)
-                    ->update(['status' => "Under Review",
+                    ->update(['status' => "Under Review",'resubmission' => false,
                         'current_stage' => 1]);
                 $comment = new ApplicationApproval();
                 $comment->comment = $request->input('comment');
@@ -3289,20 +3772,20 @@ class PermitController extends Controller
             $stage = 1;
             $application_type = "PERMIT NAME CHANGE";
             $status = "Under Review";
-            $resubmit = 'RETURN';
+            $resubmit = false;
             $applications = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $status)
+                ->where('type', $application_type)->where('resubmission', true)
                 ->orderBy('created_at', 'desc')->paginate(20);
             $applications_count = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $status)
+                ->where('type', $application_type)->where('resubmission', true)
                 ->orderBy('created_at', 'desc')->count();
 
              $submit_applications = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $resubmit)
+                ->where('type', $application_type)->where('resubmission', $resubmit)
                 ->orderBy('created_at', 'desc')->paginate(20);
             
              $submit_applications_count = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $resubmit)
+                ->where('type', $application_type)->where('resubmission', $resubmit)
                 ->orderBy('created_at', 'desc')->count(); 
             $approved_applications = Application::where('current_stage', 2)
                 ->where('type', $application_type)->where('status', $status)
@@ -3333,20 +3816,20 @@ class PermitController extends Controller
             $stage = 2;
             $application_type = "PERMIT NAME CHANGE";
             $status = "Under Review";
-            $resubmit = 'RETURN';
+            $resubmit = false;
             $applications = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $status)
+                ->where('type', $application_type)->where('resubmission', true)
                 ->orderBy('created_at', 'desc')->paginate(20);
             $applications_count = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $status)
+                ->where('type', $application_type)->where('resubmission', true)
                 ->orderBy('created_at', 'desc')->count();
 
              $submit_applications = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $resubmit)
+                ->where('type', $application_type)->where('resubmission', $resubmit)
                 ->orderBy('created_at', 'desc')->paginate(20);
             
              $submit_applications_count = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $resubmit)
+                ->where('type', $application_type)->where('resubmission', $resubmit)
                 ->orderBy('created_at', 'desc')->count(); 
             $approved_applications = Application::where('current_stage', 5)
                 ->where('type', $application_type)->where('status', $status)
@@ -3378,20 +3861,20 @@ class PermitController extends Controller
             $application_type = "PERMIT NAME CHANGE";
             $status = "Under Review";
             $accept = "ACCEPT";
-            $resubmit = 'RETURN';
+            $resubmit = false;
            $applications = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $status)
+                ->where('type', $application_type)->where('resubmission', true)
                 ->orderBy('created_at', 'desc')->paginate(20);
             $applications_count = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $status)
+                ->where('type', $application_type)->where('resubmission', true)
                 ->orderBy('created_at', 'desc')->count();
 
              $submit_applications = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $resubmit)
+                ->where('type', $application_type)->where('resubmission', $resubmit)
                 ->orderBy('created_at', 'desc')->paginate(20);
             
              $submit_applications_count = Application::where('current_stage', $stage)
-                ->where('type', $application_type)->where('status', $resubmit)
+                ->where('type', $application_type)->where('resubmission', $resubmit)
                 ->orderBy('created_at', 'desc')->count(); 
             $approved_applications = Application::where('current_stage', 2)
                 ->where('type', $application_type)->where('status', $status)
@@ -3430,7 +3913,7 @@ class PermitController extends Controller
                 $cj = DB::table('applications')
                     ->where('id', $id)
                     ->update([
-                        'current_stage' => 1]);
+                        'current_stage' => 1,'resubmission' => false]);
 
                 $comment = new ApplicationApproval();
                 $comment->comment = $request->input('comment');
@@ -3447,7 +3930,7 @@ class PermitController extends Controller
                 //Update profile picture values
                 $profile_picture = DB::table('applications')
                     ->where('id', $id)
-                    ->update(['status' => "Under Review",
+                    ->update(['status' => "Under Review",'resubmission' => true,
                         'current_stage' => 2]);
             }
             return Redirect::to("permit/name-change/under-review")
@@ -3491,7 +3974,7 @@ class PermitController extends Controller
                 if ($stage->status == "RETURN") {
                     $cj = DB::table('applications')
                         ->where('id', $id)
-                        ->update(['status' => "Under Review",
+                        ->update(['status' => "Under Review",'resubmission' => false,
                             'current_stage' => 2]);
                     $comment = new ApplicationApproval();
                     $comment->comment = $request->input('comment');
@@ -3549,7 +4032,7 @@ class PermitController extends Controller
                 //Update profile picture values
                 $profile_picture = DB::table('applications')
                     ->where('id', $id)
-                    ->update(['status' => "Under Review",
+                    ->update(['status' => "Under Review", 'resubmission' => true,
                         'current_stage' => 5]);
             }
 
@@ -3633,9 +4116,9 @@ class PermitController extends Controller
                 $application_type = "PERMIT NAME CHANGE";
                 $status = "Under Review";
                 $applications = Application::where('profile_id', $profile_id)->where('type', $application_type)
-                    ->where('status', $status)->get();
+                    ->where('status', $status)->orderBy('id', 'desc')->get();
                 $application_id = Application::where('profile_id', $profile_id)->where('type', $application_type)
-                    ->where('status', $status)->first()->id;
+                    ->where('status', $status)->orderBy('id', 'desc')->first()->id;
 
             } else {
                 $applications = "No data";
@@ -3742,11 +4225,10 @@ class PermitController extends Controller
                 $application_type = "PERMIT NAME CHANGE";
                 $status = "Under Review";
                 $accept = "ACCEPT";
-
                 $applications = Application::where('profile_id', $profile_id)->where('type', $application_type)
-                    ->where('status', $status)->orWhere('status', $accept)->get();
+                    ->where('status', $status)->orderBy('id', 'desc')->get();
                 $application_id = Application::where('profile_id', $profile_id)->where('type', $application_type)
-                    ->where('status', $status)->orWhere('status', $accept)->first()->id;
+                    ->where('status', $status)->orderBy('id', 'desc')->first()->id;
 
             } else {
                 $applications = "No data";
@@ -3850,9 +4332,9 @@ class PermitController extends Controller
                 $application_type = "PERMIT NAME CHANGE";
                 $status = "Under Review";
                 $applications = Application::where('profile_id', $profile_id)->where('type', $application_type)
-                    ->where('status', $status)->get();
+                    ->where('status', $status)->orderBy('id', 'desc')->get();
                 $application_id = Application::where('profile_id', $profile_id)->where('type', $application_type)
-                    ->where('status', $status)->first()->id;
+                    ->where('status', $status)->orderBy('id', 'desc')->first()->id;
             } else {
                 $applications = "No data";
             }

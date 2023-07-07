@@ -14,7 +14,7 @@
                         <div class="page-header-title">
                             <i class="ik ik-lock bg-red"></i>
                             <div class="d-inline">
-                                <h5>Application For Resume Practising</h5>
+                                <h5>Application For Non Practising</h5>
                                 <span>Current applications</span>
                             </div>
                         </div>

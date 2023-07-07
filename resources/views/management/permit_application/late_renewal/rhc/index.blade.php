@@ -75,7 +75,7 @@
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" id="pills-timeline-tab" data-toggle="pill" href="#practising"
-                                    role="tab" aria-controls="pills-timeline" aria-selected="true">Resubmission Applications <span
+                                    role="tab" aria-controls="pills-timeline" aria-selected="true">Returned Applications <span
                                         class="badge bg-warning" style="color: white">
                                         {{ $submit_applications_count }}
                                     </span></a>
@@ -120,7 +120,7 @@
                                             <td id="table_id">
                                                 <div class="table-actions">
                                                     <div class="table-actions">
-                                                        <a href="{{ url('permit/non-practising/rhc/view', $application->uid) }}"
+                                                        <a href="{{ url('permit/late-renewal/rhc/view', $application->uid) }}"
                                                             title="View Profile"><i class="ik ik-eye pull-left"></i></a>
                                                     </div>
                                                 </div>
