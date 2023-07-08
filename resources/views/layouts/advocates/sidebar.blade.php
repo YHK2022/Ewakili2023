@@ -19,13 +19,21 @@
                   
                         if(\App\Profile::where('user_id', Auth()->user()->id)->exists()){
                           $advocate = Auth::user()->is_advocate;
+                          $temporary_advocate = -1;
+                         }else{
+                            $advocate = -1;
+                            $temporary_advocate = Auth::user()->temporary_advocate;
                          }
                 @endphp
                  @if($advocate > 0)
                   <div @if(\Request::is('auth/advocate-profile')) class="nav-item active" @endif class="nav-item">
                       <a href="{{ url('auth/advocate-profile') }}"><i class="ik ik-bar-chart-2"></i><span>Profile</span></a>
                   </div>
-                  @else 
+                  @elseif($temporary_advocate > 0)
+                   <div @if(\Request::is('auth/advocate-profile')) class="nav-item active" @endif class="nav-item">
+                      <a href="{{ url('auth/petitioner-profile') }}"><i class="ik ik-bar-chart-2"></i><span>Petitioner Profile</span></a>
+                  </div>
+                  @else
                    <div @if(\Request::is('auth/advocate-profile')) class="nav-item active" @endif class="nav-item">
                       <a href="{{ url('auth/petitioner-profile') }}"><i class="ik ik-bar-chart-2"></i><span>Petitioner Profile</span></a>
                   </div>

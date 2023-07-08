@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\BillEmail;
 use App\Models\Advocate\Certificate;
+use App\Models\Advocate\TemporaryAdmissionDocuments;
 use Illuminate\Support\Str;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;

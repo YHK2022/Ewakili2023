@@ -168,11 +168,12 @@ class AuthController extends Controller
             if($petitioner > 0){
                 if($advocate > 0){
                     return redirect()->intended('auth/advocate-profile');
+                }elseif($tempAdvocate > 0){
+                    return redirect()->intended('auth/temporary-advocate-profile');
                 }else{
-                    return redirect()->intended('auth/petitioner-profile');
+                     return redirect()->intended('auth/petitioner-profile');
                 }
-            } elseif ($tempAdvocate > 0) {
-                    return redirect()->intended('auth/temporary-admission-profile');
+          
             }
             else{
               return redirect()->intended('auth/dashboard');
@@ -216,6 +217,7 @@ class AuthController extends Controller
 
         $user = $request->all();
         $user['temporary_advocate'] = 1;
+        // dd($user);
         $check = $this->create($user);
 
         return Redirect::to("login")->with('success','We have sent you an activation link, please check your email.');
@@ -401,7 +403,40 @@ class AuthController extends Controller
         }
         return Redirect::to("auth/login")->withErrors('You do not have access!');
     }
+ public function temporary_advocate_profile()
+    {
+      if(Auth::check()){
+        $user_id = Auth::user()->id;
+        $profile = Profile::where('user_id', $user_id)->first();
+        // dd($profile);
+        $qualification = Qualification::where('user_id', $user_id)->first();
+        $attachment = Document::where('user_id', $user_id)->first();
+        $llb = LlbCollege::where('user_id', $user_id)->first();
+        $lst = LstCollege::where('user_id', $user_id)->first();
+        $experience = WorkExperience::where('user_id', $user_id)->first();
 
+        //check experience
+                // if(WorkExperience::where('user_id', $user_id)->exists()){
+                //     $experience = WorkExperience::where('user_id', $user_id)->get();
+                // }else{
+                //     $experience = "No data";
+                // }
+        $progress = ApplicationMove::where('user_id', $user_id)->first();
+        $petition_form = PetitionForm::where('user_id', $user_id)->first();
+        // dd($progress);
+        return view('advocates.profile.temporary-advocate', [
+          'profile' => $profile,
+          'progress' => $progress,
+          'qualification' => $qualification,
+          'experience' => $experience,
+          'llb' => $llb,
+          'lst' => $lst,
+          'attachment' => $attachment,
+          'petition_form' => $petition_form,
+        ]);
+      }
+      return Redirect::to("auth/login")->withErrors('You do not have access!');
+    }
 
     public function create(array $data)
 	{
@@ -416,9 +451,10 @@ class AuthController extends Controller
     $reset_passwd = "false";
     $role = "Advocate";
 	  $user = User::create([
-	    'username' => $data['username'],
+	      'username' => $data['username'],
         'full_name' => $data['username'],
-	    'email' => $data['email'],
+	      'temporary_advocate' => $data['temporary_advocate'],
+        'email' => $data['email'],
         'phone_number' => $data['phone_number'],
         'active' => $active,
         'uid' => $uuid,

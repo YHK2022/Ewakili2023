@@ -43,6 +43,7 @@ Route::group(['prefix' => 'auth'], function() {
     Route::get('/dashboard', 'AuthController@get_dashboard');
     Route::get('/advocate-profile', 'AuthController@advocate_profile');
     Route::get('/petitioner-profile', 'AuthController@petitioner_profile');
+    Route::get('/temporary-advocate-profile', 'AuthController@temporary_advocate_profile');
     Route::post('/post-login', ['as' => 'login', 'uses' => 'AuthController@postLogin']);
     Route::post('/account/advocate', 'AuthController@register_advocate');
     Route::post('/account/attorney', 'AuthController@register_attorney');
@@ -192,6 +193,66 @@ Route::match(['get', 'post'], '/update-experience/{id}', 'Advocates\PetitionCont
     Route::post('/confirm-firm', 'Advocates\PetitionController@confirm_firm');
 
     Route::match(['get', 'post'], '/submit-application', 'Advocates\PetitionController@submit_application');
+    Route::match(['get', 'post'], '/resubmit-application', 'Advocates\PetitionController@resubmit_application');
+
+
+});
+//****Petition Routes Ends****** //
+// ****** ENDS *********//
+
+
+
+// ***** PETITION FOR ADMISSION ******//
+//****Petition Routes Start****** //
+Route::group(['prefix' => 'temporary'], function() {
+    Route::get('/personal-detail', 'Advocates\TemporaryAdmissionsController@get_personal_detal_index');
+    Route::get('/application-form', 'Advocates\TemporaryAdmissionsController@get_qualification_index');
+Route::match(['get', 'post'], '/update-application-form/{id}', 'Advocates\TemporaryAdmissionsController@update_qualification');
+
+    Route::get('/temporary-attachment', 'Advocates\TemporaryAdmissionsController@get_attachment_index');
+    Route::post('/post-profiles', 'Advocates\TemporaryAdmissionsController@add_profile');
+Route::match(['get', 'post'], '/update-profiles/{user_id}', 'Advocates\TemporaryAdmissionsController@update_profile');
+
+    Route::post('/post-petition', 'Advocates\TemporaryAdmissionsController@add_petition_document');
+Route::match(['get', 'post'], '/delete-petition/{id}', 'Advocates\TemporaryAdmissionsController@delete_petition');
+
+    Route::post('/post-admission-certificate', 'Advocates\TemporaryAdmissionsController@add_admission_document');
+Route::match(['get', 'post'], '/delete-admission-certificate/{id}', 'Advocates\TemporaryAdmissionsController@delete_admission');
+
+    Route::post('/post-practising', 'Advocates\TemporaryAdmissionsController@add_practising_document');
+Route::match(['get', 'post'], '/delete-practising/{id}', 'Advocates\TemporaryAdmissionsController@delete_practising');
+
+    Route::post('/post-notary', 'Advocates\TemporaryAdmissionsController@add_notary_document');
+Route::match(['get', 'post'], '/delete-notary/{id}', 'Advocates\TemporaryAdmissionsController@delete_notary');
+
+    Route::post('/post-letter', 'Advocates\TemporaryAdmissionsController@add_letter_document');
+Route::match(['get', 'post'], '/delete-letter/{id}', 'Advocates\TemporaryAdmissionsController@delete_letter');
+
+    Route::post('/post-ordinary', 'Advocates\TemporaryAdmissionsController@add_ordinary_document');
+Route::match(['get', 'post'], '/delete-ordinary/{id}', 'Advocates\TemporaryAdmissionsController@delete_ordinary');
+
+    Route::post('/post-advanced', 'Advocates\TemporaryAdmissionsController@add_advanced_document');
+Route::match(['get', 'post'], '/delete-advanced/{id}', 'Advocates\TemporaryAdmissionsController@delete_advanced');
+
+    Route::post('/post-bachelor', 'Advocates\TemporaryAdmissionsController@add_bachelor_document');
+Route::match(['get', 'post'], '/delete-bachelor/{id}', 'Advocates\TemporaryAdmissionsController@delete_bachelor');
+
+    Route::post('/post-work', 'Advocates\TemporaryAdmissionsController@add_work_document');
+Route::match(['get', 'post'], '/delete-work/{id}', 'Advocates\TemporaryAdmissionsController@delete_work');
+
+   
+   
+    Route::post('/post-attachments', 'Advocates\TemporaryAdmissionsController@submit_attachments');
+    Route::post('/post-qualification', 'Advocates\TemporaryAdmissionsController@add_qualification');
+    Route::post('/post-picture', 'Advocates\TemporaryAdmissionsController@add_profile_picture');
+
+   
+    Route::get('/complete', 'Advocates\TemporaryAdmissionsController@get_finish_index');
+
+
+    Route::post('/complete-petition', 'Advocates\PetitionController@complete_petition');
+
+    Route::match(['get', 'post'], '/submit-applications', 'Advocates\TemporaryAdmissionsController@submit_applications');
     Route::match(['get', 'post'], '/resubmit-application', 'Advocates\PetitionController@resubmit_application');
 
 
@@ -647,6 +708,38 @@ Route::group(['prefix' => 'advocate'], function() {
 });
 //****Advocate Profile Routes Ends****** //
 
+
+
+//****Temporary Advocate Applications Routes Start****** //
+Route::group(['prefix' => 'temporary-admission'], function() {
+
+   
+//--RHC Review ----
+Route::get('/rhc-review', 'Management\TemporaryAdmissionController@get_rhc');
+Route::match(['get', 'post'], '/rhc/view/{id}', 'Management\TemporaryAdmissionController@view_rhc');
+Route::match(['get', 'post'], '/rhc-view/edit/{id}', 'Management\TemporaryAdmissionController@edit_rhc');
+
+//--CLE Review ----
+Route::get('/cle-inspection', 'Management\TemporaryAdmissionController@get_cle');
+Route::match(['get', 'post'], '/cle/view/{id}', 'Management\TemporaryAdmissionController@view_cle');
+Route::match(['get', 'post'], '/cle-inspection/edit/{id}', 'Management\TemporaryAdmissionController@edit_cle');
+
+//--CJ Review ----
+Route::get('/cj-appearance', 'Management\TemporaryAdmissionController@get_cj');
+Route::match(['get', 'post'], '/cj/view/{id}', 'Management\TemporaryAdmissionController@view_cj');
+Route::match(['get', 'post'], '/cj-appearance/admit/{id}', 'Management\TemporaryAdmissionController@admit');
+Route::match(['get', 'post'], '/cj-appearance/enroll', 'Management\TemporaryAdmissionController@enroll');
+
+Route::match(['get', 'post'], '/cj-appearance/edit/{id}', 'Management\PetitionApplicationUnderReviewController@edit_cj');
+
+Route::get('/new-applicant', 'Management\PetitionApplicationUnderReviewController@new_applicant');
+Route::match(['get', 'post'], '/new-applicant/view/{id}', 'Management\PetitionApplicationUnderReviewController@view_applicant');
+Route::get('/legal-objections', 'Management\LegalProfessionalViewController@legal_objections');
+Route::match(['get', 'post'], '/legal-objections/view/{id}', 'Management\LegalProfessionalViewController@view_lp');
+Route::match(['get', 'post'], '/legal-objections/edit/{id}', 'Management\LegalProfessionalViewController@edit_lp');
+});
+
+
 //****Petition Applications Routes Start****** //
 Route::group(['prefix' => 'petition'], function() {
 
@@ -678,13 +771,8 @@ Route::match(['get', 'post'], '/new-applicant/view/{id}', 'Management\PetitionAp
 Route::get('/legal-objections', 'Management\LegalProfessionalViewController@legal_objections');
 Route::match(['get', 'post'], '/legal-objections/view/{id}', 'Management\LegalProfessionalViewController@view_lp');
 Route::match(['get', 'post'], '/legal-objections/edit/{id}', 'Management\LegalProfessionalViewController@edit_lp');
-
-
-
-
-
-
 });
+
 //****Petition Report Routes Start****** //
 Route::group(['prefix' => 'report'], function() {
 

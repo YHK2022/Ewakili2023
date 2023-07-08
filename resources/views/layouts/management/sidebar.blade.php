@@ -301,19 +301,19 @@
                             Admission</span></a>
                     <div class="submenu-content">
                         <a @if (\Request::is('temp-admission/new-application')) class="menu-item active" @endif
-                            href="{{ url('permit/temp-admission/new-application') }}" class="menu-item">New Applications
+                            href="{{ url('temporary-advocate/temporary-admission/new-application') }}" class="menu-item">New Applications
                         </a>
                         @if($roleId ==1  || $roleId == 4 || $roleId == 5)
-                        <a @if (\Request::is('temp-admission/rhc-review')) class="menu-item active" @endif
-                            href="{{ url('permit/temp-admission/rhc') }}" class="menu-item">RHC Review </a>
+                        <a @if (\Request::is('temporay-admission/rhc-review')) class="menu-item active" @endif
+                            href="{{ url('temporary-admission/rhc-review') }}" class="menu-item">RHC Review </a>
                         @endif    
                         @if($roleId == 1 || $roleId == 6 || $roleId == 7)     
                         <a @if (\Request::is('temp-admission/cj-approval')) class="menu-item active" @endif
-                            href="{{ url('permit/temp-admission/cj') }}" class="menu-item">CJ Approval </a>
+                            href="{{ url('temporay-admission/temporary-admission/cj') }}" class="menu-item">CJ Approval </a>
                         @endif    
                         @if($roleId == 1 || $roleId == 10 )      
                         <a @if (\Request::is('temp-admission/temp-advocates')) class="menu-item active" @endif
-                            href="{{ url('permit/temp-admission/temp-advocates') }}" class="menu-item">Temporary Advocates
+                            href="{{ url('temporary-admission/temporary-admission/temp-advocates') }}" class="menu-item">Temporary Advocates
                         </a>
                        @endif 
                     </div>
