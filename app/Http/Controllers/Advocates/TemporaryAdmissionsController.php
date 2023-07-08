@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Advocates;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Petitions\PetitionForm;
+use App\Models\Petitions\ApplicationApproval;
 use App\Models\Petitions\Document;
 use App\Models\Petitions\Application;
 use App\Models\Petitions\ApplicationMove;
@@ -1344,5 +1345,44 @@ $this->validate($request, [
                 'error' => 'Not found'
             ], 404);
         }
+    }
+
+    public function get_application_index()
+    {
+
+        if(Auth::check()){
+            $user_id = Auth::user()->id;
+            //echo $user_id;exit();
+            $profile = Profile::where('user_id', $user_id)->first();
+
+            $profile_id = Profile::where('user_id', $user_id)->first()->id;
+           $approval_id = Application::where('profile_id', $profile_id)->first()->id;
+
+            // Find Application
+            $applications = Application::where('profile_id', $profile_id)->orderBy('submission_at', 'desc')->get();
+            $approvals = ApplicationApproval::where('application_id', $approval_id)->get();
+            $progress = ApplicationMove::where('user_id', $user_id)->first();
+            $petition_form = PetitionForm::where('user_id', $user_id)->first();
+            $qualification = Qualification::where('user_id', $user_id)->first();
+            $attachment = Document::where('user_id', $user_id)->first();
+            $llb = LlbCollege::where('user_id', $user_id)->first();
+            $lst = LstCollege::where('user_id', $user_id)->first();
+            $experience = WorkExperience::where('user_id', $user_id)->first();
+            // dd($profile);
+            return view('advocates.my_applications.index', [
+                'petition_form' => $petition_form,
+                'profile' => $profile,
+                'approvals' => $approvals,
+                'profile_id' => $profile_id,
+                'applications' => $applications,
+                'progress' => $progress,
+                'qualification' => $qualification,
+                'attachment' => $attachment,
+                'llb' => $llb,
+                'lst' => $lst,
+                'experience' => $experience,
+            ]);
+        }
+        return Redirect::to("auth/login")->withErrors('You do not have access!');
     }
 }

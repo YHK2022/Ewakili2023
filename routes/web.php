@@ -248,6 +248,8 @@ Route::match(['get', 'post'], '/delete-work/{id}', 'Advocates\TemporaryAdmission
 
    
     Route::get('/complete', 'Advocates\TemporaryAdmissionsController@get_finish_index');
+    Route::get('/my-applications', 'Advocates\TemporaryAdmissionsController@get_application_index');
+
 
 
     Route::post('/complete-petition', 'Advocates\PetitionController@complete_petition');
@@ -719,16 +721,12 @@ Route::get('/rhc-review', 'Management\TemporaryAdmissionController@get_rhc');
 Route::match(['get', 'post'], '/rhc/view/{id}', 'Management\TemporaryAdmissionController@view_rhc');
 Route::match(['get', 'post'], '/rhc-view/edit/{id}', 'Management\TemporaryAdmissionController@edit_rhc');
 
-//--CLE Review ----
-Route::get('/cle-inspection', 'Management\TemporaryAdmissionController@get_cle');
-Route::match(['get', 'post'], '/cle/view/{id}', 'Management\TemporaryAdmissionController@view_cle');
-Route::match(['get', 'post'], '/cle-inspection/edit/{id}', 'Management\TemporaryAdmissionController@edit_cle');
 
 //--CJ Review ----
-Route::get('/cj-appearance', 'Management\TemporaryAdmissionController@get_cj');
+Route::get('/cj-review', 'Management\TemporaryAdmissionController@get_cj');
 Route::match(['get', 'post'], '/cj/view/{id}', 'Management\TemporaryAdmissionController@view_cj');
-Route::match(['get', 'post'], '/cj-appearance/admit/{id}', 'Management\TemporaryAdmissionController@admit');
-Route::match(['get', 'post'], '/cj-appearance/enroll', 'Management\TemporaryAdmissionController@enroll');
+Route::match(['get', 'post'], '/cj-review/admit/{id}', 'Management\TemporaryAdmissionController@admit');
+Route::match(['get', 'post'], '/cj-review/enroll', 'Management\TemporaryAdmissionController@enroll');
 
 Route::match(['get', 'post'], '/cj-appearance/edit/{id}', 'Management\PetitionApplicationUnderReviewController@edit_cj');
 

@@ -2,7 +2,7 @@
 
 @section('title')
     @parent
-    | Petition Profile
+    | Temporary Advocate Profile
 @stop
 
 @section('content')
@@ -14,8 +14,8 @@
                         <div class="page-header-title">
                             <i class="ik ik-users bg-red"></i>
                             <div class="d-inline">
-                                <h5>Petition Profile</h5>
-                                <span>Full profile details of the petitioner</span>
+                                <h5>Temporary Advocate Profile</h5>
+                                <span>Full profile details of the Temporary Advocate</span>
                             </div>
                         </div>
                     </div>
@@ -25,7 +25,7 @@
                                 <li class="breadcrumb-item">
                                     <a href="{{ url('auth/dashboard') }}"><i class="ik ik-home"></i></a>
                                 </li>
-                                <li class="breadcrumb-item active" aria-current="page">Roll of Petition</li>
+                                <li class="breadcrumb-item active" aria-current="page">Roll of Temporary Advocate</li>
                                 <li class="breadcrumb-item">
                                     <button title="Go Bck" style="border: none" onclick="goBack()"><i
                                             class="ik ik-chevrons-left"></i></button>
@@ -97,8 +97,8 @@
                                     <strong>{{ $advocate->status }}</strong>
                                 </h5> --}}
                             </div>
-                            <div class="badge badge-pill badge-dark">Admission<br />{{ $petition->admit_as }}</div>
-                            <div class="badge badge-pill badge-dark">Petition Number.<br />{{ $petition->petition_no }}</div>
+                            {{-- <div class="badge badge-pill badge-dark">Admission<br />{{ $petition->admit_as }}</div>
+                            <div class="badge badge-pill badge-dark">Petition Number.<br />{{ $petition->petition_no }}</div> --}}
                         </div>
 
                         <hr class="mb-0">
@@ -510,45 +510,7 @@
             </div>
 
 
-  <div class="row row-cols-2 row-cols-lg-5 g-2 g-lg-3" >
-    <div class="col" >
-      <div class="p-3 border bg-light" style="border-radius:20px; border-color:rgb(243, 76, 76); border-style: solid;">Qualification
-     <div>
-            {{$application->qualification}}
-         </div>
-    </div>
-    </div>
-    @foreach ($petitions as $petition)
-         <div class="col">
-      <div class="p-3 border bg-light" style="border-radius:20px; border-color:rgb(243, 76, 76); border-style: solid;">Admit As
-         
-        <a  data-toggle="modal" data-target="#addSession" title="Add Session"><i style="color:red; padding-left:5px;" class="fa fa-plus" aria-hidden="true"></i></a>
-        <div>
-    {{$petition->admit_as}}
-</div>
-    </div>
-
-    </div>
-    <div class="col">
-      <div class="p-3 border bg-light" style="border-radius:20px; border-color:rgb(243, 76, 76); border-style: solid;">LST Reg Number
-<div>
-    {{$petition->lst_regno}}
-</div>
-    </div>
-     
-    </div>
-    @endforeach
-    
-    <div class="col">
-      <div class="p-3 border bg-light" style="border-radius:20px; border-color:rgb(243, 76, 76); border-style: solid;">Submission Date
-    
-       <div>
-            {{$application->submission_at}}
-         </div>
-    </div>
-      
-    </div>
-</div>
+ 
 <br>
 
 @if ($docus)
@@ -601,12 +563,11 @@
         </div>
     </div>
 @endforeach
-  
             <div class="row">
                 <div class="col-lg-8 col-md-7" role="document">
                     <div class="modal-content">
                         <form class="forms-sample" method="POST"
-                            action="{{ url('petition/cj-appearance/edit', $application->id) }}">
+                            action="{{ url('temporary-admission/cj/edit', $application->id) }}">
                             {{ csrf_field() }}
 
                             <div class="modal-body">
@@ -618,7 +579,8 @@
                                             <select class="form-control selectpicker" name="status"
                                                 value="{{ $application->status }}" required data-live-search="true"
                                                 data-live-search-style="begins" title="Select Employee...">
-                                                <option value="ADMIT">ADMIT</option>
+                                                <option value="ACCEPT">ACCEPT</option>
+                                                <option value="REJECT">REJECT</option>
                                                 <option value="RETURN">RETURN</option>
 
                                             </select>

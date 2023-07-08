@@ -58,9 +58,9 @@ class TemporaryAdmissionController extends Controller
             ->orderBy('created_at', 'desc')->paginate(20);
             $applications_count = Application::where('current_stage', $stage)->where('type', $application_type)
             ->orderBy('created_at', 'desc')->where('resubmission', true)->count();
-             $approved_count = Application::where('current_stage', 3)->where('resubmission', true)->where('type', $application_type)
+             $approved_count = Application::where('current_stage', 4)->where('resubmission', true)->where('type', $application_type)
             ->orderBy('created_at', 'desc')->count();
-             $approved_applications = Application::where('current_stage', 3)->where('resubmission', true)->where('type', $application_type)
+             $approved_applications = Application::where('current_stage', 4)->where('resubmission', true)->where('type', $application_type)
             ->orderBy('created_at', 'desc')->get();
 
             $resubmit_applications =  Application::where('current_stage', $stage)->where('type', $application_type)
@@ -92,7 +92,6 @@ class TemporaryAdmissionController extends Controller
         {
             
                 $stage = Application::findOrFail($id);
-                // dd($stage->id);
                 $uuid = Str::uuid();
                 $this->validate($request, [
                 'status' => 'required',
@@ -123,12 +122,11 @@ class TemporaryAdmissionController extends Controller
                 if ($stage->status == "ACCEPT") 
                 {
                    $profile_picture = DB::table('applications')
-                   ->where('id', $id)->update(['status' => "Under Review", 'current_stage' => 3, 'resubmission' => true ]);
+                   ->where('id', $id)->update(['status' => "Under Review", 'current_stage' => 4, 'resubmission' => true ]);
                    
                 }
 
-
-                return Redirect::to("petition/rhc-review")->with('success', ' Application edited successfully');
+                return Redirect::to("temporary-admission/rhc-review")->with('success', ' Application edited successfully');
 
         }
         return Redirect::to("auth/login")->withErrors('You do not have access!');
@@ -321,7 +319,7 @@ class TemporaryAdmissionController extends Controller
                         if ($stage->status == "RETURN") 
                         {
                           $cj = DB::table('applications')
-                             ->where('id', $id)->update(['status' => "Under Review", 'current_stage' => 3,'resubmission' => false]);
+                             ->where('id', $id)->update(['status' => "Under Review", 'current_stage' => 2,'resubmission' => false]);
                           $comment = new ApplicationApproval();
                           $comment->comment = $request->input('comment');
                           $comment->active = true;
@@ -332,111 +330,13 @@ class TemporaryAdmissionController extends Controller
                           $comment->user_id = Auth()->user()->id;
                           $comment->save();
                         }
-                return Redirect::to("petition/cj-appearance")->with('success', ' Application edited successfully');
+                return Redirect::to("temporary-admission/cj-review")->with('success', ' Application edited successfully');
 
         
     }
 
 
-     public function edit_cle(Request $request, $id)
-   {
-
-      if (Auth::check()) {
-        $stage = Application::findOrFail($id);
-        // dd($stage);
-        $session_id = PetitionSession::where('active', true)->first()->id;
-        $uuid = Str::uuid();
-        $this->validate($request, [
-            'status' => 'required',
-        ]);
-        $stage->status = $request->input('status');
-        $stage->save();
-            if ($stage->status == "ACCEPT") {
-                //Update profile picture values
-                
-                        $date = date('Y-m-d');
-                        $user_id = Auth::user()->id;
-                        $cleMember = CleMember::where('user_id', $user_id)->first();
-                        if(!$cleMember)  {
-                            $profile_picture = DB::table('applications')->where('id', $id)
-                                  ->update(['status' => "Under Review",'resubmission' => true,'current_stage' => 3]);
-                          return Redirect::to("petition/cle-inspection")->with('warning', ' You are not a CLE member.');
-
-                        }else{
-                            $profile_picture = DB::table('applications')->where('id', $id)
-                                  ->update(['status' => "Under Review",'resubmission' => true,'current_stage' => 4]);
-                            if (Coram::where('workday', $date)->exists()) {
-                                    // Data exists in 'corams' table, insert into 'coram_cle_members' table
-                                 $coram = Coram::where('workday', $date)->first();
-                                 // Update CoramCleMember table
-                                 $cleMemberId = CleMember::where('user_id', $user_id)->first()->id;
-                                   $coramCleMember = CoramCleMember::where('coram_id', $coram->id)
-                                   ->where('cle_member_id', $cleMemberId)
-                                   ->first();
-                                   if ($coramCleMember) {
-                                        $coramCleMember->member_id += 1;
-                                        $coramCleMember->save();
-                                   } else {
-                                     // Create new CoramCleMember record
-                                     $coramCleMember = new CoramCleMember();
-                                     $coramCleMember->coram_id = $coram->id;
-                                     $coramCleMember->cle_member_id = $cleMemberId;
-                                     $coramCleMember->member_id = 1; // or any initial value
-                                    $coramCleMember->save();
-                                 }
-                                } else {
-                                      // Data doesn't exist in 'corams' table, insert a new record
-                                      $coram = new Coram();
-                                      $coram->active = true;
-                                      $coram->workday = $date;
-                                      $coram->chairman_id = 8715;
-                                      $coram->petition_session_id = $session_id;
-                                      $coram->uid = $uuid;
-                                      $coram->secretary_id = Auth()->user()->id;
-                                      $coram->save();
-
-                                      // Insert into CoramCleMember table
-                                      $coramCleMember = new CoramCleMember();
-                                      $coramCleMember->coram_id = $coram->id;
-                                      $coramCleMember->cle_member_id = $cleMemberId;
-                                      $coramCleMember->member_id = 1;
-                                      $coramCleMember->save();
-                                }
-                        }   
-            }
-
-            if ($stage->status == "RETURN") {
-              $user_id = Auth::user()->id;
-              $cleMember = CleMember::where('user_id', $user_id)->first();
-              if(!$cleMember){
-               $profile_picture = DB::table('applications')->where('id', $id)->update(['status' => "Under Review",
-             'resubmission' => true,
-            'current_stage' => 3]);
-             return Redirect::to("petition/cle-inspection")->with('warning', ' You are not a CLE member.');
-              }else{
-              $comment = new ApplicationApproval();
-              $comment->comment = $request->input('comment');
-              $comment->active = true;
-              $comment->decision = "RETURN";
-              $comment->action_user_type_id = 5;
-              $comment->uid = $uuid;
-              $comment->application_id = $stage->id;
-              $comment->user_id = Auth()->user()->id;
-              $comment->save();
-             $profile_picture = DB::table('applications')->where('id', $id)->update(['status' => "Under Review",
-             'resubmission' => false,
-            'current_stage' => 2]);
-              }
-                  }
-
-                return Redirect::to("petition/cle-inspection")->with('success', ' Application edited successfully');
-
-         }
-         return Redirect::to("auth/login")->withErrors('You do not have access!');
-   }
-
-
-   
+    
 
 
      public function get_cj() {
@@ -448,7 +348,7 @@ class TemporaryAdmissionController extends Controller
 
             $stage = 4;
             $status = "Under Review";
-            $application_type = "PETITION";
+            $application_type = "TEMPORARY ADMISSION";
 
             $applications = Application::where('current_stage', $stage)->where('type', $application_type)->where('status', $status)->orderBy('created_at', 'desc')->paginate(20);
             $application = Application::where('current_stage', $stage)->where('type', $application_type)->where('status', $status)->orderBy('created_at', 'desc')->count();
@@ -458,7 +358,7 @@ class TemporaryAdmissionController extends Controller
 
 
 // dd($admit);
-            return view('management.petition_application.cj.index', [
+            return view('management.temporary-admission.cj.index', [
                 'profile' => $profile,
                 'admit' => $admit,
                 'admitCount' => $admitCount,
@@ -469,303 +369,8 @@ class TemporaryAdmissionController extends Controller
         return Redirect::to("auth/login")->withErrors('You do not have access!');
     }
 
-     public function get_cle() {
-
-        if(Auth::check()){
-            $user_id = Auth::user()->id;
-            $profile = Profile::where('user_id', $user_id)->first();
-            $stage = 3;
-            $application_type = "PETITION";
-             $status = "Under Review";
-             $resubmit = false;
-
-            $applications = Application::where('current_stage', $stage)->where('type', $application_type)->where('resubmission', true)
-            ->orderBy('created_at', 'desc')->paginate(20);
-            $application_count = Application::where('current_stage', $stage)->where('resubmission', true)->where('type', $application_type)
-            ->orderBy('created_at', 'desc')->count();
-
-             $approved_count = Application::where('current_stage', 4)->where('status', 'Under Review')
-            ->orderBy('created_at', 'desc')->count();
-             $approved_applications = Application::where('current_stage', 4)->where('status', 'Under Review')
-            ->orderBy('created_at', 'desc')->get();
-
-            $resubmit_applications =  Application::where('current_stage', 4)->where('type', $application_type)
-            ->where('resubmission', $resubmit)->orderBy('created_at', 'desc')->paginate(20);
-
-             $resubmit_applications_count =  Application::where('current_stage',4)->where('type', $application_type)
-            ->where('resubmission', $resubmit)->orderBy('created_at', 'desc')->count();
-
-            return view('management.petition_application.cle.index', [
-                'profile' => $profile,
-                'resubmit_applications' => $resubmit_applications,
-                'resubmit_applications_count' => $resubmit_applications_count,
-                'applications' => $applications,
-                 'approved_count' => $approved_count,
-                'approved_applications' => $approved_applications,
-                'application_count' => $application_count,
-
-
-
-            ]);
-        }
-        return Redirect::to("auth/login")->withErrors('You do not have access!');
-    }
-   public function view_profile(Request $request, $id)
-    {
-
-        if(Auth::check()){
-
-                $user_id = Auth::user()->id;
-
-                $profile = Profile::where('uid', $id)->first();
-
-                $cur_year = date('Y');
-                $approval_ids = Application::where('uid', $id)->first()->id;
-                $approvals = ApplicationApproval::where('application_id', $approval_ids)->get();
-                //   dd($approvals);
-                $advocate = Application::where('uid', $id)->first();
-                // dd($advocate);
-
-                $profile_id = Application::where('uid', $id)->first()->profile_id;
-            //   dd($advocate);
-
-                  if(Petition::where('profile_id', $profile_id)->exists()){
-                    $petitions = Petition::where('profile_id', $profile_id)->get();
-                    
-                }else{
-                    $petitions = "No data";
-                }
-                //check membership
-                if(FirmMembership::where('profile_id', $profile_id)->exists()){
-                    $since = FirmMembership::where('profile_id', $profile_id)->first()->since;
-                    $firm_id = FirmMembership::where('profile_id', $profile_id)->first()->firm_id;
-                    $firm_branch_id = FirmMembership::where('profile_id', $profile_id)->first()->firm_branch_id;
-                }else{
-                    $since = "No data";
-                    $firm_id = 0;
-                    $firm_branch_id = 0;
-                }
-
-
-
-                //check firm
-                if(Firm::where('id', $firm_id)->exists()){
-                    $firms = Firm::where('id', $firm_id)->get();
-                }else{
-                    $firms = "No data";
-                }
-
-
-    
-
-                //check personal info
-                $personal_infos = Profile::where('id', $profile_id)->get();
-
-
-
-                //check contact
-                if(ProfileContact::where('profile_id', $profile_id)->exists()){
-                    $contacts = ProfileContact::where('profile_id', $profile_id)->get();
-                }else{
-                    $contacts = "No data";
-                }
-
-
-                //check firm address / branch
-                if(FirmAddress::where('id', $firm_branch_id)->exists()){
-                    $firm_addresses = FirmAddress::where('id', $firm_branch_id)->get();
-                }else{
-                    $firm_addresses = "No data";
-                }
-
-
-                //check education
-                if(PetitionEducation::where('profile_id', $profile_id)->exists()){
-                    $educations = PetitionEducation::where('profile_id', $profile_id)->get();
-                }else{
-                    $educations = "No data";
-                }
-
-
-                //check experience
-                if(WorkExperience::where('profile_id', $profile_id)->exists()){
-                    $experiences = WorkExperience::where('profile_id', $profile_id)->get();
-                }else{
-                    $experiences = "No data";
-                }
-    //   dd($experiences);
-
-                //check applications
-                $application_type = "PETITION";
-
-                if(Application::where('profile_id', $profile_id)->exists()){
-                    $applications = Application::where('profile_id', $profile_id)->get();
-                     $application_id = Application::where('profile_id', $profile_id)
-                     ->where('type', $application_type)->first()->id;
-                }else{
-                    $applications = "No data";
-                }
-                   $docus = DB::table('applications')
-                         ->join('documents', 'documents.application_id', '=', 'applications.id')
-                         ->select('applications.*', 'documents.*')
-                         ->where('applications.id', $application_id)
-                         ->skip(1) // Skip the first row
-                         ->get();
- 
-                // $docus = DB::table('applications')
-                // ->Join('documents', 'documents.application_id', '=', 'applications.id')
-                // ->select('applications.*', 'documents.*')->where('applications.id', $application_id)
-                //  ->get();
-                $petition = Petition::where('profile_id', $profile_id)->first();
-    //  dd($docus);
-
-                return view('management.petition_application.under_review.view', [
-                    'profile' => $profile,
-                    'docus' => $docus,
-                    'petitions' => $petitions,
-                    'petition' => $petition,
-                    'advocate' => $advocate,
-                    'cur_year' => $cur_year,
-                    'firms' => $firms,
-                    'firm_id' => $firm_id,
-                    'since' => $since,
-                    'approvals'=>$approvals,
-                    'personal_infos' => $personal_infos,
-                    'contacts' => $contacts,
-                    'firm_addresses' => $firm_addresses,
-                    'educations' => $educations,
-                    'experiences' => $experiences,
-                    'firm_branch_id' => $firm_branch_id,
-                    'applications' => $applications,
-                ]);
-
-
-
-        }
-        return \Illuminate\Support\Facades\Redirect::to("auth/login")->withErrors('You do not have access!');
-    }
-    
-public function view_cj(Request $request, $id)
-    {
-
-
-        if(Auth::check()){
-
-                $user_id = Auth::user()->id;
-                $profile = Profile::where('user_id', $user_id)->first();
-                $cur_year = date('Y');
-
-                $advocate = Application::where('uid', $id)->first();
-
-                $profile_id = Application::where('uid', $id)->first()->profile_id;
-               
-
-                //check membership
-                if(FirmMembership::where('profile_id', $profile_id)->exists()){
-                    $since = FirmMembership::where('profile_id', $profile_id)->first()->since;
-                    $firm_id = FirmMembership::where('profile_id', $profile_id)->first()->firm_id;
-                    $firm_branch_id = FirmMembership::where('profile_id', $profile_id)->first()->firm_branch_id;
-                }else{
-                    $since = "No data";
-                    $firm_id = 0;
-                    $firm_branch_id = 0;
-                }
-
-
-                //check firm
-                if(Firm::where('id', $firm_id)->exists()){
-                    $firms = Firm::where('id', $firm_id)->get();
-                }else{
-                    $firms = "No data";
-                }
-
-
-
-                //check personal info
-                $personal_infos = Profile::where('id', $profile_id)->get();
-
-
-                //check contact
-                if(ProfileContact::where('profile_id', $profile_id)->exists()){
-                    $contacts = ProfileContact::where('profile_id', $profile_id)->get();
-                }else{
-                    $contacts = "No data";
-                }
-
-                //check firm address / branch
-                if(FirmAddress::where('id', $firm_branch_id)->exists()){
-                    $firm_addresses = FirmAddress::where('id', $firm_branch_id)->get();
-                }else{
-                    $firm_addresses = "No data";
-                }
-
-                //check education
-                if(PetitionEducation::where('profile_id', $profile_id)->exists()){
-                    $educations = PetitionEducation::where('profile_id', $profile_id)->get();
-                }else{
-                    $educations = "No data";
-                }
-
-                //check experience
-                if(WorkExperience::where('profile_id', $profile_id)->exists()){
-                    $experiences = WorkExperience::where('profile_id', $profile_id)->get();
-                }else{
-                    $experiences = "No data";
-                }
-
-               //check applications
-
-                if(Petition::where('profile_id', $profile_id)->exists()){
-                    $petitions = Petition::where('profile_id', $profile_id)->get();
-                    
-                }else{
-                    $petitions = "No data";
-                }
-                 
-                //check applications
-                $application_type = "PETITION";
-
-                if(Application::where('profile_id', $profile_id)->exists()){
-                    $applications = Application::where('profile_id', $profile_id)
-                    ->where('type', $application_type)->get();
-                     $application_id = Application::where('profile_id', $profile_id)
-                     ->where('type', $application_type)->first()->id;
-                }else{
-                    $applications = "No data";
-                }
-
-                $docus = DB::table('applications')
-                ->Join('documents', 'documents.application_id', '=', 'applications.id')
-                ->select('applications.*', 'documents.*')->where('applications.id', $application_id)
-                ->skip(1) 
-                 ->get();
-                $petition = Petition::where('profile_id', $profile_id)->first();
-
-
-                return view('management.petition_application.cj.view', [
-                    'petitions' => $petitions,
-                    'petition' => $petition,
-                    'docus' => $docus,
-                    'profile' => $profile,
-                    'advocate' => $advocate,
-                    'cur_year' => $cur_year,
-                    'firms' => $firms,
-                    'firm_id' => $firm_id,
-                    'since' => $since,
-                    'personal_infos' => $personal_infos,
-                    'contacts' => $contacts,
-                    'firm_addresses' => $firm_addresses,
-                    'educations' => $educations,
-                    'experiences' => $experiences,
-                    'firm_branch_id' => $firm_branch_id,
-                    'applications' => $applications,
-                ]);
-
-
-
-        }
-        return \Illuminate\Support\Facades\Redirect::to("auth/login")->withErrors('You do not have access!');
-    }
+     
+  
 
 public function view_rhc(Request $request, $id)
     {
@@ -837,7 +442,7 @@ public function view_rhc(Request $request, $id)
                     $experiences = "No data";
                 }
                   //check applications
-                $application_type = "PETITION";
+                $application_type = "TEMPORARY ADMISSION";
 
                 if(Application::where('profile_id', $profile_id)->exists()){
                     $applications = Application::where('profile_id', $profile_id)->get();
@@ -848,8 +453,8 @@ public function view_rhc(Request $request, $id)
                 }
 
                 $docus = DB::table('applications')
-                ->Join('documents', 'documents.application_id', '=', 'applications.id')
-                ->select('applications.*', 'documents.*')->where('applications.id', $application_id)
+                ->Join('temporary_admission_documents', 'temporary_admission_documents.application_id', '=', 'applications.id')
+                ->select('applications.*', 'temporary_admission_documents.*')->where('applications.id', $application_id)
                 ->skip(1) 
                  ->get();
                 $petition = Petition::where('profile_id', $profile_id)->first();
@@ -862,7 +467,7 @@ public function view_rhc(Request $request, $id)
                 
     //  dd($applications);
 
-                return view('management.petition_application.rhc.view', [
+                return view('management.temporary-admission.rhc.view', [
                     'docus' => $docus,
                     'petitions' => $petitions,
                     'petition'=> $petition,
@@ -888,7 +493,7 @@ public function view_rhc(Request $request, $id)
         return \Illuminate\Support\Facades\Redirect::to("auth/login")->withErrors('You do not have access!');
     }
 
-public function view_cle(Request $request, $id)
+public function view_cj(Request $request, $id)
     {
 
         if(Auth::check()){
@@ -898,7 +503,6 @@ public function view_cle(Request $request, $id)
                 $cur_year = date('Y');
                 $approval_ids = Application::where('uid', $id)->first()->id;
                 $approvals = ApplicationApproval::where('application_id', $approval_ids)->get();
-
 
                 $advocate = Application::where('uid', $id)->first();
                 //  dd($advocate);
@@ -924,6 +528,8 @@ public function view_cle(Request $request, $id)
                 }else{
                     $firms = "No data";
                 }
+
+
 
                 //check personal info
                 $personal_infos = Profile::where('id', $profile_id)->get();
@@ -956,9 +562,8 @@ public function view_cle(Request $request, $id)
                 }else{
                     $experiences = "No data";
                 }
-
-                 //check applications
-                $application_type = "PETITION";
+                  //check applications
+                $application_type = "TEMPORARY ADMISSION";
 
                 if(Application::where('profile_id', $profile_id)->exists()){
                     $applications = Application::where('profile_id', $profile_id)->get();
@@ -969,8 +574,8 @@ public function view_cle(Request $request, $id)
                 }
 
                 $docus = DB::table('applications')
-                ->Join('documents', 'documents.application_id', '=', 'applications.id')
-                ->select('applications.*', 'documents.*')->where('applications.id', $application_id)
+                ->Join('temporary_admission_documents', 'temporary_admission_documents.application_id', '=', 'applications.id')
+                ->select('applications.*', 'temporary_admission_documents.*')->where('applications.id', $application_id)
                 ->skip(1) 
                  ->get();
                 $petition = Petition::where('profile_id', $profile_id)->first();
@@ -980,12 +585,14 @@ public function view_cle(Request $request, $id)
                 }else{
                     $petitions = "No data";
                 }
+                
+    //  dd($applications);
 
-                return view('management.petition_application.cle.view', [
-                    'profile' => $profile,
-                    'petition' => $petition,
-                    'petitions' => $petitions,
+                return view('management.temporary-admission.cj.view', [
                     'docus' => $docus,
+                    'petitions' => $petitions,
+                    'petition'=> $petition,
+                    'profile' => $profile,
                     'advocate' => $advocate,
                     'cur_year' => $cur_year,
                     'firms' => $firms,
@@ -1007,6 +614,7 @@ public function view_cle(Request $request, $id)
         return \Illuminate\Support\Facades\Redirect::to("auth/login")->withErrors('You do not have access!');
     }
 
+
    public function new_applicant()
    {
     if(Auth::check()){
@@ -1015,14 +623,14 @@ public function view_cle(Request $request, $id)
             
 
             $stage = 1;
-            $application_type = "PETITION";
+            $application_type = "TEMPORARY ADMISSION";
             $status = "Under Review";
 
 
             $applications = Application::where('type', $application_type)->where('status', $status)->orderBy('created_at', 'desc')->paginate(200);
 
 
-            return view('management.petition_application.new-applicant.index', [
+            return view('management.temporary-admission.new-applicant.index', [
                 'profile' => $profile,
                 'applications' => $applications,
             ]);
@@ -1110,7 +718,7 @@ public function view_cle(Request $request, $id)
                 }
     //  dd($applications);
 
-                return view('management.petition_application.new-applicant.view', [
+                return view('management.temporary-admission.new-applicant.view', [
                     'profile' => $profile,
                     'advocate' => $advocate,
                     'cur_year' => $cur_year,
@@ -1267,5 +875,10 @@ public function view_cle(Request $request, $id)
 
         return back()->with('success', ' Enrollment  successfully');       
     }
+
+
+
+
+     
    
 }

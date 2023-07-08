@@ -253,7 +253,7 @@
                                     <td id="table_id">
                                         <div class="table-actions">
                                             <div class="table-actions" style="justify-content: center;align-items: center;  display: flex;">
-                                                <a href="{{ url('petition/rhc/view', $application->uid) }}"
+                                                <a href="{{ url('temporary-admission/rhc/view', $application->uid) }}"
                                                     title="View Profile"><i class="ik ik-eye pull-left"></i></a>
                                             </div>
                                         </div>

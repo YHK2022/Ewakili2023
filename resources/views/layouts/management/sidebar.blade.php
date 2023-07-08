@@ -308,8 +308,8 @@
                             href="{{ url('temporary-admission/rhc-review') }}" class="menu-item">RHC Review </a>
                         @endif    
                         @if($roleId == 1 || $roleId == 6 || $roleId == 7)     
-                        <a @if (\Request::is('temp-admission/cj-approval')) class="menu-item active" @endif
-                            href="{{ url('temporay-admission/temporary-admission/cj') }}" class="menu-item">CJ Approval </a>
+                        <a @if (\Request::is('temp-admission/cj-review')) class="menu-item active" @endif
+                            href="{{ url('temporary-admission/cj-review') }}" class="menu-item">CJ Approval </a>
                         @endif    
                         @if($roleId == 1 || $roleId == 10 )      
                         <a @if (\Request::is('temp-admission/temp-advocates')) class="menu-item active" @endif

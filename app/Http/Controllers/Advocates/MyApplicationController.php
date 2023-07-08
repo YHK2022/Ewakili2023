@@ -75,4 +75,5 @@ class MyApplicationController extends Controller
         return Redirect::to("auth/login")->withErrors('You do not have access!');
     }
 
+   
 }

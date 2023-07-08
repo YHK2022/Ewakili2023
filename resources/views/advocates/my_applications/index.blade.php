@@ -1,4 +1,4 @@
-@extends('adv-static')
+@extends('temp-adv-static')
 
 @section('title')
     @parent
@@ -77,7 +77,7 @@
                                                     <div class="panel-heading" role="tab" id="headingOne">
                                                         <h4 class="panel-title">
                                                             <a style="font-size: medium; color: darkred" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne{{ $application->uid }}" aria-expanded="true" aria-controls="collapseOne">
-                                                                {{ date('F d, Y', strtotime($application->submission_at)) }}: {{ $application->type }} - {{ $application->status }} -
+                                                                  {{ date('F d, Y', strtotime($application->submission_at)) }}: {{ $application->type }} - {{ $application->status }} -
                                                                   @if($application->current_stage == 1) <span> FRONT DESK</span> 
                                                                   @elseif ($application->current_stage == 2)<span> RHC</span> 
                                                                 @elseif ($application->current_stage == 3)<span> CLE</span> 

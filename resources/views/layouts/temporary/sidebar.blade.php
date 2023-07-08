@@ -15,29 +15,12 @@
           <div class="nav-container">
               <nav id="main-menu-navigation" class="navigation-main">
                   <div class="nav-lavel">Navigation</div>
-                   @php           
                   
-                        if(\App\Profile::where('user_id', Auth()->user()->id)->exists()){
-                          $advocate = Auth::user()->is_advocate;
-                          $temporary_advocate = -1;
-                         }else{
-                            $advocate = -1;
-                            $temporary_advocate = Auth::user()->temporary_advocate;
-                         }
-                @endphp
-                 @if($advocate > 0)
-                  <div @if(\Request::is('auth/advocate-profile')) class="nav-item active" @endif class="nav-item">
-                      <a href="{{ url('auth/advocate-profile') }}"><i class="ik ik-bar-chart-2"></i><span>Profile</span></a>
-                  </div>
-                  @elseif($temporary_advocate > 0)
+                
                    <div @if(\Request::is('auth/temporary-advocate-profile')) class="nav-item active" @endif class="nav-item">
                       <a href="{{ url('auth/temporary-advocate-profile') }}"><i class="ik ik-bar-chart-2"></i><span>Temporary Advocate Profile</span></a>
                   </div>
-                  @else
-                   <div @if(\Request::is('auth/advocate-profile')) class="nav-item active" @endif class="nav-item">
-                      <a href="{{ url('auth/petitioner-profile') }}"><i class="ik ik-bar-chart-2"></i><span>Petitioner Profile</span></a>
-                  </div>
-                  @endif
+                
                
     
                  <div @if(\Request::is('temporary/temporary') ||
@@ -46,19 +29,19 @@
                       <div class="submenu-content">
                         <a @if(\Request::is('temporary/personal-detail')) class="menu-item active" @endif href="{{ url('temporary/personal-detail') }}" class="menu-item">Personal Details @if($profile) - <span style="color:DeepSkyBlue;">&#10003;</span>@endif</a>
                         <a @if(\Request::is('petition/application-form')) class="menu-item active" @endif href="{{ url('temporary/application-form') }}" class="menu-item">Application Form @if($qualification) - <span style="color:DeepSkyBlue;">&#10003;</span>@endif</a>
-                        <a @if(\Request::is('temporary/temporary-attachment')) class="menu-item active" @endif href="{{ url('temporary-temporary/attachment') }}" class="menu-item">Attachments @if($petition_form) @if($petition_form->attachment == 1) - <span style="color:DeepSkyBlue;">&#10003;</span>@endif @endif</a>  
-                        <a @if(\Request::is('temporary/submission')) class="menu-item active" @endif href="{{ url('temporary/submission') }}" class="menu-item">Finish @if($progress) @if($progress->finish == 1) - <span style="color:DeepSkyBlue;">&#10003;</span>@endif @endif</a>
+                        <a @if(\Request::is('temporary/temporary-attachment')) class="menu-item active" @endif href="{{ url('temporary/temporary-attachment') }}" class="menu-item">Attachments @if($petition_form) @if($petition_form->attachment == 1) - <span style="color:DeepSkyBlue;">&#10003;</span>@endif @endif</a>  
+                        <a @if(\Request::is('temporary/complete')) class="menu-item active" @endif href="{{ url('temporary/complete') }}" class="menu-item">Finish @if($progress) @if($progress->finish == 1) - <span style="color:DeepSkyBlue;">&#10003;</span>@endif @endif</a>
                       </div>
                   </div>
     
                
 
-                   <div @if(\Request::is('my-application')) class = "nav-item active open" @endif class="nav-item">
-                      <a href="{{ url('my-application') }}"><i class="ik ik-edit"></i><span>My Applications</span></a>
+                   <div @if(\Request::is('temporary/my-applications')) class = "nav-item active open" @endif class="nav-item">
+                      <a href="{{ url('temporary/my-applications') }}"><i class="ik ik-edit"></i><span>My Applications</span></a>
                   </div>
 
-                  <div @if(\Request::is('request')) class = "nav-item active open" @endif class="nav-item">
-                      <a href="{{ url('request') }}"><i class="ik ik-paperclip"></i><span>Requests</span></a>
+                  <div @if(\Request::is('temporary/requests')) class = "nav-item active open" @endif class="nav-item">
+                      <a href="{{ url('temporary/requests') }}"><i class="ik ik-paperclip"></i><span>Requests</span></a>
                   </div>
 
             
