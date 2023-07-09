@@ -73,28 +73,15 @@
                                         {{ $application }}
                                     </span></a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" id="pills-timeline-tab" data-toggle="pill" href="#practising"
-                                    role="tab" aria-controls="pills-timeline" aria-selected="true">Returned Applications
-                                    <span class="badge bg-warning" style="color: white">
-                                        {{-- {{ $resubmit_applications_count }} --}}
-                                    </span></a>
-                            </li>
+                            
                             <li class="nav-item">
                                 <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#non_practising"
                                     role="tab" aria-controls="pills-profile" aria-selected="false">Approved Applications
                                     <span class="badge bg-warning" style="color: white">
-                                        {{-- {{ $approved_count }} --}}
+                                        {{ $ApproveCount }}
                                     </span></a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" id="pills-setting-tab" data-toggle="pill" href="#suspended"
-                                    role="tab" aria-controls="pills-setting" aria-selected="false">Pending Admission
-                                    <span class="badge bg-warning" style="color: white">
-                                        {{-- {{ $admitCount }} --}}
-                                    </span></a>
-                            </li>
-
+                            
 
                         </ul>
                         <div class="tab-content" id="pills-tabContent">
@@ -143,7 +130,7 @@
                                 </div>
                             </div>
 
-                            <div class="tab-pane fade" id="practising" role="tabpanel"
+                            <div class="tab-pane fade" id="non_practising" role="tabpanel"
                                 aria-labelledby="pills-timeline-tab">
                                 <div class="card-body">
                                     <table class="table table-hover" id="table_id1">
@@ -155,12 +142,11 @@
                                                 <th id="table_id1">Current Stage</th>
                                                 <th id="table_id1">Status</th>
                                                 <th id="table_id1">Submitted Date</th>
-                                                <th id="table_id1">Action</th>
 
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {{-- @foreach ($resubmit_applications as $key => $application)
+                                            @foreach ($approve as $key => $application)
                                 <tr>
                                     <td id="table_id">{{ ++$key }}</td>
                                     <td id="table_id">{{ $application->profile_detail->fullname }}</td>
@@ -168,71 +154,16 @@
                                     <td id="table_id"> RHC REVIEW </td>
                                     <td id="table_id">{{ $application->status }}</td>
                                     <td id="table_id"> {{ date('F d, Y', strtotime($application->submission_at)) }}</td>
-                                    <td id="table_id">
-                                        <div class="table-actions">
-                                            <div class="table-actions" style="justify-content: center;align-items: center;  display: flex;">
-                                                <a href="{{ url('petition/rhc/view', $application->uid) }}"
-                                                    title="View Profile"><i class="ik ik-eye pull-left"></i></a>
-                                            </div>
-                                        </div>
-                                    </td>
+                                   
                                 </tr>
-                                @endforeach --}}
+                                @endforeach
 
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
 
-                            <div class="tab-pane fade" id="non_practising" role="tabpanel"
-                                aria-labelledby="pills-profile-tab">
-                                <div class="card-body">
-                                    <table class="table table-hover" id="table_id2">
-                                        <thead>
-                                            <tr>
-                                                <th id="table_id2" data-priority="1">#</th>
-                                                <th id="table_id2">Applicant Name</th>
-                                                <th id="table_id2">Application Type</th>
-                                                <th id="table_id2">Current Stage</th>
-                                                <th id="table_id2">Status</th>
-                                                <th id="table_id2">Submitted Date</th>
-                                                {{-- <th id="table_id2">Action</th> --}}
-
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-
-
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-
-                            <div class="tab-pane fade" id="suspended" role="tabpanel"
-                                aria-labelledby="pills-setting-tab">
-
-                                <div class="card-body">
-
-                                    <table class="table table-hover" id="table_id3">
-                                        <thead>
-                                            <tr>
-                                                <th id="table_id3" data-priority="1">#</th>
-                                                <th id="table_id3">Applicant Name</th>
-                                                <th id="table_id3">Application Type</th>
-                                                <th id="table_id3">Current Stage</th>
-                                                <th id="table_id3">Status</th>
-                                                <th id="table_id3">Submitted Date</th>
-                                                <th id="table_id3">Action</th>
-
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-
+                           
 
 
                         </div>

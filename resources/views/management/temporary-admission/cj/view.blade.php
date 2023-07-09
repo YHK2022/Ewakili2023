@@ -567,7 +567,7 @@
                 <div class="col-lg-8 col-md-7" role="document">
                     <div class="modal-content">
                         <form class="forms-sample" method="POST"
-                            action="{{ url('temporary-admission/cj/edit', $application->id) }}">
+                            action="{{ url('temporary-admission/cj-review/edit', $application->id) }}">
                             {{ csrf_field() }}
 
                             <div class="modal-body">
@@ -579,7 +579,7 @@
                                             <select class="form-control selectpicker" name="status"
                                                 value="{{ $application->status }}" required data-live-search="true"
                                                 data-live-search-style="begins" title="Select Employee...">
-                                                <option value="ACCEPT">ACCEPT</option>
+                                                <option value="APPROVE">APPROVE</option>
                                                 <option value="REJECT">REJECT</option>
                                                 <option value="RETURN">RETURN</option>
 

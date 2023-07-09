@@ -54,9 +54,7 @@
                       </div>
                   </div>
 
-              <div @if(\Request::is('firm')) class = "nav-item active open" @endif class="nav-item">
-                      <a href="{{ url('firm') }}"><i class="ik ik-layers"></i><span>Temporary Application Form</span></a>
-              </div>
+             
                   <div class="nav-lavel">Settings</div>
                   <div @if(\Request::is('user/change-password') ||
                         \Request::is('user/update-profile')) class="nav-item active open has-sub" @endif class="nav-item has-sub">

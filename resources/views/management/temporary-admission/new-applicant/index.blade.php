@@ -2,7 +2,7 @@
 
 @section('title')
     @parent
-    | Petition Applications
+    | Temporary Advocate Applications
 @stop
 
 @section('content')
@@ -14,7 +14,7 @@
                         <div class="page-header-title">
                             <i class="ik ik-lock bg-red"></i>
                             <div class="d-inline">
-                                <h5>Petition Applications</h5>
+                                <h5>Temporary Advocate Applications</h5>
                                 <span>Under Review</span>
                             </div>
                         </div>
@@ -75,7 +75,6 @@
                                         <th id="table_id">Current Stage</th>
                                         <th id="table_id">Status</th>
                                         <th id="table_id">Submitted Date</th>
-                                        <th id="table_id"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -87,22 +86,16 @@
                                             @if($application->current_stage == 1)
                                             <td id="table_id">FRONT DESK</td>
                                             @elseif($application->current_stage == 2)
-                                            <td id="table_id"> RHC</td>
+                                            <td id="table_id"> RHC-Review</td>
                                             @elseif($application->current_stage == 3)
-                                            <td id="table_id"> CLE</td>
+                                            <td id="table_id"> CLE-Review</td>
                                             @elseif($application->current_stage == 4)
-                                            <td id="table_id"> CJ</td>
+                                            <td id="table_id"> CJ-Review</td>
                                             @endif
                                             <td id="table_id">{{ $application->status }}</td>
                                             <td id="table_id"> {{ date('F d, Y', strtotime($application->submission_at)) }}</td>
 
-                                            <td id="table_id">
-                                                {{-- <div class="table-actions">
-                                                    <div class="table-actions">
-                                                        <a href="{{ url('petition/new-applicant/view', $application->uid) }}"
-                                                            title="View Profile"><i class="ik ik-eye pull-left"></i></a>
-                                                    </div>
-                                                </div> --}}
+                                            
                                             </td>
                                         </tr>
                                     @endforeach

@@ -300,8 +300,8 @@
                     <a class="dropdown" href="javascript:void(0)"><i class="ik ik-file-text"></i><span>Temporary
                             Admission</span></a>
                     <div class="submenu-content">
-                        <a @if (\Request::is('temp-admission/new-application')) class="menu-item active" @endif
-                            href="{{ url('temporary-advocate/temporary-admission/new-application') }}" class="menu-item">New Applications
+                        <a @if (\Request::is('temporary-admission/new-applications')) class="menu-item active" @endif
+                            href="{{ url('temporary-admission/new-applications') }}" class="menu-item">New Applications
                         </a>
                         @if($roleId ==1  || $roleId == 4 || $roleId == 5)
                         <a @if (\Request::is('temporay-admission/rhc-review')) class="menu-item active" @endif
@@ -313,7 +313,7 @@
                         @endif    
                         @if($roleId == 1 || $roleId == 10 )      
                         <a @if (\Request::is('temp-admission/temp-advocates')) class="menu-item active" @endif
-                            href="{{ url('temporary-admission/temporary-admission/temp-advocates') }}" class="menu-item">Temporary Advocates
+                            href="{{ url('temporary-admission/temporary-advocates') }}" class="menu-item">Temporary Advocates
                         </a>
                        @endif 
                     </div>

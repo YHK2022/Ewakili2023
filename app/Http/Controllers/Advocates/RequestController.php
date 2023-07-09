@@ -386,18 +386,15 @@ class RequestController extends Controller
             if($application){
                 if ($request->hasfile('files')) {
     $files = $request->file('files');
-    foreach ($files as $file) {    
+    $file_names = ['Letter Requesting Change Name', 'Deed poll', 'National ID']; 
+    foreach ($files as $key => $file) {    
         $ext = pathinfo( $file->getClientOriginalName(), PATHINFO_EXTENSION);
-        $name = $file->getClientOriginalName();
+        // $name = $file->getClientOriginalName();
+        $name = $file_names[$key];
         $imageName = date("Ymdhis");
         $imageName = $name . '_' . time() . '.' . $ext;
          $file->move('public/images/files', $imageName);
-        //  $filename = uniqid() . '.' . $file->getClientOriginalExtension();
-        //  $file->move('public/images/files', $filename);
-
-
-         
-
+      
             if($application){
         $document = new Document;
         $document->user_id = $user_id;
@@ -468,13 +465,11 @@ class RequestController extends Controller
             if($application){
                 if ($request->hasfile('files')) {
                  $files = $request->file('files');
-   
-                  foreach ($files as $file) {
-
-        
-
+                 $file_names = ['Letter of Non practising', 'Employer letter']; 
+                  foreach ($files as $key => $file) {
              $ext = pathinfo( $file->getClientOriginalName(), PATHINFO_EXTENSION);
-        $name = $file->getClientOriginalName();
+        // $name = $file->getClientOriginalName();
+        $name = $file_names[$key];
         $imageName = date("Ymdhis");
         $imageName = $name . '_' . time() . '.' . $ext;
          $file->move('public/images/files', $imageName);
@@ -543,24 +538,18 @@ class RequestController extends Controller
             // dd($application);
             $application->save();
 
-            
-
+        
             if($application){
                 if ($request->hasfile('files')) {
                  $files = $request->file('files');
-   
-                  foreach ($files as $file) {
-
-        
-
+                $file_names = ['Letter of suspending', 'Supporting document'];
+                  foreach ($files as $key => $file) {
             $ext = pathinfo( $file->getClientOriginalName(), PATHINFO_EXTENSION);
-        $name = $file->getClientOriginalName();
+        // $name = $file->getClientOriginalName();
+        $name = $file_names[$key];
         $imageName = date("Ymdhis");
         $imageName = $name . '_' . time() . '.' . $ext;
          $file->move('public/images/files', $imageName);
-
-       
-
            if($application){
         $document = new Document;
         $document->user_id = $user_id;
@@ -626,21 +615,17 @@ class RequestController extends Controller
             // dd($application);
             $application->save();
 
-            
-
             if($application){
                 if ($request->hasfile('files')) {
                  $files = $request->file('files');
-   
-                  foreach ($files as $file) {
+                 $file_names = ['Letter of Non Profit', 'Letter of Non Profit'];
+                  foreach ($files as $key => $file) {
         $ext = pathinfo( $file->getClientOriginalName(), PATHINFO_EXTENSION);
-        $name = $file->getClientOriginalName();
+        // $name = $file->getClientOriginalName();
+        $name = $file_names[$key];
         $imageName = date("Ymdhis");
         $imageName = $name . '_' . time() . '.' . $ext;
          $file->move('public/images/files', $imageName);
-
-        
-
 
             if($application){
         $document = new Document;
@@ -712,19 +697,14 @@ class RequestController extends Controller
             if($application){
                 if ($request->hasfile('files')) {
                  $files = $request->file('files');
-   
-                  foreach ($files as $file) {
-
-        
-
+                 $file_names = ['Letter of resuming', 'Letter of resuming'];
+                  foreach ($files as $key => $file) {
             $ext = pathinfo( $file->getClientOriginalName(), PATHINFO_EXTENSION);
-        $name = $file->getClientOriginalName();
+        // $name = $file->getClientOriginalName();
+        $name = $file_names[$key];
         $imageName = date("Ymdhis");
         $imageName = $name . '_' . time() . '.' . $ext;
          $file->move('public/images/files', $imageName);
-
-     
-
 
              if($application){
         $document = new Document;
@@ -796,19 +776,14 @@ class RequestController extends Controller
             if($application){
                 if ($request->hasfile('files')) {
                  $files = $request->file('files');
-   
-                  foreach ($files as $file) {
-
-       
-
+                 $file_names = ['Letter of Retire', 'Supporting document'];
+                  foreach ($files as $key => $file) {
         $ext = pathinfo( $file->getClientOriginalName(), PATHINFO_EXTENSION);
-        $name = $file->getClientOriginalName();
+        // $name = $file->getClientOriginalName();
+        $name = $file_names[$key];
         $imageName = date("Ymdhis");
         $imageName = $name . '_' . time() . '.' . $ext;
          $file->move('public/images/files', $imageName);
-
-      
-        
 
             if($application){
         $document = new Document;

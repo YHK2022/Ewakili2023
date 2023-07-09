@@ -2,7 +2,7 @@
 
 @section('title')
     @parent
-    | Roll of Petition
+    | Temporary Advocate Profile
 @stop
 
 @section('content')
@@ -14,8 +14,8 @@
                         <div class="page-header-title">
                             <i class="ik ik-users bg-red"></i>
                             <div class="d-inline">
-                                <h5>Roll of Petition</h5>
-                                <span>Petition Profile</span>
+                                <h5>Temporary Advocate Profile</h5>
+                                <span>Full profile details of the Temporary Advocate</span>
                             </div>
                         </div>
                     </div>
@@ -25,7 +25,7 @@
                                 <li class="breadcrumb-item">
                                     <a href="{{ url('auth/dashboard') }}"><i class="ik ik-home"></i></a>
                                 </li>
-                                <li class="breadcrumb-item active" aria-current="page">Roll of Petition</li>
+                                <li class="breadcrumb-item active" aria-current="page">Roll of Temporary Advocate</li>
                                 <li class="breadcrumb-item">
                                     <button title="Go Bck" style="border: none" onclick="goBack()"><i
                                             class="ik ik-chevrons-left"></i></button>
@@ -64,6 +64,7 @@
                 @endforeach
             @endif
 
+            
             <!-- End Alert-->
 
             <div class="row">
@@ -96,19 +97,19 @@
                                     <strong>{{ $advocate->status }}</strong>
                                 </h5> --}}
                             </div>
-                            {{-- <div class="badge badge-pill badge-dark">Admission<br />{{ $advocate->admission }}</div> --}}
-                            <div class="badge badge-pill badge-dark">Petition Number.<br />{{ $advocate->id }}</div>
+                            {{-- <div class="badge badge-pill badge-dark">Admission<br />{{ $petition->admit_as }}</div>
+                            <div class="badge badge-pill badge-dark">Petition Number.<br />{{ $petition->petition_no }}</div> --}}
                         </div>
 
                         <hr class="mb-0">
-                        @if ($firms)
-                            {{-- <div class="card-body">
+                        {{-- @if ($firms)
+                            <div class="card-body">
                                 @foreach ($firms as $firm)
                                     <h6 class="mt-30">Firm/Work Place<br /> {{ $firm->name }}</h6>
                                 @endforeach
                                 <h6 class="mt-30">Member Since: {{ $since }}</h6>
-                            </div> --}}
-                        @endif
+                            </div>
+                        @endif --}}
                     </div>
                 </div>
 
@@ -472,7 +473,7 @@
                             <div class="tab-pane fade" id="experience" role="tabpanel"
                                 aria-labelledby="pills-profile-tab">
                                 <div class="card-body">
-                                    @if ($educations != 'No data')
+                                    @if ($experiences != 'No data')
                                         <div class="col-12">
                                             <p class="lead"><i class="ik ik-clipboard"></i> Work Experience</p>
                                             <div class="table-responsive">
@@ -488,7 +489,7 @@
                                                         </tr>
                                                         <tr>
                                                             <th style="width:20%;text-align:right;">Begin Year:</th>
-                                                            <td>{{ $experience->begin_year }}</td>
+                                                            <td>{{ $experience->start_year }}</td>
                                                         </tr>
                                                         <tr>
                                                             <th style="width:20%;text-align:right;">End Year:</th>
@@ -507,47 +508,67 @@
                 </div>
 
             </div>
-              <div class="row" style="text-align:center;">
-                <div class="col-12">
-                  @foreach ($approvals as $approval)
-                                           <?php
-                                               $user = DB::table('users')->find($approval->user_id);
-                                                $current_stage = DB::table('action_user_types')->find($approval->action_user_type_id);
 
-                                            ?>
-                                      
-                                            <div class="col-12">
-                                            <div class="table-responsive">
-                                                <table class="table table-borderless" style="font: size 20px;">
-                                                    <tr>
-                                                        <th style="width:20%;text-align:right;">DECISION:</th>
-                                                        <td>{{ $approval->decision }}</td>
-                                                    </tr>
-                                                      <tr>
-                                                        <th style="width:20%;text-align:right;">DECISION STAGE:</th>
-                                                        <td>{{ $current_stage->display_name }}</td>
-                                                    </tr> 
-                                                      <tr>
-                                                        <th style="width:20%;text-align:right;">ATTENDANT NAME:</th>
-                                                        <td>{{ $user->full_name }}</td>
-                                                    </tr>
-                                                    <tr> 
-                                                        <th style="width:20%;text-align:right;">comment:</th>
-                                                        <td>{{ $approval->comment }}</td>
-                                                    </tr>
-                                                      <tr>
-                                                        <th style="width:20%;text-align:right;">Created Date:</th>
-                                                        <td>{{ $approval->created_at }}</td>
-                                                    </tr>
-                                                  
-                                                </table>
-                                            </div>
-                                        </div>
-                                      @endforeach
-                </div>
-            </div>
-           
+
+ 
+<br>
+
+@if ($docus)
+    <div class="col-12">
+        <p class="lead"><i class="ik ik-paperclip"></i> Attachments <a style="color:red;"> [ Edit ]</a></p>
+        <hr />
+        <div class="table-responsive">
+            <table class="table table-borderless" style="font-size: 13px;">
+                @foreach ($docus as $key => $attachments)
+                    <tr>
+                        <th style="width: 20%; text-align: right;">
+                            {{ date('F d, Y', strtotime($attachments->upload_date)) }}:</th>
+                        <td>
+                            <a style="color: blue; text-decoration: none;" data-toggle="modal"
+                                data-target="#document{{ $attachments->id }}">
+                                <i class="ik ik-paperclip"></i>
+                                {{ $attachments->name }}
+                            </a>
+                        </td>
+                    </tr>
+                @endforeach
+            </table>
         </div>
     </div>
+@else
+    <div class="col-12">
+        <p class="lead"><i class="ik ik-paperclip"></i> Attachments <a
+                style="color:red;" href="{{ url('petition/attachments') }}"> [ Edit ]</a></p>
+        <hr />
+        <p><i class="ik ik-alert-triangle" style="color:red;"></i> No attachment(s) to display !</p>
+    </div>
+@endif
+
+<!-- View pdf modal-->
+@foreach ($docus as $attachments)
+    <div class="modal fade" id="document{{ $attachments->id }}" tabindex="-1" role="dialog"
+        aria-labelledby="demoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="demoModalLabel">{{ $attachments->name }}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <iframe src="{{ asset('public/images/files/' . $attachments->file) }}" width="100%" height="600"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+@endforeach
+            
+        </div>
+    </div>
+
+   
+
+    
 
 @endsection

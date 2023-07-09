@@ -138,7 +138,6 @@ class TemporaryAdmissionController extends Controller
                 $profile_id = Application::findOrFail($id)->profile_id;
                 $user_id = Profile::where('id', $profile_id )->first()->user_id;
                 $userEmail = User::where('id', $user_id )->first();
-                // dd($userEmail);
             
                 $uuid = Str::uuid();
                 $cur_year = date('Y');
@@ -150,52 +149,21 @@ class TemporaryAdmissionController extends Controller
 
                 $stage->status = $request->input('status');
                 $stage->save();
-                $lastroll_no = Petition::orderBy('id', 'desc')->max('roll_no');
-                $nextrollNumber = $lastroll_no + 1;
 
-                if ($stage->status == "ADMIT") 
+                if ($stage->status == "APPROVE") 
                  
                 {
-                   $session_id = PetitionSession::where('active', true)->first()->id;
-                   $petition = DB::table('petitions')
-                                ->where('application_id', $id)
-                                 ->where('roll_no', null)
-                                 ->update([ 'roll_no' => $nextrollNumber]);
-                    $admission = DB::table('applications')
-                        ->leftJoin('petitions', 'petitions.application_id', '=', 'applications.id')
-                        ->select('applications.*', 'petitions.*')
-                        ->where('petitions.petition_session_id', $session_id)
-                        ->where('applications.status', 'ADMIT')
-                         ->count();
-                          $cj = DB::table('petition_sessions')
-                                ->where('active', true)
-                                ->update(['admitted_count' => $admission]);
-
-
+                  
                         $bill_id = 'JUD16'.mt_rand(1000000000000 , 9999999999999);
-                        // $control_number = '19' . mt_rand(1000000, 99999999);
-
                         while (Bill::where('bill_id', $bill_id)->exists()) {
                                       $bill_id = 'JUD16' . mt_rand(10000000000, 99999999999);
                                         }
-                        // while (Bill::where('control_number', $control_number)->exists()) {
-                        //               $control_number = '19' . mt_rand(1000000, 99999999);
-
-                        //                 }
+                        
                          $billdate = date('Y-m-d H:i:s');
                          $expireDate = date('Y-m-d\TH:i:s', strtotime('+10 days'));
                         //  $total_all_fees_formatted = number_format($total_all_fees, 2); // format total amount as currency
                          $date_time = new DateTime($billdate);
                          $due_Date = $date_time->format('Y-m-d\TH:i:s');
-
-                         $session_id = PetitionSession::where('active', true)->first()->id;
-                         $bills = DB::table('applications')
-                            ->leftJoin('petitions', 'petitions.application_id', '=', 'applications.id')
-                            ->select('applications.*', 'petitions.*')
-                            ->where('petitions.petition_session_id', $session_id)
-                            ->where('applications.status', 'ADMIT')
-                            ->get();
-
 
                             $datas = [
                                  'total_all_fees' => 110000,
@@ -204,7 +172,7 @@ class TemporaryAdmissionController extends Controller
                                    'expire_date' => $expireDate,
 
                                   ];
-
+                 dd($datas);
              $xml = new SimpleXMLElement('<gepgBillSubReq/>');
 
         $billHdr = $xml->addChild('BillHdr');
@@ -350,18 +318,22 @@ class TemporaryAdmissionController extends Controller
             $status = "Under Review";
             $application_type = "TEMPORARY ADMISSION";
 
-            $applications = Application::where('current_stage', $stage)->where('type', $application_type)->where('status', $status)->orderBy('created_at', 'desc')->paginate(20);
-            $application = Application::where('current_stage', $stage)->where('type', $application_type)->where('status', $status)->orderBy('created_at', 'desc')->count();
+            $applications = Application::where('current_stage', $stage)->where('type', $application_type)
+            ->where('status', $status)->orderBy('created_at', 'desc')->paginate(20);
+            $application = Application::where('current_stage', $stage)->where('type', $application_type)
+            ->where('status', $status)->orderBy('created_at', 'desc')->count();
 
-            $admit = Application::where('current_stage', $stage)->where('type', $application_type)->where('status', 'ADMIT')->where('active', true)->orderBy('created_at', 'desc')->paginate(20);
-            $admitCount = Application::where('current_stage', $stage)->where('type', $application_type)->where('status', 'ADMIT')->where('active', true)->orderBy('created_at', 'desc')->count();
+            $approve = Application::where('current_stage', $stage)->where('type', $application_type)
+            ->where('status', 'APPROVE')->where('active', true)->orderBy('created_at', 'desc')->paginate(20);
+            $ApproveCount = Application::where('current_stage', $stage)->where('type', $application_type)
+            ->where('status', 'APPROVE')->where('active', true)->orderBy('created_at', 'desc')->count();
 
 
 // dd($admit);
             return view('management.temporary-admission.cj.index', [
                 'profile' => $profile,
-                'admit' => $admit,
-                'admitCount' => $admitCount,
+                'approve' => $approve,
+                'ApproveCount' => $ApproveCount,
                  'application' => $application,
                 'applications' => $applications,
             ]);
@@ -615,7 +587,7 @@ public function view_cj(Request $request, $id)
     }
 
 
-   public function new_applicant()
+   public function new_applicants()
    {
     if(Auth::check()){
             $user_id = Auth::user()->id;
@@ -627,7 +599,8 @@ public function view_cj(Request $request, $id)
             $status = "Under Review";
 
 
-            $applications = Application::where('type', $application_type)->where('status', $status)->orderBy('created_at', 'desc')->paginate(200);
+            $applications = Application::where('type', $application_type)->where('status', $status)
+            ->orderBy('created_at', 'desc')->paginate(200);
 
 
             return view('management.temporary-admission.new-applicant.index', [
@@ -740,141 +713,287 @@ public function view_cj(Request $request, $id)
         }
         return \Illuminate\Support\Facades\Redirect::to("auth/login")->withErrors('You do not have access!');
     }
+  
+    public function temporary_advocate()
+   {
+    if(Auth::check()){
+            $user_id = Auth::user()->id;
+            $profile = Profile::where('user_id', $user_id)->first();
+            
+
+            $stage = 1;
+            $application_type = "TEMPORARY ADMISSION";
+            $status = "APPROVE";
 
 
-    public function admit(Request $request,  $id)
+            $applications = Application::where('type', $application_type)->where('status', $status)
+            ->orderBy('created_at', 'desc')->paginate(200);
+
+
+            return view('management.temporary-admission.temporary-advocate.index', [
+                'profile' => $profile,
+                'applications' => $applications,
+            ]);
+        }
+        return Redirect::to("auth/login")->withErrors('You do not have access!');
+   }
+
+   public function view_temporary_advocate(Request $request, $id)
     {
-       
 
         if(Auth::check()){
 
-            try {
-            $session_id = PetitionSession::where('active', true)->first()->id;
-            $profile_id = Application::findOrFail($id)->profile_id;
-            $stage = Petition::where('profile_id', $profile_id)->first();
-                $this->validate($request, [
-                'admit_as' => 'required',
+                $user_id = Auth::user()->id;
+                $profile = Profile::where('user_id', $user_id)->first();
+                $cur_year = date('Y');
+                $approval_ids = Application::where('uid', $id)->first()->id;
+                $approvals = ApplicationApproval::where('application_id', $approval_ids)->get();
+
+                $advocate = Application::where('uid', $id)->first();
+                //  dd($advocate);
+
+                $profile_id = Application::where('uid', $id)->first()->profile_id;
+               
+
+                //check membership
+                if(FirmMembership::where('profile_id', $profile_id)->exists()){
+                    $since = FirmMembership::where('profile_id', $profile_id)->first()->since;
+                    $firm_id = FirmMembership::where('profile_id', $profile_id)->first()->firm_id;
+                    $firm_branch_id = FirmMembership::where('profile_id', $profile_id)->first()->firm_branch_id;
+                }else{
+                    $since = "No data";
+                    $firm_id = 0;
+                    $firm_branch_id = 0;
+                }
+
+
+                //check firm
+                if(Firm::where('id', $firm_id)->exists()){
+                    $firms = Firm::where('id', $firm_id)->get();
+                }else{
+                    $firms = "No data";
+                }
+
+
+
+                //check personal info
+                $personal_infos = Profile::where('id', $profile_id)->get();
+
+
+                //check contact
+                if(ProfileContact::where('profile_id', $profile_id)->exists()){
+                    $contacts = ProfileContact::where('profile_id', $profile_id)->get();
+                }else{
+                    $contacts = "No data";
+                }
+
+                //check firm address / branch
+                if(FirmAddress::where('id', $firm_branch_id)->exists()){
+                    $firm_addresses = FirmAddress::where('id', $firm_branch_id)->get();
+                }else{
+                    $firm_addresses = "No data";
+                }
+
+                //check education
+                if(PetitionEducation::where('profile_id', $profile_id)->exists()){
+                    $educations = PetitionEducation::where('profile_id', $profile_id)->get();
+                }else{
+                    $educations = "No data";
+                }
+
+                //check experience
+                if(WorkExperience::where('profile_id', $profile_id)->exists()){
+                    $experiences = WorkExperience::where('profile_id', $profile_id)->get();
+                }else{
+                    $experiences = "No data";
+                }
+                  //check applications
+                $application_type = "TEMPORARY ADMISSION";
+
+                if(Application::where('profile_id', $profile_id)->exists()){
+                    $applications = Application::where('profile_id', $profile_id)->get();
+                     $application_id = Application::where('profile_id', $profile_id)
+                     ->where('type', $application_type)->first()->id;
+                }else{
+                    $applications = "No data";
+                }
+
+                $docus = DB::table('applications')
+                ->Join('temporary_admission_documents', 'temporary_admission_documents.application_id', '=', 'applications.id')
+                ->select('applications.*', 'temporary_admission_documents.*')->where('applications.id', $application_id)
+                ->skip(1) 
+                 ->get();
+                $petition = Petition::where('profile_id', $profile_id)->first();
+                 if(Petition::where('profile_id', $profile_id)->exists()){
+                    $petitions = Petition::where('profile_id', $profile_id)->get();
+                    
+                }else{
+                    $petitions = "No data";
+                }
+                
+    //  dd($applications);
+
+                return view('management.temporary-admission.temporary-advocate.view', [
+                    'docus' => $docus,
+                    'petitions' => $petitions,
+                    'petition'=> $petition,
+                    'profile' => $profile,
+                    'advocate' => $advocate,
+                    'cur_year' => $cur_year,
+                    'firms' => $firms,
+                    'firm_id' => $firm_id,
+                    'since' => $since,
+                    'approvals' => $approvals,
+                    'personal_infos' => $personal_infos,
+                    'contacts' => $contacts,
+                    'firm_addresses' => $firm_addresses,
+                    'educations' => $educations,
+                    'experiences' => $experiences,
+                    'firm_branch_id' => $firm_branch_id,
+                    'applications' => $applications,
                 ]);
 
-                 $stage->admit_as = $request->input('admit_as');
-                $stage->save();
+
+
+        }
+        return \Illuminate\Support\Facades\Redirect::to("auth/login")->withErrors('You do not have access!');
+    }
+
+
+
+    // public function admit(Request $request,  $id)
+    // {
+       
+
+    //     if(Auth::check()){
+
+    //         try {
+    //         $session_id = PetitionSession::where('active', true)->first()->id;
+    //         $profile_id = Application::findOrFail($id)->profile_id;
+    //         $stage = Petition::where('profile_id', $profile_id)->first();
+    //             $this->validate($request, [
+    //             'admit_as' => 'required',
+    //             ]);
+
+    //              $stage->admit_as = $request->input('admit_as');
+    //             $stage->save();
 
                
                 
 
-                return back()->with('success', ' Admission edited successfully');
+    //             return back()->with('success', ' Admission edited successfully');
 
-            } catch (\Throwable $th) {
+    //         } catch (\Throwable $th) {
 
-                return back()->with('warning', 'Stage not edited');
-            }
+    //             return back()->with('warning', 'Stage not edited');
+    //         }
 
-        }
-        return Redirect::to("auth/login")->withErrors('You do not have access!');
-    }
+    //     }
+    //     return Redirect::to("auth/login")->withErrors('You do not have access!');
+    // }
 
 
-    public function enroll(Request $request)
-    {
-                      $currentDate = Carbon::now();
-                      $issueDate = Carbon::now()->format('Y-m-d');
-                         if ($currentDate->month === 12) {
-                             $currentDate->addYear();
-                          }
-        $expireDate = $currentDate->endOfYear()->format('Y-m-d');
-        $session_id = PetitionSession::where('active', true)->first()->id;
-        $certificates = DB::table('applications')
-                        ->leftJoin('petitions', 'petitions.application_id', '=', 'applications.id')
-                        ->leftJoin('bills', 'bills.application_id', '=', 'applications.id')
-                        ->select('applications.*', 'petitions.*', 'bills.*')
-                        ->where('petitions.petition_session_id', $session_id)
-                        ->where('bills.payment_status', 'PAID')
-                        ->where('applications.certificate', null)
-                        ->get();
-                    //   dd($certificates);  
+    // public function enroll(Request $request)
+    // {
+    //                   $currentDate = Carbon::now();
+    //                   $issueDate = Carbon::now()->format('Y-m-d');
+    //                      if ($currentDate->month === 12) {
+    //                          $currentDate->addYear();
+    //                       }
+    //     $expireDate = $currentDate->endOfYear()->format('Y-m-d');
+    //     $session_id = PetitionSession::where('active', true)->first()->id;
+    //     $certificates = DB::table('applications')
+    //                     ->leftJoin('petitions', 'petitions.application_id', '=', 'applications.id')
+    //                     ->leftJoin('bills', 'bills.application_id', '=', 'applications.id')
+    //                     ->select('applications.*', 'petitions.*', 'bills.*')
+    //                     ->where('petitions.petition_session_id', $session_id)
+    //                     ->where('bills.payment_status', 'PAID')
+    //                     ->where('applications.certificate', null)
+    //                     ->get();
+    //                 //   dd($certificates);  
       
-                            $uuid = Str::uuid();
-                            $currentyear = date('Y');
-                            $notary = "NOTARY";
-                         $notary_no = Certificate::orderBy('id', 'desc')->max('notary_no');
-                         $nextNotartyNumber = $notary_no + 1;
-                         $practising_no = Certificate::orderBy('id', 'desc')->max('practising_no');
-                         $nextPractisingNumber = $practising_no + 1;
-                         $notary_cert = Certificate::where('type',$notary )->orderBy('id', 'desc')->max('notary_no');
-                         $nextNotartyCert = $notary_cert + 1;
+    //                         $uuid = Str::uuid();
+    //                         $currentyear = date('Y');
+    //                         $notary = "NOTARY";
+    //                      $notary_no = Certificate::orderBy('id', 'desc')->max('notary_no');
+    //                      $nextNotartyNumber = $notary_no + 1;
+    //                      $practising_no = Certificate::orderBy('id', 'desc')->max('practising_no');
+    //                      $nextPractisingNumber = $practising_no + 1;
+    //                      $notary_cert = Certificate::where('type',$notary )->orderBy('id', 'desc')->max('notary_no');
+    //                      $nextNotartyCert = $notary_cert + 1;
 
-                         foreach($certificates as $data)
-                               {
-                                        $certificate = new Certificate;
-                                        $certificate->active = true;
-                                        $certificate->uid = $uuid;
-                                        $certificate->accessible = true;
-                                        $certificate->date_of_issued = $issueDate;   //control number required
-                                        $certificate->expire_date = $expireDate;
-                                        $certificate->issued_year = $currentyear;
-                                        // $certificate->notary_no = $nextNotartyNumber;
-                                        $certificate->practising_no = $nextPractisingNumber;
-                                        $certificate->signature_id = 1;
-                                        $certificate->type = $data->admit_as;
-                                        $certificate->application_id =$data->application_id;
-                                        $certificate->profile_id = $data->profile_id;
-                                        $certificate->save();
+    //                      foreach($certificates as $data)
+    //                            {
+    //                                     $certificate = new Certificate;
+    //                                     $certificate->active = true;
+    //                                     $certificate->uid = $uuid;
+    //                                     $certificate->accessible = true;
+    //                                     $certificate->date_of_issued = $issueDate;   //control number required
+    //                                     $certificate->expire_date = $expireDate;
+    //                                     $certificate->issued_year = $currentyear;
+    //                                     // $certificate->notary_no = $nextNotartyNumber;
+    //                                     $certificate->practising_no = $nextPractisingNumber;
+    //                                     $certificate->signature_id = 1;
+    //                                     $certificate->type = $data->admit_as;
+    //                                     $certificate->application_id =$data->application_id;
+    //                                     $certificate->profile_id = $data->profile_id;
+    //                                     $certificate->save();
                                     
-                                }   
-                                 foreach($certificates as $data)
-                               {
-                                        $certificate = new Certificate;
-                                        $certificate->active = true;
-                                        $certificate->uid = $uuid;
-                                        $certificate->accessible = true;
-                                        $certificate->date_of_issued = $issueDate;   //control number required
-                                        $certificate->expire_date = $expireDate;
-                                        $certificate->issued_year = $currentyear;
-                                        $certificate->notary_no = $nextNotartyCert;
-                                        // $certificate->practising_no = $nextPractisingNumber;
-                                        $certificate->signature_id = 3;
-                                        $certificate->type = $notary;
-                                        $certificate->application_id =$data->application_id;
-                                        $certificate->profile_id = $data->profile_id;
-                                        $certificate->save();
+    //                             }   
+    //                              foreach($certificates as $data)
+    //                            {
+    //                                     $certificate = new Certificate;
+    //                                     $certificate->active = true;
+    //                                     $certificate->uid = $uuid;
+    //                                     $certificate->accessible = true;
+    //                                     $certificate->date_of_issued = $issueDate;   //control number required
+    //                                     $certificate->expire_date = $expireDate;
+    //                                     $certificate->issued_year = $currentyear;
+    //                                     $certificate->notary_no = $nextNotartyCert;
+    //                                     // $certificate->practising_no = $nextPractisingNumber;
+    //                                     $certificate->signature_id = 3;
+    //                                     $certificate->type = $notary;
+    //                                     $certificate->application_id =$data->application_id;
+    //                                     $certificate->profile_id = $data->profile_id;
+    //                                     $certificate->save();
                                     
-                                }   
+    //                             }   
                                 
-                                if(!empty($certificate) ){
-                                    $cert = DB::table('applications')
-                                                    //    ->where('id', $id)
-                                                       ->update(['certificate' => true]);
-                                   }
-                $currDate = Carbon::now()->format('Y-m-d');
-                 $uuid = Str::uuid();
-                $advocates = DB::table('applications')
-                            ->leftJoin('petitions', 'petitions.application_id', '=', 'applications.id')
-                            ->select('applications.*', 'petitions.*')
-                            ->where('petitions.petition_session_id', $session_id)
-                            ->where('applications.status', 'ADMIT')
-                            ->get();
-        foreach ($advocates as $data) {
-            $advocate = new Advocate;
-            $advocate->active = true;
-            $advocate->uid = $uuid;
-            $advocate->admission = $currDate;
-            $advocate->paid_year = $currentyear;
-            $advocate->status = $data->admit_as;
-            $advocate->roll_no = $data->roll_no;
-            $advocate->status_date = $currentDate;
-            $advocate->petition_session_id = $data->petition_session_id;
-            $advocate->profile_id = $data->profile_id;
-            $advocate->save();
-        }
+    //                             if(!empty($certificate) ){
+    //                                 $cert = DB::table('applications')
+    //                                                 //    ->where('id', $id)
+    //                                                    ->update(['certificate' => true]);
+    //                                }
+    //             $currDate = Carbon::now()->format('Y-m-d');
+    //              $uuid = Str::uuid();
+    //             $advocates = DB::table('applications')
+    //                         ->leftJoin('petitions', 'petitions.application_id', '=', 'applications.id')
+    //                         ->select('applications.*', 'petitions.*')
+    //                         ->where('petitions.petition_session_id', $session_id)
+    //                         ->where('applications.status', 'ADMIT')
+    //                         ->get();
+    //     foreach ($advocates as $data) {
+    //         $advocate = new Advocate;
+    //         $advocate->active = true;
+    //         $advocate->uid = $uuid;
+    //         $advocate->admission = $currDate;
+    //         $advocate->paid_year = $currentyear;
+    //         $advocate->status = $data->admit_as;
+    //         $advocate->roll_no = $data->roll_no;
+    //         $advocate->status_date = $currentDate;
+    //         $advocate->petition_session_id = $data->petition_session_id;
+    //         $advocate->profile_id = $data->profile_id;
+    //         $advocate->save();
+    //     }
 
-         if ($advocate->save()) {
-                $profile_picture = DB::table('applications')
-                 ->where('status', 'ADMIT')
-                 ->update(['active' => false]);
-           }
+    //      if ($advocate->save()) {
+    //             $profile_picture = DB::table('applications')
+    //              ->where('status', 'ADMIT')
+    //              ->update(['active' => false]);
+    //        }
 
-        return back()->with('success', ' Enrollment  successfully');       
-    }
+    //     return back()->with('success', ' Enrollment  successfully');       
+    // }
 
 
 

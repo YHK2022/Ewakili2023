@@ -728,13 +728,14 @@ Route::match(['get', 'post'], '/cj/view/{id}', 'Management\TemporaryAdmissionCon
 Route::match(['get', 'post'], '/cj-review/admit/{id}', 'Management\TemporaryAdmissionController@admit');
 Route::match(['get', 'post'], '/cj-review/enroll', 'Management\TemporaryAdmissionController@enroll');
 
-Route::match(['get', 'post'], '/cj-appearance/edit/{id}', 'Management\PetitionApplicationUnderReviewController@edit_cj');
+Route::match(['get', 'post'], '/cj-review/edit/{id}', 'Management\TemporaryAdmissionController@edit_cj');
 
-Route::get('/new-applicant', 'Management\PetitionApplicationUnderReviewController@new_applicant');
-Route::match(['get', 'post'], '/new-applicant/view/{id}', 'Management\PetitionApplicationUnderReviewController@view_applicant');
-Route::get('/legal-objections', 'Management\LegalProfessionalViewController@legal_objections');
-Route::match(['get', 'post'], '/legal-objections/view/{id}', 'Management\LegalProfessionalViewController@view_lp');
-Route::match(['get', 'post'], '/legal-objections/edit/{id}', 'Management\LegalProfessionalViewController@edit_lp');
+Route::get('/new-applications', 'Management\TemporaryAdmissionController@new_applicants');
+Route::match(['get', 'post'], '/new-applicants/view/{id}', 'Management\TemporaryAdmissionController@view_applicants');
+
+Route::get('/temporary-advocates', 'Management\TemporaryAdmissionController@temporary_advocate');
+Route::match(['get', 'post'], '/temporary-advocates/view/{id}', 'Management\TemporaryAdmissionController@view_temporary_advocate');
+Route::match(['get', 'post'], '/temporary-advocates/edit/{id}', 'Management\TemporaryAdmissionController@edit_temporary_advocate');
 });
 
 
