@@ -88,7 +88,7 @@
 							</li>
 							<li><a href="javascript:;">Applications <i class="fa fa-chevron-down"></i></a>
 								<ul class="sub-menu">
-									<li><a href="javascript:;">Temporary Admission</a></li>
+									<li><a href="{{ url('temporary-advocate-registration') }}">Temporary Admission</a></li>
 								</ul>
 							</li>
 							<li ><a href="javascript:;">e-Services <i class="fa fa-chevron-down"></i></a>

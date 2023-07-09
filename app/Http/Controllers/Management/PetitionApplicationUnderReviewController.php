@@ -393,6 +393,11 @@ class PetitionApplicationUnderReviewController extends Controller
                                         $bill->application_id = $id;
                                         $bill->profile_id = $profile_id;
                                         $bill->save();
+                                        $data = [
+                                             'bill' => $bill          
+                                            ];
+
+                            Mail::to($userEmail->email)->send(new \App\Mail\BillEmail($data));
         } else {
             // Handle error response from GePG
             // Access the error information using $response->status() and $response->body()

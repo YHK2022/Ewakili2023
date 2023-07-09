@@ -47,20 +47,7 @@
                         @endif
                     </div>
                 </div>
-                 <div class="mw800 m-auto justify-content-center">
-                    <div class="row justify-content-center">
-                            <div class="col-md-4 justify-content-center">
-                                <div class="cours-search-bx m-b30">
-                                    <span class="cours-search-text">Temporary Admission!</span>
-                                    {{-- <span class="cours-search-text">Clossing on {{ $session->close_date }}</span> --}}
-                                    <div class="justify-content-center">
-                                        <a href="{{ url('temporary-advocate-registration') }}" class="btn">Apply Now</a>
-                                         {{-- <a href="{{ url('register') }}" class="btn">Apply Now</a> --}}
-
-                                    </div>
-                                </div>
-                            </div>
-                    </div>
+               
                 </div>
             </div>
         </div>
