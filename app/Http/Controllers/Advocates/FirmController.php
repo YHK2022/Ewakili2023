@@ -53,7 +53,7 @@ class FirmController extends Controller
             $llb = LlbCollege::where('user_id', $user_id)->first();
             $lst = LstCollege::where('user_id', $user_id)->first();
             $experience = WorkExperience::where('user_id', $user_id)->first();
-
+            $firm = FirmMembership::where('user_id', $user_id)->where('till', null)->first();
             $profile_id = Profile::where('user_id', $user_id)->first()->id;
 
             $cur_year = date('Y');
@@ -103,6 +103,7 @@ class FirmController extends Controller
                 'lst' => $lst,
                 'experience' => $experience,
                 'firms' => $firms,
+                'firm' => $firm,
                 'firm_addresses' => $firm_addresses,
                 'memberships' => $memberships,
             ]);
@@ -149,17 +150,17 @@ class FirmController extends Controller
             //check firm
             if(Firm::where('id', $firm_id)->exists()){
                 $firms = Firm::where('id', $firm_id)->get();
+                $firms_id = Firm::where('id', $firm_id)->first()->id;
             }else{
                 $firms = "No data";
+                $firms_id = "No data";
             }
-
             //check firm address / branch
-            if(FirmAddress::where('id', $firm_branch_id)->exists()){
-                $firm_addresses = FirmAddress::where('id', $firm_branch_id)->get();
+            if(FirmAddress::where('firm_id', $firms_id)->exists()){
+                $firm_addresses = FirmAddress::where('firm_id', $firms_id)->get();
             }else{
                 $firm_addresses = "No data";
             }
-
 
 
             return view('advocates.firm.view', [
@@ -182,6 +183,30 @@ class FirmController extends Controller
             ]);
         }
         return \Illuminate\Support\Facades\Redirect::to("auth/login")->withErrors('You do not have access!');
+    }
+
+     public function leave_firm(Request $request, $id)
+    {
+        if(Auth::check()){
+
+            try {
+            
+                DB::beginTransaction();
+            $date = date('Y-m-d');
+            $memberships = FirmMembership::findOrFail($id);
+            $memberships->till = $date;
+            $memberships->save();
+
+            DB::commit();
+            return back()->with('success', 'Advocate Leaves Firm successfully');
+
+            } catch (\Throwable $th) {
+
+                return back()->with('warning', 'Advocate Leaves Firm');
+            }
+
+        }
+        return Redirect::to("auth/login")->withErrors('You do not have access!');
     }
 
 }

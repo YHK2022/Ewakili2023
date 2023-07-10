@@ -1932,9 +1932,9 @@ if ($qualification) {
             $attachment = Document::where('user_id', $user_id)->get();
             $llb = LlbCollege::where('user_id', $user_id)->first();
             $lst = LstCollege::where('user_id', $user_id)->first();
-            $firm = FirmMembership::where('user_id', $user_id)->first();
-            $request_confirmation = FirmRequestConfirmation::where('requester_id', $user_id)->first();
-            //  dd($firm);
+            $firm = FirmMembership::where('user_id', $user_id)->orderBy('created_at', 'desc')->where('till',null)->first();
+
+            $request_confirmation = FirmRequestConfirmation::where('requester_id', $user_id)->where('status',null)->first();
             if($firm){
                 $firm_id = FirmMembership::where('user_id', $user_id)->first('firm_id')->firm_id;
                 $firm_address = FirmAddress::where('firm_id',$firm_id)->get();
@@ -2261,7 +2261,7 @@ if ($qualification) {
         $profile_id = Profile::where('user_id', $user_id)->first()->profile_id;
         $this->validate($request, [
             'name' => 'required',
-            'type' => 'required',
+            'firm_type' => 'required',
             'address' => 'required',
             'postcode' => 'required',
             'region' => 'required',
@@ -2270,21 +2270,24 @@ if ($qualification) {
             'street' => 'required',
         ]);
 
-        if($request->input('type') == "Law Firm" || $request->input('type') == "Business Company"){
+        if($request->input('firm_type') == "Law Firm" || $request->input('type') == "Business Company"){
             $member = 1;
             $date = date("Y-m-d");
             $position = "HQ";
             $approval_status = 'APPROVED';
             $uuid = Str::uuid();
-
+            $model= 'EMPLOYER';
             $firm = new Firm();
             $firm->name = $request->input('name');
-            $firm->type = $request->input('type');
+            $firm->firm_type = $request->input('firm_type');
             $firm->tin = $request->input('tin');
             $firm->members = $member;
+            $firm->firm_model = $model;
+            $firm->approval_status = $approval_status;
             $firm->active = true;
             $firm->uid = $uuid;
-            $firm->taxpayer_name = $request->input('taxpayer');
+            $firm->profile_id = $profile_id;
+            $firm->taxpayer_name = $request->input('taxpayer_name');
             $firm->created_by = Auth::user()->id;
             $firm->save();
 
@@ -2306,6 +2309,7 @@ if ($qualification) {
             $firm_address->ward = $request->input('ward');
             $firm_address->street = $request->input('street');
             $firm_address->postcode = $request->input('postcode');
+            $firm_address->approval_status = $approval_status;
             $firm_address->firm_id = $firm->id;
             $firm_address->active = true;
             $firm_address->uid = $uuid;
@@ -2330,9 +2334,15 @@ if ($qualification) {
                             ->update(['firm' => $value]);
 
 
-            }
-            return redirect::to("petition/firm")->with('success', 'Workplace added successfully');
+            } 
 
+             $joinedAnotherFirm = FirmMembership::where('user_id',  Auth::user()->id)
+                        ->exists();
+            if($joinedAnotherFirm)  {
+                return redirect::to("firm")->with('success', 'Firm added successfully');
+            } else{      
+            return redirect::to("petition/firm")->with('success', 'Firm added successfully');
+            }
         }else{
 
             $member = 1;
@@ -2341,7 +2351,7 @@ if ($qualification) {
             $uuid = Str::uuid();
             $firm = new Firm();
             $firm->name = $request->input('name');
-            $firm->type = $request->input('type');
+            $firm->firm_type = $request->input('firm_type');
             $firm->members = $member;
             $firm->active = true;
             $firm->uid = $uuid;
@@ -2357,13 +2367,15 @@ if ($qualification) {
             $firm_membership->user_id = Auth::user()->id;
             $firm_membership->save();
 
-            $firm_address = new FirmMembership();
+            $firm_address = new FirmAddress();
+            $firm_address->uid = $uuid;
             $firm_address->address = $request->input('address');
             $firm_address->region = $request->input('region');
             $firm_address->district = $request->input('district');
             $firm_address->ward = $request->input('ward');
             $firm_address->street = $request->input('street');
             $firm_address->postcode = $request->input('postcode');
+            $firm_address->active = true;
             $firm_address->firm_id = $firm->id;
             $firm_address->position = $position;
             $firm_address->save();
@@ -2387,7 +2399,14 @@ if ($qualification) {
 
 
             }
-            return redirect::to("petition/firm")->with('success', 'Workplace added successfully');
+              $joinedAnotherFirm = FirmMembership::where('user_id',  Auth::user()->id)
+                        ->exists();
+            if($joinedAnotherFirm){ 
+            return redirect::to("/firm")->with('success', 'Workplace added successfully');
+            }else{
+                return redirect::to("petition/firm")->with('success', 'Workplace added successfully');
+            }
+            
         }
 
         }
@@ -2542,41 +2561,93 @@ if ($qualification) {
      * @param \Illuminate\Http\Request $request
      * @param \Illuminate\Http\Response
      */
+    // public function search_firm(Request $request)
+    // {
+    //     $search_val = $request->id;
+
+    //     if (is_null($search_val))
+    //     {
+    //     return view('advocates.profile.firm');
+    //     }
+    //     else
+    //     {
+
+    //     $posts_data = Firm::where('name','LIKE',"%{$search_val}%")->get();
+
+    //     $output = '';
+
+    //     if (count($posts_data)>0) {
+
+    //         $output = '<ul class="list-group" style="display: block; position: relative;">';
+
+    //         foreach ($posts_data as $row){
+    //             $register = url('petition/request-firm',$row->id);
+    //             $output .= '<li class="list-group-item">'.'<table>'.'<tr>'.'<td style="width:90%;font-size:15px;">'.$row->name.'</td>'.'<td style="width:10%">'.'<a class="btn btn-danger btn-xs" style="" href="'.$register.'">'.'Register'.'</a>'.'</td>'.'</tr>'.'</table>'.'</li>';
+    //         }
+
+    //         $output .= '</ul>';
+    //     }
+    //     else {
+    //         $add = url('petition/add-firm');
+    //         $output .= '<li class="list-group-item">'.'<table>'.'<tr>'.'<td style="width:90%;font-size:15px;">'.'No firm results found !'.'</td>'.'<td style="width:10%">'.'<a class="btn btn-danger btn-xs" style="" href="'.$add.'">'.'Add new firm'.'</a>'.'</td>'.'</tr>'.'</table>'.'</li>';
+    //     }
+
+    //     return $output;
+
+    //   }
+    // }
+
     public function search_firm(Request $request)
-    {
-        $search_val = $request->id;
+{
+    $search_val = $request->id;
 
-        if (is_null($search_val))
-        {
+    if (is_null($search_val)) {
         return view('advocates.profile.firm');
-        }
-        else
-        {
-
-        $posts_data = Firm::where('name','LIKE',"%{$search_val}%")->get();
+    } else {
+        $posts_data = Firm::where('name', 'LIKE', "%{$search_val}%")->get();
 
         $output = '';
 
-        if (count($posts_data)>0) {
-
+        if (count($posts_data) > 0) {
             $output = '<ul class="list-group" style="display: block; position: relative;">';
 
-            foreach ($posts_data as $row){
-                $register = url('petition/request-firm',$row->id);
-                $output .= '<li class="list-group-item">'.'<table>'.'<tr>'.'<td style="width:90%;font-size:15px;">'.$row->name.'</td>'.'<td style="width:10%">'.'<a class="btn btn-danger btn-xs" style="" href="'.$register.'">'.'Register'.'</a>'.'</td>'.'</tr>'.'</table>'.'</li>';
+            foreach ($posts_data as $row) {
+                $register = url('petition/request-firm', $row->id);
+
+                // Check the conditions for rejoining the same firm
+                $previousMembership = FirmMembership::where('user_id',  Auth::user()->id)
+                    ->where('firm_id', $row->id)
+                    ->orderBy('till', 'desc')
+                    ->first();
+
+                if (!$previousMembership) {
+                    // User has no previous membership, can join the firm
+                    $output .= '<li class="list-group-item">' . '<table>' . '<tr>' . '<td style="width:90%;font-size:15px;">' . $row->name . '</td>' . '<td style="width:10%">' . '<a class="btn btn-danger btn-xs" style="" href="' . $register . '">' . 'Register' . '</a>' . '</td>' . '</tr>' . '</table>' . '</li>';
+                    $firmAllowed = true;
+                } else {
+                     $till = \Carbon\Carbon::parse($previousMembership->till);
+                     $joinable = $till->diffInMonths(now()) > 6;
+                     $joinedAnotherFirm = FirmMembership::where('user_id',  Auth::user()->id)
+                        ->where('id', '!=', $previousMembership->id)
+                        ->exists();
+
+                    if ($joinable && !$joinedAnotherFirm) {
+                        // User can rejoin the same firm
+                        $output .= '<li class="list-group-item">' . '<table>' . '<tr>' . '<td style="width:90%;font-size:15px;">' . $row->name . '</td>' . '<td style="width:10%">' . '<a class="btn btn-danger btn-xs" style="" href="' . $register . '">' . 'Register' . '</a>' . '</td>' . '</tr>' . '</table>' . '</li>';
+                    }
+                }
             }
 
             $output .= '</ul>';
-        }
-        else {
+        } else {
             $add = url('petition/add-firm');
-            $output .= '<li class="list-group-item">'.'<table>'.'<tr>'.'<td style="width:90%;font-size:15px;">'.'No firm results found !'.'</td>'.'<td style="width:10%">'.'<a class="btn btn-danger btn-xs" style="" href="'.$add.'">'.'Add new firm'.'</a>'.'</td>'.'</tr>'.'</table>'.'</li>';
+            $output .= '<li class="list-group-item">' . '<table>' . '<tr>' . '<td style="width:90%;font-size:15px;">' . 'No firm results found!' . '</td>' . '<td style="width:10%">' . '<a class="btn btn-danger btn-xs" style="" href="' . $add . '">' . 'Add new firm' . '</a>' . '</td>' . '</tr>' . '</table>' . '</li>';
         }
 
         return $output;
-
-      }
     }
+}
+
 
 
     /**
@@ -2639,7 +2710,8 @@ if ($qualification) {
         $ver_code = $request->input('code');
 
         //Find and compare the verificaion code
-        $verf_code = FirmRequestConfirmation::where('requester_id', $user_id)->first('ver_code')->ver_code;
+        $verf_code = FirmRequestConfirmation::where('requester_id', $user_id)->where('status', null)->first('ver_code')->ver_code;
+        
         $firm_id = FirmRequestConfirmation::where('requester_id', $user_id)->first('firm_id')->firm_id;
 
         if($ver_code != $verf_code ){
@@ -2662,6 +2734,10 @@ if ($qualification) {
                 $members = DB::table('firms')
                                 ->where('id', $firm_id)
                                 ->update(['members' => $new_members]);
+
+                $confirmation = DB::table('firm_request_confirmations')
+                                ->where('requester_id', $user_id)
+                                ->update(['status' => 1]);                
 
                 //Update progress values
                 $progress = ApplicationMove::where('user_id', $user_id)->first(['appl_progress'])->appl_progress;
@@ -2692,9 +2768,14 @@ if ($qualification) {
                 $firm_membership->profile_id = $profile_id;
                 $firm_membership->user_id = Auth::user()->id;
                 $firm_membership->save();
+                
 
+              $joinedAnotherFirm = FirmMembership::where('user_id',  Auth::user()->id)->exists();
+            if($joinedAnotherFirm)  {
+                return redirect::to("firm")->with('success', 'Firm added successfully');
+            }else{
                 return Redirect::to("petition/add-firm")->with('success', 'Firm registration successful!');
-
+            }
 
             }else{
                 return back()->withErrors('You cant complete this step until you submit at least your personal information!');

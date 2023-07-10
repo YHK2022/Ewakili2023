@@ -65,12 +65,13 @@
 
         <!-- End Alert-->
 
-            <div>
+            {{-- <div>
                 <a title="Leave Firm" class="btn btn-info btn-xm pull-right">
                     <i class="ik ik-log-out"></i>
                     Leave Current Firm
                 </a>
-            </div><br/>
+
+            </div><br/> --}}
 
             <div class="row">
                 <div class="col-md-12">
@@ -92,11 +93,11 @@
                                                     </tr>
                                                     <tr>
                                                         <th style="width:20%;text-align:right;">Taxpayer:</th>
-                                                        <td>{{ $firm->tax_payer_name }}</td>
+                                                        <td>{{ $firm->taxpayer_name }}</td>
                                                     </tr>
                                                     <tr>
                                                         <th style="width:20%;text-align:right;">TIN:</th>
-                                                        <td>{{ $firm->tin_number}}</td>
+                                                        <td>{{ $firm->tin}}</td>
                                                     </tr>
                                                     <tr>
                                                         <th style="width:20%;text-align:right;">Category:</th>
@@ -126,14 +127,14 @@
                                         <div class="table-responsive">
                                             @foreach($firm_addresses as  $firm)
                                                 <table class="table table-borderless" style="font: size 20px;">
-                                                    <tr>
+                                                    {{-- <tr>
                                                         <th style="width:20%;text-align:right;">Branch:</th>
                                                         <td>{{ $firm->name }} </td>
-                                                    </tr>
-                                                    <tr>
+                                                    </tr> --}}
+                                                    {{-- <tr>
                                                         <th style="width:20%;text-align:right;">Code:</th>
                                                         <td>{{ $firm->code }}</td>
-                                                    </tr>
+                                                    </tr> --}}
                                                     <tr>
                                                         <th style="width:20%;text-align:right;">Phone:</th>
                                                         <td>{{ $firm->phone_number}}</td>
@@ -150,17 +151,25 @@
                                                         <th style="width:20%;text-align:right;">Postcode:</th>
                                                         <td>{{ $firm->postcode}}</td>
                                                     </tr>
-                                                    <tr>
+                                                    {{-- <tr>
                                                         <th style="width:20%;text-align:right;">Region:</th>
                                                         <td>{{ $firm->region_id}}</td>
+                                                    </tr> --}}
+                                                      <tr>
+                                                        <th style="width:20%;text-align:right;">Region:</th>
+                                                        <td>{{ $firm->region}}</td>
                                                     </tr>
-                                                    <tr>
+                                                    {{-- <tr>
                                                         <th style="width:20%;text-align:right;">City:</th>
                                                         <td>{{ $firm->city}}</td>
-                                                    </tr>
-                                                    <tr>
+                                                    </tr> --}}
+                                                    {{-- <tr>
                                                         <th style="width:20%;text-align:right;">District:</th>
                                                         <td>{{ $firm->district_id}}</td>
+                                                    </tr> --}}
+                                                     <tr>
+                                                        <th style="width:20%;text-align:right;">District:</th>
+                                                        <td>{{ $firm->district}}</td>
                                                     </tr>
                                                     <tr>
                                                         <th style="width:20%;text-align:right;">Ward:</th>

@@ -87,15 +87,13 @@
                                         {{ $approved_count }}
                                     </span></a>
                             </li>
-                            <li class="nav-item">
+                            {{-- <li class="nav-item">
                                 <a class="nav-link" id="pills-setting-tab" data-toggle="pill" href="#suspended"
                                     role="tab" aria-controls="pills-setting" aria-selected="false">Pending Admission <span
                                         class="badge bg-warning" style="color: white">
-                                        {{-- {{ $admitCount }} --}}
+                                        {{ $admitCount }}
                                     </span></a>
-                            </li>
-                            
-                
+                            </li> --}}
                         </ul>
                         <div class="tab-content" id="pills-tabContent">
 

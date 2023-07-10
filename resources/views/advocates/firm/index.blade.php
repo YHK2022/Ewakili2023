@@ -61,14 +61,14 @@
         @endif
 
         <!-- End Alert-->
-
+          @if(!$firm)
             <div>
-                <a title="Leave Firm" class="btn btn-info btn-xm pull-right">
-                    <i class="ik ik-log-out"></i>
-                    Leave Current Firm
+                <a  href="{{ url('petition/firm') }}" title="Join Firm" class="btn btn-info btn-xm pull-right">
+                    <i class="ik ik-log-in"></i>
+                    Join Firm
                 </a>
             </div><br/>
-
+           @endif
             <div class="row">
                 <div class="col-md-12">
                     <div class="card">
@@ -94,24 +94,67 @@
                                                 @foreach($memberships as $key => $membership)
                                                     <tr>
                                                         <td id="table_id">{{++$key}}</td>
-                                                        <td id="table_id">{{$membership->firm->name}}</td>
+                                                        <td id="table_id">{{$membership->firm->name}} </td>
                                                         {{-- <td id="table_id">{{$membership->since}}</td> --}}
-                                                        <td id="table_id">{{$membership->date_joined}}</td>
+                                                        <td id="table_id">{{ date('F d, Y', strtotime($membership->date_joined)) }}</td>
                                                         <td id="table_id">
                                                             @if($membership->till != Null)
-                                                                {{ $membership->till }}
+                                                         {{ date('F d, Y', strtotime($membership->till)) }}
                                                             @else
                                                                 Still a member
                                                             @endif
                                                         </td>
                                                         <td id="table_id">
-                                                            <div class="table-actions" style="justify-content: center;align-items: center;  display: flex;">
-                                                                <a href="{{ url('firm/view', $membership->uid) }}" title="View Certificate" ><i class="ik ik-eye pull-left"></i></a>
-                                                            </div>
+                                                         @if($membership->till == Null)
+                                                                <a href="{{ url('firm/view', $membership->uid) }}" 
+                                                                    title="View Leave" style="margin-right: 10px;"><i class="ik ik-eye pull-left"></i></a>
+                                                                    
+                                                            <a href="#leave{{ $membership->id }}" title="Leave"
+                                                        data-toggle="modal" data-id="{{ $membership->id }}"
+                                                        data-target="#leave{{ $membership->id }}"><i
+                                                            class="ik ik-log-out"></i></a>
+                                                        @else
+                                                                Not a member    
+                                                         @endif
+
                                                         </td>
                                                     </tr>
 
+                                                  <div class="modal fade" id="leave{{ $membership->id }}" tabindex="-1"
+                                            role="dialog" aria-labelledby="demoModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal-sm" role="document">
+                                                <div class="modal-content">
+                                                    <form class="forms-sample" method="POST"
+                                                        action="{{ url('firm/leave', $membership->id) }}">
+                                                        {{ csrf_field() }}
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="demoModalLabel">Leave Current
+                                                                Firm</h5>
+                                                            <button type="button" class="close" data-dismiss="modal"
+                                                                aria-label="Close"><span
+                                                                    aria-hidden="true">&times;</span></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                              Are you sure you want to Leave Current Firm:<strong>{{ $membership->name }}</strong>?
+                                                            <p>
+                                                                <em style="color:red;">Note: Once you leave the firm, you can rejoin the same firm if:</em>
+                                                             <ul>
+                                                                 <li>You haven't joined another firm in between.</li>
+                                                                 <li>It has been more than 6 months since you left the firm.</li>
+                                                             </ul>
+                                                          </p>
+                                                        </div>
 
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary"
+                                                                data-dismiss="modal">Close</button>
+                                                            <button type="submit" class="btn btn-danger">Yes
+                                                                Leave</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
                                                 @endforeach
 
                                                 </tbody>

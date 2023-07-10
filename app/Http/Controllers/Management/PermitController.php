@@ -16,9 +16,13 @@ use App\Models\Petitions\PetitionEducation;
 use App\Models\Petitions\ProfileContact;
 use App\Models\Petitions\WorkExperience;
 use App\Profile;
+use App\Models\Petitions\Bill;
+use Illuminate\Support\Facades\Mail;
 use App\User;
-use Illuminate\Http\Request;
+use DateTime;
+use App\Models\Advocate\Certificate;
 use Illuminate\Support\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
@@ -1988,12 +1992,11 @@ class PermitController extends Controller
      public function edit_renewal_cj(Request $request, $id)
     {
 
-        if (Auth::check()) {
+        // if (Auth::check()) {
 
-            try {
+        //     try {
 
                 $stage = Application::findOrFail($id);
-                dd($stage);
                 $profile_id = Application::find($id)->profile_id;
                 $previous_status = Advocate::where('profile_id', $profile_id)->first()->status;
 
@@ -2006,7 +2009,98 @@ class PermitController extends Controller
                 $stage->status = $request->input('status');
                 $stage->save();
 
-                if ($stage->status == "ACCEPT") {
+                if ($stage->status == "ACCEPT WITHOUT PENALTY") {
+
+                    //BILL, CONTROL NUMBER and PAYMENT STRUCTURE//  
+
+                    $date = date('Y-m-d');
+                    $admission_date = Advocate::where('profile_id', $profile_id)->first()->admission;
+                    $diff = abs(strtotime($date) - strtotime($admission_date));
+                    $seniority = floor($diff / (365 * 60 * 60 * 24));
+                  // Identify Fee structure
+                   $notary_fee = 40000;
+                   if ($seniority <= 5) {
+                   $practising_fee = 50000;
+                   $pc_fee_id = 3;
+                  } else {
+                     $practising_fee = 100000;
+                     $pc_fee_id = 4;
+                 }
+                   
+                    $total = $notary_fee + $practising_fee ;
+                   
+                    $billdate = date('Y-m-d H:i:s');
+                    $expireDate = date('Y-m-d\TH:i:s', strtotime('+10 days'));
+                     $date_time = new DateTime($billdate);
+                     $due_Date = $date_time->format('Y-m-d\TH:i:s');
+                     $bill_id = 'JUD16' . mt_rand(1000000000000, 9999999999999);
+                     while (Bill::where('bill_id', $bill_id)->exists()) {
+                               $bill_id = 'JUD16' . mt_rand(10000000000, 99999999999);
+                            }
+                   $datas = [
+                          'total_all_fees' => $total,
+                           'bill_id' => $bill_id,
+                           'due_date' => $due_Date,
+                            'expire_date' => $expireDate,
+
+                    ];
+                dd($datas);
+
+                    // CERTIFICATES  
+
+                     $currentyear = date('Y');
+                     $application = DB::table('applications')->where('id', $id)->update(['status' => "Under Review",'resubmission' => true,
+                    'current_stage' => 4]);
+                     $advocate = DB::table('advocates')->where('profile_id', $profile_id)->update(['paid_year' => $currentyear]);
+                     $application_id = Application::findOrFail($id)->id;
+                     $notary = "NOTARY";
+                      $currentDate = Carbon::now();
+                      $issueDate = Carbon::now()->format('Y-m-d');
+                         if ($currentDate->month === 12) {
+                             $currentDate->addYear();
+                          }
+                     $status = Advocate::where('profile_id', $profile_id)->first()->status; 
+                     $expireDate = $currentDate->endOfYear()->format('Y-m-d');  
+                     $notary_no = Certificate::orderBy('id', 'desc')->max('notary_no');
+                     $nextNotartyNumber = $notary_no + 1;
+                     $practising_no = Certificate::orderBy('id', 'desc')->max('practising_no');
+                     $nextPractisingNumber = $practising_no + 1;
+                     $notary_cert = Certificate::where('type',$notary )->orderBy('id', 'desc')->max('notary_no');
+                     $nextNotartyCert = $notary_cert + 1;
+
+                                        $practising = new Certificate;
+                                        $practising->active = true;
+                                        $practising->uid = $uuid;
+                                        $practising->accessible = false;
+                                        $practising->date_of_issued = $issueDate;   
+                                        $practising->expire_date = $expireDate;
+                                        $practising->issued_year = $currentyear;
+                                        $practising->practising_no = $nextPractisingNumber;
+                                        $practising->signature_id = 1;
+                                        $practising->type =$status;
+                                        $practising->application_id = $application_id;
+                                        $practising->profile_id = $profile_id;
+                                        $practising->save();
+
+                                        $notary = new Certificate;
+                                        $notary->active = true;
+                                        $notary->uid = $uuid;
+                                        $notary->accessible = false;
+                                        $notary->date_of_issued = $issueDate;   //control number required
+                                        $notary->expire_date = $expireDate;
+                                        $notary->issued_year = $currentyear;
+                                        $notary->notary_no = $nextNotartyCert;
+                                        $notary->signature_id = 3;
+                                        $notary->type = 'NOTARY';
+                                        $notary->application_id =$application_id;
+                                        $notary->profile_id = $profile_id;
+                                        $notary->save();
+
+
+                }
+                 if ($stage->status == "ACCEPT WITH PENALTYT") {
+                    $application = DB::table('applications')->where('id', $id)->update(['status' => "Under Review",
+                    'resubmission' => true,'current_stage' => 4]);
                     $currDate = Carbon::now()->format('Y-m-d');
                     $profile_id = Application::find($id)->profile_id;
                     $billdate = date('Y-m-d H:i:s');
@@ -2017,12 +2111,33 @@ class PermitController extends Controller
                         while (Bill::where('bill_id', $bill_id)->exists()) {
                                       $bill_id = 'JUD16' . mt_rand(10000000000, 99999999999);
                                         }
-                    $admissions = DB::table('advocates')->whereIn('roll_no', $selectedUsers)->select('admission', 'profile_id', 'status', 'roll_no')->get();
-                    dd($admissions);
+
+                        $date = date('Y-m-d');
+                        $admission_date = Advocate::where('profile_id', $profile_id)->first()->admission;
+                        $diff = abs(strtotime($date) - strtotime($admission_date));
+                         $seniority = floor($diff / (365 * 60 * 60 * 24));
+
+                         // Identify Fee structure
+                         $notary_fee = 40000;
+                            if ($seniority <= 5) {
+                               $practising_fee = 50000;
+                               $pc_fee_id = 3;
+                            } else {
+                               $practising_fee = 100000;
+                               $pc_fee_id = 4;
+                            }
+                          $penalty = 0.5 * $practising_fee;
+                          $penalty_fee_id = 6;
+                          $notary_fee_id = 2;   
+                          $pc_accumulation = $practising_fee * $year_diff;
+                          $nc_accumulation = $notary_fee * $year_diff;
+                          $penalty_accumulation = $penalty * $year_diff;  
+                        $total = $practising_fee + $notary_fee + $pc_accumulation + $nc_accumulation 
+                              + $penalty_accumulation;
+           
                     
 
                 }
-
                 if ($stage->status == "RETURN") {
                     $application = DB::table('applications')
                         ->where('id', $id)
@@ -2043,12 +2158,12 @@ class PermitController extends Controller
                 return Redirect::to("permit/late-renewal/cj")
                     ->with('success', ' Application edited successfully');
 
-            } catch (\Throwable $th) {
+            // } catch (\Throwable $th) {
 
-                return back()->with('warning', 'Stage not edited');
-            }
+            //     return back()->with('warning', 'Stage not edited');
+            // }
 
-        }
+        // }
         return Redirect::to("auth/login")->withErrors('You do not have access!');
     }
 

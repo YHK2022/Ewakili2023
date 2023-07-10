@@ -187,10 +187,14 @@ Route::match(['get', 'post'], '/update-experience/{id}', 'Advocates\PetitionCont
 
     Route::get('/add-firm', 'Advocates\PetitionController@get_add_firm_index');
     Route::post('/post-firm', 'Advocates\PetitionController@add_firm');
+
     Route::match(['get', 'post'], '/request-firm/{id}', 'Advocates\PetitionController@add_firm_request');
     Route::get('/firm-confirmation', 'Advocates\PetitionController@get_firm_confirmation');
     Route::match(['get', 'post'], '/post-firm-confirmation', 'Advocates\PetitionController@post_firm_confirmation');
     Route::post('/confirm-firm', 'Advocates\PetitionController@confirm_firm');
+
+    Route::match(['get', 'post'], '/firm/delete/{id}', 'Advocates\PetitionController@leave_firm');
+
 
     Route::match(['get', 'post'], '/submit-application', 'Advocates\PetitionController@submit_application');
     Route::match(['get', 'post'], '/resubmit-application', 'Advocates\PetitionController@resubmit_application');
@@ -519,6 +523,8 @@ Route::match(['get', 'post'], '/notary/{id}', 'Advocates\MyCertificateController
 Route::group(['prefix' => 'firm'], function(){
     Route::get('/', 'Advocates\FirmController@get_index');
     Route::match(['get', 'post'], '/view/{id}', 'Advocates\FirmController@view_firm');
+    Route::match(['get', 'post'], '/leave/{id}', 'Advocates\FirmController@leave_firm');
+
 });
 
 //***** Bills & Payments ***********//

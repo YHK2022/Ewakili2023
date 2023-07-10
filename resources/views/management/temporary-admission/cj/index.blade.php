@@ -116,9 +116,9 @@
                                                         <div class="table-actions">
                                                             <div class="table-actions"
                                                                 style="justify-content: center;align-items: center;  display: flex;">
-                                                                <a href="{{ url('temporary-admission/cj/view', $application->uid) }}"
+                                                                {{-- <a href="{{ url('temporary-admission/cj/view', $application->uid) }}"
                                                                     title="View Profile"><i
-                                                                        class="ik ik-eye pull-left"></i></a>
+                                                                        class="ik ik-eye pull-left"></i></a> --}}
                                                             </div>
                                                         </div>
                                                     </td>

@@ -90,7 +90,7 @@
                                 <div class="col-sm-6">
                                     <div class="form-group">
                                         <label for="exampleSelectGender">Type</label>
-                                        <select name="type" class="form-control is-valid" id="exampleSelectGender" onchange="showDiv(this)" required>
+                                        <select name="firm_type" class="form-control is-valid" id="exampleSelectGender" onchange="showDiv(this)" required>
                                             <option value="">--Choose one--</option>    
                                             <option value="Law Firm">Law Firm</option>
                                             <option value="Business Company">Business Company</option>
@@ -107,7 +107,7 @@
                                 <div class="col-sm-6">
                                     <div class="form-group">
                                     <label for="exampleInputPassword1">Tax payer name</label>
-                                    <input type="text" name="taxpayer" class="form-control is-valid" value="{{old('taxpayer')}}" placeholder="Tax payer name">
+                                    <input type="text" name="tax_payer_name" class="form-control is-valid" value="{{old('taxpayer')}}" placeholder="Tax payer name">
                                     </div>
                                 </div>
                                 <div class="col-sm-6">

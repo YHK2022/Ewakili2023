@@ -615,7 +615,8 @@
                                             <select class="form-control selectpicker" name="status"
                                                 value="{{ $application->status }}" required data-live-search="true"
                                                 data-live-search-style="begins" title="Select Employee...">
-                                                <option value="ACCEPT">ACCEPT</option>
+                                                <option value="ACCEPT WITH PENALTY">ACCEPT WITH PENALTY</option>
+                                                <option value="ACCEPT WITHOUT PENALTY">ACCEPT WITHOUT PENALTY</option>
                                                 <option value="REJECT">REJECT</option>
                                                 <option value="RETURN">RETURN</option>
 
