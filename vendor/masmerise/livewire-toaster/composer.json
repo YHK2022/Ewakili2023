@@ -1,0 +1,63 @@
+{
+    "name": "mabdullahsari/livewire-toaster",
+    "description": "Beautiful toast notifications for Laravel / Livewire.",
+    "keywords": [
+        "alert",
+        "laravel",
+        "livewire",
+        "toast",
+        "toaster"
+    ],
+    "homepage": "https://github.com/mabdullahsari/livewire-toaster",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Muhammed Sari",
+            "email": "support@muhammedsari.me",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.1",
+        "laravel/framework": "^9.0",
+        "livewire/livewire": "^2.0"
+    },
+    "require-dev": {
+        "dive-be/php-crowbar": "^1.1",
+        "laravel/pint": "^1.0",
+        "nunomaduro/larastan": "^2.0",
+        "orchestra/testbench": "^7.0",
+        "phpunit/phpunit": "^9.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "MAS\\Toaster\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "format": "vendor/bin/pint",
+        "larastan": "vendor/bin/phpstan analyse --memory-limit=2G",
+        "test": "vendor/bin/phpunit",
+        "verify": ["@larastan", "@test"]
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "aliases": {
+                "Toaster": "MAS\\Toaster\\Toaster"
+            },
+            "providers": [
+              "MAS\\Toaster\\ToasterServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

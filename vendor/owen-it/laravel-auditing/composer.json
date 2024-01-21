@@ -17,7 +17,7 @@
         "revision",
         "tracking"
     ],
-    "homepage": "http://laravel-auditing.com",
+    "homepage": "https://laravel-auditing.com",
     "type": "package",
     "license": "MIT",
     "support": {
@@ -62,7 +62,7 @@
         }
     },
     "suggest": {
-        "laravelista/lumen-vendor-publish": "Needed to publish the package configuration in Lumen"
+        "irazasyed/larasupport": "Needed to publish the package configuration in Lumen"
     },
     "extra": {
         "branch-alias": {

@@ -38,7 +38,7 @@ return [
     | Audit Resolvers
     |--------------------------------------------------------------------------
     |
-    | Define the User, IP Address, User Agent and URL resolver implementations.
+    | Define the IP Address, User Agent and URL resolver implementations.
     |
     */
     'resolvers' => [
@@ -154,6 +154,22 @@ return [
             'table'      => 'audits',
             'connection' => null,
         ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Audit Queue Configurations
+    |--------------------------------------------------------------------------
+    |
+    | Available audit queue configurations.
+    |
+    */
+
+    'queue' => [
+        'enable'     => false,
+        'connection' => 'sync',
+        'queue'      => 'default',
+        'delay'      => 0,
     ],
 
     /*
